@@ -1,0 +1,24 @@
+name: data_store
+description: storing language and theme property
+version: 0.0.1
+publish_to: 'none'
+
+
+
+environment:
+  sdk: '>=3.3.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+#  cupertino_icons: ^1.0.6
+  flutter_secure_storage: ^9.0.0
+  fpdart: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+flutter:
+  uses-material-design: true
