@@ -19,7 +19,8 @@ class NewsRepositoryImpl implements NewsRepository{
     try{
       var res = await parser.getNewsList(url);
       return right(res);
-    }catch(e){
+    } catch(e){
+      print('error in call parser: ' + e.toString());
       return left(Failure(e.toString()));
     }
   }

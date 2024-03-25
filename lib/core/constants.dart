@@ -16,4 +16,6 @@ class Constants {
         toastLength: Toast.LENGTH_SHORT,
         timeInSecForIosWeb: 1);
   }
+
+  T? ambiguate<T>(T? value) => value;
 }

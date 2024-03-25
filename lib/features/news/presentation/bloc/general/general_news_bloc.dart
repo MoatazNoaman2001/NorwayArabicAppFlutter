@@ -13,12 +13,12 @@ part 'general_news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
     final GetNewsListUseCase getNewsListUseCase;
     final GetSwiperNewsListUseCase getSwiperNewsListUseCase;
-    final List<NorwayNew> general_norways = [];
-    final List<NorwayNew> onboard_norways = [];
-    List<NorwayNew> swiperList = [];
-    final List<NorwayNew> political_norways = [];
-    final List<NorwayNew> local_norways = [];
-    final List<NorwayNew> sport_norways = [];
+    final Set<NorwayNew> general_norways = {};
+    final Set<NorwayNew> onboard_norways = {};
+    Set<NorwayNew> swiperList = {};
+    final Set<NorwayNew> political_norways = {};
+    final Set<NorwayNew> local_norways = {};
+    final Set<NorwayNew> sport_norways = {};
     final List<int> pageNum = [1,1,1,1,1];
   NewsBloc({required this.getNewsListUseCase, required this.getSwiperNewsListUseCase}) : super(NewsInitial()) {
     on<GetSwiperNorwayNewsList>((event, emit) async{
@@ -27,7 +27,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       var res = await getSwiperNewsListUseCase();
       Constants.makeToast('data fetched');
       return res.fold((l) => emit(SwiperNewsFailure(l.msg)), (r) {
-        swiperList = r;
+        swiperList = r.toSet();
         return emit(SwiperNewsSuccess(r));
       });
     },);
@@ -36,7 +36,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final res = await getNewsListUseCase(event.url);
       return res.fold((l) => emit(SwiperNewsFailure(l.msg)),(r) {
         general_norways.addAll(r);
-        emit(GeneralNewsSuccess(general_norways));
+        emit(GeneralNewsSuccess(general_norways.toList()));
       });
     });
 
@@ -46,7 +46,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       return res.fold((l) => emit(OnBoardNewsFailure(l.msg)),(r) {
         onboard_norways.addAll(r);
         pageNum[1] = pageNum[1]++;
-        emit(OnBoardNewsSuccess(onboard_norways));
+        emit(OnBoardNewsSuccess(onboard_norways.toList()));
       });
     });
     on<GetPoliticalNorwayNewsList>((event, emit) async {
@@ -55,7 +55,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       return res.fold((l) => emit(PoliticalNewsFailure(l.msg)),(r) {
         political_norways.addAll(r);
         pageNum[2]=pageNum[2]++;
-        emit(PoliticalNewsSuccess(political_norways));
+        emit(PoliticalNewsSuccess(political_norways.toList()));
       });
     });
 
@@ -65,7 +65,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       return res.fold((l) => emit(LocalNewsFailure(l.msg)),(r) {
         local_norways.addAll(r);
         pageNum[3]=pageNum[3]++;
-        emit(LocalNewsSuccess(local_norways));
+        emit(LocalNewsSuccess(local_norways.toList()));
       });
     });
 
@@ -75,7 +75,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       return res.fold((l) => emit(SportNewsFailure(l.msg)),(r) {
         sport_norways.addAll(r);
         pageNum[4]=pageNum[4]++;
-        emit(SportNewsSuccess(sport_norways));
+        emit(SportNewsSuccess(sport_norways.toList()));
       });
     });
   }

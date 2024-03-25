@@ -26,7 +26,7 @@ class _PoliticalNewsState extends State<PoliticalNews> {
   _PoliticalNewsState(this.url);
 
   final ConnectivityController connectivityController =
-      ConnectivityController();
+  ConnectivityController();
   List<NorwayNew> norways = [];
 
   @override
@@ -35,7 +35,7 @@ class _PoliticalNewsState extends State<PoliticalNews> {
     connectivityController.init();
     context.read<NewsBloc>().add(
         GetPoliticalNorwayNewsList(
-          url,[]
+            url, []
         )
     );
   }
@@ -43,77 +43,86 @@ class _PoliticalNewsState extends State<PoliticalNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'السياسية',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-            ),
+      appBar: AppBar(
+        title: Text(
+          'السياسية',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
           ),
         ),
-        body: ValueListenableBuilder(
-          valueListenable: connectivityController.isConnected,
-          builder: (context, value, child) {
-            if (value) {
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    BlocConsumer<NewsBloc, NewsState>(
-                      listener: (context, state) {
-                        if (state is PoliticalNewsSuccess) {
-                        } else if (state is PoliticalNewsFailure) {
-                          var snack = SnackBar(
-                            content: const Text('would you like to retry'),
-                            duration: Duration(hours: 1),
-                            action: SnackBarAction(
-                              onPressed: () {
-                                context
-                                    .read<NewsBloc>()
-                                    .add(GetPoliticalNorwayNewsList(url, norways));
-                              },
-                              label: "ok",
+      ),
+      body: SizedBox(
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: connectivityController.isConnected,
+              builder: (context, value, child) {
+                if (value) {
+                  return Center();
+                } else {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          child: Container(
+                            color: Colors.grey.shade800,
+                            child: const Text(
+                              'No Internet Connection',
+                              textAlign: TextAlign.center,
                             ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snack);
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocConsumer<NewsBloc, NewsState>(
+              listener: (context, state) {
+                if (state is PoliticalNewsSuccess) {} else
+                if (state is PoliticalNewsFailure) {
+                  var snack = SnackBar(
+                    content: const Text('would you like to retry'),
+                    duration: Duration(hours: 1),
+                    action: SnackBarAction(
+                      onPressed: () {
+                        context
+                            .read<NewsBloc>()
+                            .add(GetPoliticalNorwayNewsList(url, norways));
+                      },
+                      label: "ok",
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snack);
+                }
+              },
+              builder: (context, state) {
+                if (state is PoliticalNewsSuccess) {
+                  return PoliticalNewsSuccessView(url: url,);
+                } else {
+                  return PoliticalNewsLoadingView();
+                }
+              },
+            )
+          ],
+        ),
+      )
 
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state is PoliticalNewsSuccess) {
-                          return PoliticalNewsSuccessView(url: url,);
-                        } else {
-                          return PoliticalNewsLoadingView();
-                        }
-                      },
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        color: Colors.grey.shade800,
-                        child: const Text(
-                          'No Internet Connection',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }
-          },
-        ));
+
+     );
   }
 }
 
@@ -124,8 +133,14 @@ class PoliticalNewsLoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
         child: Column(children: [
           LinearProgressIndicator(
             borderRadius:
@@ -140,7 +155,7 @@ class PoliticalNewsLoadingView extends StatelessWidget {
 class PoliticalNewsSuccessView extends StatelessWidget {
   final String url;
 
-  const PoliticalNewsSuccessView({super.key , required this.url});
+  const PoliticalNewsSuccessView({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -151,17 +166,22 @@ class PoliticalNewsSuccessView extends StatelessWidget {
     controller.addListener(() {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
-        if (isTop) {
-        } else {
+        if (isTop) {} else {
           context
               .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url,  []));
+              .add(GetPoliticalNorwayNewsList(url, []));
         }
       }
     });
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height,
       child: Column(
         children: [
           // ListView(),
@@ -173,9 +193,10 @@ class PoliticalNewsSuccessView extends StatelessWidget {
                 itemCount: bloc.political_norways.length,
                 itemBuilder: (context, index) {
                   return NewsCardRecycleItem(
-                    norwayNew: bloc.political_norways[index],
+                    norwayNew: bloc.political_norways.toList()[index],
                     callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: bloc.political_norways[index]);
+                      Navigator.of(context).pushNamed(
+                          '/details', arguments: bloc.political_norways.toList()[index]);
                     },
                   );
                 },

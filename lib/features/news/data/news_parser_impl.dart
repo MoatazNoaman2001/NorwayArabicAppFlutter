@@ -47,38 +47,39 @@ class NewsParserImpl implements NorwaySiteParser{
     var socialShare = soup.find('div' , class_: 'magmax-social-share')?.findAll('a').toList().map((e){
       return WebPair(e.getAttrValue('class')!, e.getAttrValue('href')!);
     });
-    var nowayNew = NorwayNew.withDetails(title.toString(), by!, views!, readDuration!, post_on!,int.parse(likes!),publisher!, image!,articles!.toList(),socialShare!.toList(), cats!.toList(), [] );
+    var nowayNew = NorwayNew.withDetails(title.toString(), by!, views!, readDuration!, post_on!,int.parse(likes!),publisher!, image!,url ,articles!.toList(),socialShare!.toList(), cats!.toList(), []);
     return nowayNew;
   }
 
   @override
   Future<List<NorwayNew>> banarNews() async{
-    List<NorwayNew> norways = [];
-    var body = await fetchUrl('https://norwayvoice.no/');
-    var soup = BeautifulSoup(body);
-    var banarBody = soup.find('div', class_: 'swiper-wrapper');
-    var children = banarBody?.children.first;
-    var titleList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__title anwp-font-heading mt-2').toList().map((e) {
-      return e.text.trim();
-    }).join('\n');
-    var dateList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__bottom-meta d-flex flex-wrap').toList().map((e) {
-      return e.text.trim();
-    }).join('\n');
-    var subTitleList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__excerpt mb-2').toList().map((e) {
-      return e.text.trim();
-    }).join('\n');
-    var linkList = children?.findAll('div' , class_: 'w-100 anwp-pg-read-more mt-auto').toList().map((e) {
-      return e.a?.getAttrValue('href');
-    }).join('\n');
-    var imageList = children?.findAll('img' , class_: 'anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100').toList().map((e) {
-      return e.getAttrValue('src');
-    }).join('\n');
-    int? size = titleList?.length;
-    for (int i = 0; i < size!; i++) {
-      norways.add(NorwayNew(titleList![i], "", "", "", dateList![i],"", imageList![i], subTitleList![i], [], linkList![i]));
-    }
+      List<NorwayNew> norways = [];
+      var body = await fetchUrl('https://norwayvoice.no/');
+      var soup = BeautifulSoup(body);
+      var banarBody = soup.find('div', class_: 'swiper-wrapper');
+      var children = banarBody?.children.first;
+      var titleList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__title anwp-font-heading mt-2').toList().map((e) {
+        return e.text.trim();
+      }).toList();
+      var dateList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__bottom-meta d-flex flex-wrap').toList().map((e) {
+        return e.text.trim();
+      }).toList();
+      var subTitleList = children?.findAll('div' , class_: 'anwp-pg-post-teaser__excerpt mb-2').toList().map((e) {
+        return e.text.trim();
+      }).toList();
+      var linkList = children?.findAll('div' , class_: 'w-100 anwp-pg-read-more mt-auto').toList().map((e) {
+        return e.a?.getAttrValue('href');
+      }).toList();
+      var imageList = children?.findAll('img' , class_: 'anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100').toList().map((e) {
+        return e.getAttrValue('src');
+      }).toList();
 
-    return norways;
+      int? size = titleList?.length;
+      for (int i = 0; i < size!; i++) {
+        norways.add(NorwayNew(titleList![i], "", "", "", dateList![i], imageList![i]!, subTitleList![i], [], linkList![i]!));
+      }
+
+      return norways;
   }
 
   Future<String> fetchUrl(String url) async {
@@ -95,6 +96,11 @@ class NewsParserImpl implements NorwaySiteParser{
     final List<NorwayNew> news = [];
     final body = await fetchUrl(url);
     BeautifulSoup soup = BeautifulSoup(body);
+    if(soup.find('section' , class_: 'error-404 not-found') != null){
+      print('end is reached');
+      return [];
+    }
+
     var res = soup.find('div', class_: 'col-md-8 blog-content');
     for (var t in res!.children) {
       String? title =
@@ -119,7 +125,17 @@ class NewsParserImpl implements NorwaySiteParser{
             e.getAttrValue('href') != null ? e.getAttrValue('href')! : "",
             e.text);
       }).toList();
-      print(link);
+      // List<int> PageList = soup.find('div' , class_: "magmax_pagination")?.ul!.children.map((e) {
+      //   int.parse(e.a!.text);
+      // }).toList();
+
+      // var maxPage = 0;
+      // for (int i = 0 ; i < PageList!.length ; i++){
+      //   if (maxPage > PageList[i]) {
+      //     maxPage = PageList[i];
+      //   }
+      // }
+
       if (title != null &&
           by != null &&
           views != null &&
@@ -127,7 +143,7 @@ class NewsParserImpl implements NorwaySiteParser{
           date != null &&
           image != null &&
           cats != null) {
-        news.add(NorwayNew(title, by, views.trim(), duration, date,publisher!, image,
+        news.add(NorwayNew(title, by, views.trim(), duration, date, image,
             content!, cats, link!));
       }
     }

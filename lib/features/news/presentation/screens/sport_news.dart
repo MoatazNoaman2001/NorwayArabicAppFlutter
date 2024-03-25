@@ -163,7 +163,7 @@ class SportNewSuccessView extends StatelessWidget {
         } else {
           context
               .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url, bloc.sport_norways));
+              .add(GetPoliticalNorwayNewsList(url, bloc.sport_norways.toList()));
         }
       }
     });
@@ -182,9 +182,9 @@ class SportNewSuccessView extends StatelessWidget {
                 itemCount: bloc.sport_norways.length,
                 itemBuilder: (context, index) {
                   return NewsCardRecycleItem(
-                    norwayNew: bloc.sport_norways[index],
+                    norwayNew: bloc.sport_norways.toList()[index],
                     callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: bloc.sport_norways[index]);
+                      Navigator.of(context).pushNamed('/details' , arguments: bloc.sport_norways.toList()[index]);
                     },
                   );
                 },

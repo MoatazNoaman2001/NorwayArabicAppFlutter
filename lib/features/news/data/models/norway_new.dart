@@ -17,17 +17,16 @@ class NorwayNew {
   List<WebPair> socialShare = [];
 
   NorwayNew(
-    this.title,
-    this.by,
-    this.votes,
-    this.readDuration,
-    this.date,
-    this.publisher,
-    this.image,
-    this.content,
-    this.cats,
-    this.link,
-  );
+      this.title,
+      this.by,
+      this.votes,
+      this.readDuration,
+      this.date,
+      this.image,
+      this.content,
+      this.cats,
+      this.link,
+      );
 
   NorwayNew.withDetails(
     this.title,
@@ -38,11 +37,24 @@ class NorwayNew {
     this.likes,
     this.publisher,
     this.image,
+    this.link,
     this.articleContent,
     this.socialShare,
     this.cats,
     this.tags,
   );
+
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NorwayNew &&
+          runtimeType == other.runtimeType &&
+          image == other.image &&
+          link == other.link;
+
+  @override
+  int get hashCode => image.hashCode ^ link.hashCode;
 
   @override
   String toString() {

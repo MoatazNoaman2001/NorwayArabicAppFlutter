@@ -1,24 +1,30 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio_background/just_audio_background.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/platfroms_scr.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/screens/setting.dart';
-import 'package:norway_flutter_app/features/streams/presenation/audio_stream_screen.dart';
-import 'package:norway_flutter_app/features/streams/presenation/select_stream_type.dart';
+import 'package:norway_flutter_app/features/streams/data/repo/youtube_repo_impl.dart';
+import 'package:norway_flutter_app/features/streams/data/youtube_parser_impl.dart';
+import 'package:norway_flutter_app/features/streams/presenation/bloc/youtube_stream_bloc.dart';
+import 'package:norway_flutter_app/features/streams/presenation/screens/select_stream_type.dart';
+import 'package:norway_flutter_app/translations/codegen_loader.g.dart';
+import 'package:norway_flutter_app/translations/locale_keys.g.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_lang_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_lang_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/features/news/data/news_parser_impl.dart';
 import 'package:norway_flutter_app/features/news/data/repo/new_repository_impl.dart';
-import 'package:norway_flutter_app/features/news/domain/repo/news_repo.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_news_details.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_news_list.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_swiper_news_list.dart';
@@ -36,19 +42,20 @@ import 'core/theme/color_schemes.g.dart';
 import 'features/app_controller/presentation/screens/init_app.dart';
 import 'features/app_controller/presentation/screens/select_language.dart';
 import 'features/news/data/models/norway_new.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'features/news/domain/usecases/platforms_usecase.dart';
+import 'features/streams/presenation/screens/audio_stream_screen.dart';
+import 'features/streams/presenation/screens/video_stream_screen.dart';
+
 
 void main() async {
-  HttpOverrides.global = MyHttpOverrides();
-  // await JustAudioBackground.init(
-  //   androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-  //   androidNotificationChannelName: 'Audio playback',
-  //   androidNotificationOngoing: true,
-  // );
+  // HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
+        //./.
         create: (context) => ControllerBloc(
           changeLanguageUseCase: ChangeLanguageUseCase(LocalDataStore()),
           getLanguageUseCase: GetLanguageUseCase(LocalDataStore()),
@@ -72,6 +79,10 @@ void main() async {
         create: (context) => PlatformBloc(
             platformListUseCase:
                 PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl()))),
+      ),
+      BlocProvider(
+        create: (context) => YoutubeStreamBloc(
+            youtubeRepoImpl: YoutubeRepoImpl(YoutubeParserImpl())),
       )
     ],
     child: MyApp(),
@@ -101,6 +112,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
+    context.read<ControllerBloc>().add(LanguageGet());
   }
 
   @override
@@ -108,9 +120,18 @@ class _MyAppState extends State<MyApp> {
     return BlocConsumer<ControllerBloc, ControllerState>(
       listener: (context, state) {
         if (state is ThemeGetSuccess) {
-          var bloc = BlocProvider.of<ControllerBloc>(context);
+          Constants.makeToast(state.theme);
           setState(() {
             if (state.theme != "0") {
+              _themeMode = ThemeMode.dark;
+            } else {
+              _themeMode = ThemeMode.light;
+            }
+          });
+        } else if (state is ThemeSetSuccess) {
+          setState(() {
+            var bloc = BlocProvider.of<ControllerBloc>(context);
+            if (bloc.theme != false) {
               _themeMode = ThemeMode.dark;
             } else {
               _themeMode = ThemeMode.light;
@@ -119,27 +140,25 @@ class _MyAppState extends State<MyApp> {
         }
       },
       builder: (context, state) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-          themeMode: _themeMode,
-          darkTheme:
-              ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-          initialRoute: '/',
-          routes: {
-            '/': (context) => InitiateApp(),
-            '/select_language': (context) => SelectLanguage(),
-            '/home': (context) =>
-                const MyHomePage(title: "اذاعة النرويج بالعربية"),
-            '/political': (context) =>
-                PoliticalNews(url: Constants.newsUrls[2]),
-            '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
-            '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
-            '/details': (context) => const NewDetails(),
-            '/platform': (context) => PlatformScreen(),
-            '/setting': (context) => SettingScreen(),
-            '/select_stream': (context) => SelectStreamType(),
-            '/audio_stream': (context) => AudioStreamScreen(),
+        return BlocConsumer<ControllerBloc, ControllerState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            var bloc = BlocProvider.of<ControllerBloc>(context);
+            if (state is LangGetSuccess || state is LangSetSuccess)
+              return EasyLocalization(
+                  supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
+                  path: 'assets/translations',
+                  assetLoader: CodegenLoader(),
+                  fallbackLocale: bloc.lang.isNotEmpty ? Locale(bloc.lang) : Locale('en'),
+                  child: MyAppMainEntry(thememode: _themeMode,));
+            else {
+              return EasyLocalization(
+                  supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
+                  path: 'assets/translations',
+                  assetLoader: CodegenLoader(),
+                  fallbackLocale: Locale('en'),
+                  child: MyAppMainEntry(thememode: _themeMode,));
+            }
           },
         );
       },
@@ -147,17 +166,52 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MyAppMainEntry extends StatelessWidget {
+  final ThemeMode thememode;
+  const MyAppMainEntry({super.key , required this.thememode});
 
-  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme:
+      ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      themeMode: thememode,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => InitiateApp(),
+        '/select_language': (context) => SelectLanguage(),
+        '/home': (context) =>
+        const MyHomePage(),
+        '/political': (context) =>
+            PoliticalNews(url: Constants.newsUrls[2]),
+        '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
+        '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
+        '/details': (context) => const NewDetails(),
+        '/platform': (context) => PlatformScreen(),
+        '/setting': (context) => SettingScreen(),
+        '/select_stream': (context) => SelectStreamType(),
+        '/audio_stream': (context) => AudioStreamScreen(),
+        '/video_stream': (context) => VideoStreamScreen(),
+      },
+    );
+  }
+}
+
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+  //
+  // final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   int selectedPageIndex = 0;
   int drawerSelect = -1;
   final screens = [
@@ -165,19 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
     OnBoard(url: Constants.newsUrls[1]),
   ];
 
-  // final Map<String , List<NorwayNew>> newrayMap = {};
-  // final ConnectivityController connectivityController = ConnectivityController();
-
-  @override
-  void initState() {
-    super.initState();
-    // connectivityController.init();
-    // context.read<NewsBloc>().add(
-    //     GetNorwayNewsList(Constants.generalNewsUrl[0], [])
-    // );
-  }
-
-  void _incrementCounter() {
+  void _navigateToSelectStream() {
     Navigator.of(context).pushNamed('/select_stream');
   }
 
@@ -189,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
     else
       fabBackColor = darkColorScheme.onPrimaryContainer;
 
+    String general = 'General'.tr();
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedPageIndex,
@@ -204,7 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationDestination(
             selectedIcon: Icon(Icons.home_filled),
             icon: Icon(Icons.home_outlined),
-            label: "منوعات",
+            label: 'منوعات',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.article_rounded),
@@ -217,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(LocaleKeys.title.tr()),
         centerTitle: true,
         elevation: 4,
       ),
@@ -308,15 +351,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               label: Text('باقي المنصات')),
           Divider(),
+          SizedBox(
+            height: 270,
+          ),
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),
               selectedIcon: Icon(Icons.settings),
-              label: Text('باقي المنصات')),
+              label: Text('الاعدادات')),
         ],
       ),
       body: screens[selectedPageIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _navigateToSelectStream,
         backgroundColor: fabBackColor,
         tooltip: 'Increment',
         child: Container(

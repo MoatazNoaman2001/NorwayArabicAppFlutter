@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../data/models/norway_new.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,25 +22,28 @@ class NewsCardRecycleItem extends StatelessWidget {
           child: Card(
             child: Column(
               children: [
-                CachedNetworkImage(
-                  height: 160,
-                  imageUrl: norwayNew.image,
-                  placeholderFadeInDuration: Durations.medium3,
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,),
-                    ),
-                  ),
-                  progressIndicatorBuilder: (context, url, progress) =>
-                      Center(
-                          child :CircularProgressIndicator(
-                            value: progress.progress,
-                          )
+                ClipRRect(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(14), topRight: Radius.circular(14)),
+                  child: CachedNetworkImage(
+                    height: 160,
+                    imageUrl: norwayNew.image,
+                    placeholderFadeInDuration: Durations.medium3,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,),
                       ),
-                  errorWidget: (context, url, error) =>
-                      Image.asset('assets/images/head_logo.jpeg'),
+                    ),
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        Center(
+                            child :CircularProgressIndicator(
+                              value: progress.progress,
+                            )
+                        ),
+                    errorWidget: (context, url, error) =>
+                        Image.asset('assets/images/head_logo.jpeg'),
+                  ),
                 ),
                 SizedBox(height: 4,),
                 Padding(

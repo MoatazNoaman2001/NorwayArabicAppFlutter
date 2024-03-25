@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/widgets.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -367,8 +368,7 @@ class DetailsSuccessView extends StatelessWidget {
                             case "post-share":
                               return FloatingActionButton(
                                   onPressed: () {
-                                    _launchUrl(Uri.parse(
-                                        norwayNew.socialShare[index].left));
+                                    Share.share('check out norway arabic new on ${norwayNew.link}');
                                   },
                                   child: Icon(Icons.share_outlined
                                   ));

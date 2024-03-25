@@ -17,6 +17,8 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
   final ChangeThemeUseCase changeThemeUseCase;
 
   bool theme = false;
+  bool background = false;
+  String lang = "en";
 
   ControllerBloc(
       {required this.changeLanguageUseCase,
@@ -26,30 +28,34 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
       : super(ControllerInitial()) {
     on<LanguageChange>((event, emit) async {
       final res = await changeLanguageUseCase(event.lang);
-      return res.fold(
-          (l) => emit(LangFailure(l)), (r) => emit(LangSetSuccess(r)));
+      return res.fold((l) => emit(LangFailure(l)), (r) {
+        lang = event.lang;
+        emit(LangSetSuccess(r));
+      });
     });
 
     on<LanguageGet>(
       (event, emit) async {
         final res = await getLanguageUseCase();
-        return res.fold(
-            (l) => emit(LangFailure(l)), (r) => emit(LangGetSuccess(r)));
+        return res.fold((l) => emit(LangFailure(l)), (r) {
+          lang = r;
+          emit(LangGetSuccess(r));
+        });
       },
     );
 
     on<ThemeChange>((event, emit) async {
-      theme = event.theme == "0"? false : true;
+      theme = event.theme == "0" ? false : true;
       final res = await changeThemeUseCase(event.theme);
       return res.fold(
-              (l) => emit(ThemeFailure(l)), (r) => emit(ThemeSetSuccess(r)));
+          (l) => emit(ThemeFailure(l)), (r) => emit(ThemeSetSuccess(r)));
     });
 
-    on<ThemeGet>((event, emit) async {
+    on<ThemeGet>(
+      (event, emit) async {
         final res = await getLanguageUseCase();
-        return res.fold((l) => emit(ThemeFailure(l)), (r)
-        {
-          theme = r == "0"? false : true;
+        return res.fold((l) => emit(ThemeFailure(l)), (r) {
+          theme = r == "0" ? false : true;
           emit(ThemeGetSuccess(r));
         });
       },

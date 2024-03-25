@@ -47,16 +47,22 @@ dependencies:
   google_fonts: ^6.2.1
   infinite_carousel: ^1.1.1
   shimmer: ^3.0.0
+  share_plus: ^8.0.2
   just_audio: ^0.9.36
   just_audio_background: ^0.0.1-beta.11
   url_launcher: ^6.2.5
+  youtube_player_flutter: ^9.0.0
+  firebase_core: ^2.27.1
+  cloud_firestore: ^4.15.9
+  firebase_database: ^10.4.10
+  flutter_launcher_icons: ^0.13.1
+  flutter_localization: ^0.2.0
+  rxdart: ^0.27.7
+  easy_localization: ^3.0.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_launcher_icons: "^0.13.1"
-
 
   data_store:
     path: packages/data_store
@@ -91,6 +97,7 @@ flutter:
   assets:
     - assets/videos/
     - assets/images/
+    - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

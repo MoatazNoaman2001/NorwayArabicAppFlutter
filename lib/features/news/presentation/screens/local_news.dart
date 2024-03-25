@@ -162,7 +162,7 @@ class LocalNewSuccessView extends StatelessWidget {
         } else {
           context
               .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url, bloc.local_norways));
+              .add(GetPoliticalNorwayNewsList(url, bloc.local_norways.toList()));
         }
       }
     });
@@ -181,9 +181,9 @@ class LocalNewSuccessView extends StatelessWidget {
                 itemCount: bloc.local_norways.length,
                 itemBuilder: (context, index) {
                   return NewsCardRecycleItem(
-                    norwayNew: bloc.local_norways[index],
+                    norwayNew: bloc.local_norways.toList()[index],
                     callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: bloc.local_norways[index]);
+                      Navigator.of(context).pushNamed('/details' , arguments: bloc.local_norways.toList()[index]);
                     },
                   );
                 },
