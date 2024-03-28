@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:norway_flutter_app/features/streams/data/repo/youtube_repo_impl.
 import 'package:norway_flutter_app/features/streams/data/youtube_parser.dart';
 import 'package:norway_flutter_app/features/streams/data/youtube_parser_impl.dart';
 import 'package:norway_flutter_app/features/streams/presenation/bloc/youtube_stream_bloc.dart';
+import 'package:norway_flutter_app/translations/locale_keys.g.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoStreamScreen extends StatefulWidget {
@@ -35,10 +37,6 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
     context.read<YoutubeStreamBloc>().add(GetYoutubeLink());
   }
 
@@ -47,7 +45,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('البث التلفزروني'),
+        title: Text(LocaleKeys.TvStream.tr()),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         titleTextStyle: GoogleFonts.rubik().copyWith(fontSize: 20),
@@ -65,6 +63,10 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
                 if (state.link.contains('channel')) {
                   return Text('Youtube streams seems to be off');
                 } else{
+                  SystemChrome.setPreferredOrientations([
+                    DeviceOrientation.landscapeRight,
+                    DeviceOrientation.landscapeLeft,
+                  ]);
                   YoutubePlayerController controller = YoutubePlayerController(
                       initialVideoId: YoutubePlayer.convertUrlToId(state.link)!, flags: YoutubePlayerFlags(isLive: true));
                   return YoutubePlayerBuilder(

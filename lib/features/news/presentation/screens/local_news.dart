@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:norway_flutter_app/features/news/presentation/bloc/general/gener
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:norway_flutter_app/features/news/presentation/widgets/new_card_rcycle_item.dart';
 import 'package:norway_flutter_app/main.dart';
+import '../../../../translations/locale_keys.g.dart';
 import '../../data/models/norway_new.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 
@@ -45,7 +47,7 @@ class _LocalNewsState extends State<LocalNews> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'المحلية',
+            LocaleKeys.Local.tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w800,
@@ -133,7 +135,7 @@ class LocalNewLoadingView extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height -
-            (MediaQuery.of(context).size.height * 0.25),
+            (MediaQuery.of(context).size.height * 0.15),
         child: Column(children: [
           LinearProgressIndicator(
             borderRadius:
@@ -169,7 +171,7 @@ class LocalNewSuccessView extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height -
-          (MediaQuery.of(context).size.height * 0.205),
+          (MediaQuery.of(context).size.height * 0.15),
       child: Column(
         children: [
           // ListView(),

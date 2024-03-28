@@ -7,5 +7,16 @@ abstract class  LocaleKeys {
   static const NightMode = 'NightMode';
   static const Play_In_Background = 'Play_In_Background';
   static const Language = 'Language';
+  static const News = 'News';
+  static const Political = 'Political';
+  static const Local = 'Local';
+  static const Sport = 'Sport';
+  static const Youtube = 'Youtube';
+  static const SnapChat = 'SnapChat';
+  static const Platforms = 'Platforms';
+  static const Settings = 'Settings';
+  static const Streams = 'Streams';
+  static const AudioStream = 'AudioStream';
+  static const TvStream = 'TvStream';
 
 }

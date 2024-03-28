@@ -35,150 +35,152 @@ class _OnBoardState extends State<OnBoard> {
   @override
   Widget build(BuildContext context) {
     Color color = Colors.grey[800]!;
-    return SizedBox(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      child: Column(
-        children: [
-          ValueListenableBuilder(
-            valueListenable: connectivityController.isConnected,
-            builder: (context, value, child) {
-              if (value) {
-                return Center();
-              } else {
-                return SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Container(
-                          color: Theme.of(context).brightness == Brightness.dark? Colors.white30 : Colors.white70,
-                          child: const Text(
-                            'No Internet Connection',
-                            textAlign: TextAlign.center,
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        child: Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: connectivityController.isConnected,
+              builder: (context, value, child) {
+                if (value) {
+                  return Center();
+                } else {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Container(
+                            color: Theme.of(context).brightness == Brightness.dark? Colors.white30 : Colors.white70,
+                            child: const Text(
+                              'No Internet Connection',
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              }
-            },
-          ),
-          BlocConsumer<NewsBloc, NewsState>(
-            listener: (context, state) {
-              if (state is OnBoardNewsSuccess) {
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocConsumer<NewsBloc, NewsState>(
+              listener: (context, state) {
+                if (state is OnBoardNewsSuccess) {
 
-              } else if (state is OnBoardNewsFailure) {
-                print('onboard error msg: ${state.msg}');
-                var snack = SnackBar(
-                  content: const Text('would you like to retry'),
-                  duration: Duration(seconds: 6),
-                  action: SnackBarAction(
-                    onPressed: () {
-                      context.read<NewsBloc>().add(
-                          GetOnBoardNorwayNewsList(url, norways)
-                      );
-                    },
-                    label: "ok",
-                  ),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snack);
-              }
-            },
-            builder: (context, state) {
-              var bloc = BlocProvider.of<NewsBloc>(context);
-              if (state is OnBoardNewsLoading && bloc.onboard_norways.isEmpty) {
-                return SingleChildScrollView(
-                  child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height -
-                        (MediaQuery
+                } else if (state is OnBoardNewsFailure) {
+                  print('onboard error msg: ${state.msg}');
+                  var snack = SnackBar(
+                    content: const Text('would you like to retry'),
+                    duration: Duration(seconds: 6),
+                    action: SnackBarAction(
+                      onPressed: () {
+                        context.read<NewsBloc>().add(
+                            GetOnBoardNorwayNewsList(url, norways)
+                        );
+                      },
+                      label: "ok",
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snack);
+                }
+              },
+              builder: (context, state) {
+                var bloc = BlocProvider.of<NewsBloc>(context);
+                if (state is OnBoardNewsLoading && bloc.onboard_norways.isEmpty) {
+                  return SingleChildScrollView(
+                    child: Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height -
+                          (MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.25),
+                      child: Column(children: [
+                        LinearProgressIndicator(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ]),
+                    ),
+                  );
+                } else if (state is OnBoardNewsSuccess ||
+                    (state is OnBoardNewsLoading &&
+                        bloc.onboard_norways.isNotEmpty)) {
+                  return OnBoardSuccessView(n: bloc.onboard_norways.toList(), url: url);
+                } else if (state is OnBoardNewsFailure) {
+                  if (bloc.onboard_norways.isNotEmpty) {
+                    return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
+                        url: url);
+                  } else {
+                    return SingleChildScrollView(
+                      child: Container(
+                        width: MediaQuery
                             .of(context)
                             .size
-                            .height * 0.25),
-                    child: Column(children: [
-                      LinearProgressIndicator(
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(8)),
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height -
+                            (MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.25),
+                        child: Column(children: [
+                          LinearProgressIndicator(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(8)),
+                          ),
+                        ]),
                       ),
-                    ]),
-                  ),
-                );
-              } else if (state is OnBoardNewsSuccess ||
-                  (state is OnBoardNewsLoading &&
-                      bloc.onboard_norways.isNotEmpty)) {
-                return OnBoardSuccessView(n: bloc.onboard_norways.toList(), url: url);
-              } else if (state is OnBoardNewsFailure) {
-                if (bloc.onboard_norways.isNotEmpty) {
-                  return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
-                      url: url);
+                    );
+                  }
                 } else {
-                  return SingleChildScrollView(
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height -
-                          (MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.25),
-                      child: Column(children: [
-                        LinearProgressIndicator(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(8)),
-                        ),
-                      ]),
-                    ),
-                  );
+                  if (bloc.onboard_norways.isNotEmpty) {
+                    return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
+                        url: url);
+                  } else {
+                    return SingleChildScrollView(
+                      child: Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height -
+                            (MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.25),
+                        child: Column(children: [
+                          LinearProgressIndicator(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(8)),
+                          ),
+                        ]),
+                      ),
+                    );
+                  }
                 }
-              } else {
-                if (bloc.onboard_norways.isNotEmpty) {
-                  return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
-                      url: url);
-                } else {
-                  return SingleChildScrollView(
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height -
-                          (MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.25),
-                      child: Column(children: [
-                        LinearProgressIndicator(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(8)),
-                        ),
-                      ]),
-                    ),
-                  );
-                }
-              }
-            },
-          )
-        ],
+              },
+            )
+          ],
+        ),
       ),
     );
   }

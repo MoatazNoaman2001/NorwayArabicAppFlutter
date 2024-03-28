@@ -25,6 +25,7 @@ class GeneralNews extends StatefulWidget {
 
 class _GeneralNewsState extends State<GeneralNews> {
   final String url;
+  bool isTV = false;
 
   _GeneralNewsState(this.url);
 
@@ -32,8 +33,6 @@ class _GeneralNewsState extends State<GeneralNews> {
       ConnectivityController();
   List<NorwayNew> norways = [];
 
-  @override
-  void setState(VoidCallback fn) {}
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +116,35 @@ class _GeneralNewsState extends State<GeneralNews> {
                   } else if (state is GeneralNewsSuccess ||
                       (state is GeneralNewsLoading &&
                           bloc.general_norways.isNotEmpty)) {
+                    if (isTV){
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height -
+                            (MediaQuery.of(context).size.height * 0.205),
+                        child: Column(
+                          children: [
+                            Expanded(
+                                child:GridView.builder(
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount( crossAxisCount: 3),
+                                    itemCount: bloc.general_norways.length,
+                                    padding: EdgeInsets.only(right: 8 , left: 8),
+                                    itemBuilder: (context, index) {
+                                      return NewsCardRecycleItem(
+                                        norwayNew: bloc.general_norways.toList()[index],
+                                        callback: () {
+                                          makeToast('clicked');
+                                          Navigator.of(context).pushNamed('/details',
+                                              arguments: bloc.general_norways.toList()[index]);
+                                        },
+                                      );
+                                    },
+                                )
+
+                            )
+                          ],
+                        ),
+                      );
+                    }else
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height -
@@ -126,6 +154,8 @@ class _GeneralNewsState extends State<GeneralNews> {
                           Expanded(
                               child: ListView.builder(
                             controller: controller,
+                            primary: false,
+                            shrinkWrap: true,
                             padding: const EdgeInsets.only(right: 4, left: 4),
                             itemCount: bloc.general_norways.length,
                             itemBuilder: (context, index) {

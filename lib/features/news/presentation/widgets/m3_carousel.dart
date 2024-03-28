@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -181,11 +182,24 @@ class _M3CarouselState extends State<M3Carousel> {
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              Image.asset(
-                                listItem.value['childData']['image'],
-                                fit: BoxFit.cover,
-                                width: double.maxFinite, height: double.maxFinite,
+                            CachedNetworkImage(
+                              imageUrl: listItem.value['childData']['image'],
+                              placeholderFadeInDuration: Durations.medium3,
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
+                              progressIndicatorBuilder: (context, url, progress) =>
+                                  Container(
+                                    child: LinearProgressIndicator(
+                                      value: progress.progress,
+                                    ),
+                                  ),
+                            ),
                               Container(
                                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                                 decoration: BoxDecoration(
@@ -202,12 +216,13 @@ class _M3CarouselState extends State<M3Carousel> {
                                     duration: Duration(milliseconds: widget.titleFadeAnimationDuration,),
                                     child: Text(
                                       listItem.value['childData']['title'],
+                                      textAlign: TextAlign.right,
                                       style: GoogleFonts.rubik().copyWith(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w300,
                                         fontSize: 12
                                       ),
-                                      maxLines: 1,
+                                      maxLines: 3,
                                       overflow: TextOverflow.clip,
                                     ),
                                   ),

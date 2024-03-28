@@ -4,5 +4,16 @@
   "onBoard": "on board",
   "NightMode" : "Night Mode",
   "Play_In_Background" : "Play In Background",
-  "Language": "Language"
+  "Language": "Language",
+  "News": "News",
+  "Political" : "Political",
+  "Local": "Local",
+  "Sport"  : "Sport",
+  "Youtube": "Youtube",
+  "SnapChat" : "SnapChat",
+  "Platforms" : "Platforms",
+  "Settings" : "Settings",
+  "Streams" : "Broadcasts",
+  "AudioStream" : "Audio Stream",
+  "TvStream" : "Norway Arabic Tv"
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/core/theme/color_schemes.g.dart';
 import 'package:norway_flutter_app/features/news/data/models/norway_new.dart';
+import 'package:norway_flutter_app/features/news/presentation/widgets/m3_carousel.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -20,11 +21,12 @@ class SwiperWid extends StatelessWidget {
       height: 200,
       child: BlocConsumer<NewsBloc, NewsState>(
         listener: (context, state) {
-          if (state is SwiperNewsSuccess) {
-            Constants.makeToast('Swiper Received');
-          } else if (state is SwiperNewsLoading) {
-            Constants.makeToast('Swiper Loading');
-          } else if (state is SwiperNewsFailure) {
+          // if (state is SwiperNewsSuccess) {
+          //   Constants.makeToast('Swiper Received');
+          // } else if (state is SwiperNewsLoading) {
+          //   Constants.makeToast('Swiper Loading');
+          // } else
+          if (state is SwiperNewsFailure) {
             Constants.makeToast('Swiper Failure');
           }
         },
@@ -104,8 +106,26 @@ class SwiperSuccessState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 200,
+      padding: EdgeInsets.only(top: 8, left: 8, right: 8),
       width: MediaQuery.of(context).size.width,
-      child: InfiniteCarousel.builder(
+      child: M3Carousel(
+        visible: 3,
+        borderRadius: 20,
+        slideAnimationDuration: 500,
+        titleFadeAnimationDuration: 300,
+        childClick: (int index) {
+          Navigator.of(context)
+              .pushNamed('/details', arguments: norways[index]);
+        },
+        children:
+            norways.map((e) => {"image": e.image, "title": e.title}).toList(),
+      ),
+    );
+  }
+}
+
+/*
+* InfiniteCarousel.builder(
         itemCount: norways.length,
         itemExtent: 180,
         anchor: 0.1,
@@ -116,44 +136,66 @@ class SwiperSuccessState extends StatelessWidget {
         loop: true,
         itemBuilder: (context, itemIndex, realIndex) {
           return Container(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14))),
-              child: Column(
-                children: [
-                  Flexible(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: CachedNetworkImage(
-                        imageUrl: norways[itemIndex].image,
-                        placeholderFadeInDuration: Durations.medium3,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Theme.of(context).brightness == Brightness.dark?
+                      darkColorScheme.surface :
+                      lightColorScheme.surface
+                ]
+              )
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed('/details',
+                    arguments: norways[itemIndex]);
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(14))),
+                child: Stack(
+                  children: [
+                    Flexible(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: CachedNetworkImage(
+                            imageUrl: norways[itemIndex].image,
+                            placeholderFadeInDuration: Durations.medium3,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
+                            progressIndicatorBuilder: (context, url, progress) =>
+                                Container(
+                                  child: LinearProgressIndicator(
+                                    value: progress.progress,
+                                  ),
+                                ),
                           ),
-                        ),
-                        progressIndicatorBuilder: (context, url, progress) =>
-                            Container(
-                          child: LinearProgressIndicator(
-                            value: progress.progress,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) =>
-                            Image.asset('assets/images/head_logo.jpeg'),
+                        )
                       ),
                     ),
-                  ),
-                  Text(norways[itemIndex].title)
-                ],
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(norways[itemIndex].title),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
+      )
+*
+* */

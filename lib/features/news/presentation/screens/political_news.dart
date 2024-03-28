@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:norway_flutter_app/features/news/presentation/bloc/general/gener
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:norway_flutter_app/features/news/presentation/widgets/new_card_rcycle_item.dart';
 import 'package:norway_flutter_app/main.dart';
+import 'package:norway_flutter_app/translations/locale_keys.g.dart';
 import '../../data/models/norway_new.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 
@@ -45,79 +47,81 @@ class _PoliticalNewsState extends State<PoliticalNews> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'السياسية',
+          LocaleKeys.Political.tr(),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w800,
           ),
         ),
       ),
-      body: SizedBox(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ValueListenableBuilder(
-              valueListenable: connectivityController.isConnected,
-              builder: (context, value, child) {
-                if (value) {
-                  return Center();
-                } else {
-                  return SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          child: Container(
-                            color: Colors.grey.shade800,
-                            child: const Text(
-                              'No Internet Connection',
-                              textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              ValueListenableBuilder(
+                valueListenable: connectivityController.isConnected,
+                builder: (context, value, child) {
+                  if (value) {
+                    return Center();
+                  } else {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: Container(
+                              color: Colors.grey.shade800,
+                              child: const Text(
+                                'No Internet Connection',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
-            BlocConsumer<NewsBloc, NewsState>(
-              listener: (context, state) {
-                if (state is PoliticalNewsSuccess) {} else
-                if (state is PoliticalNewsFailure) {
-                  var snack = SnackBar(
-                    content: const Text('would you like to retry'),
-                    duration: Duration(hours: 1),
-                    action: SnackBarAction(
-                      onPressed: () {
-                        context
-                            .read<NewsBloc>()
-                            .add(GetPoliticalNorwayNewsList(url, norways));
-                      },
-                      label: "ok",
-                    ),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snack);
-                }
-              },
-              builder: (context, state) {
-                if (state is PoliticalNewsSuccess) {
-                  return PoliticalNewsSuccessView(url: url,);
-                } else {
-                  return PoliticalNewsLoadingView();
-                }
-              },
-            )
-          ],
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
+              BlocConsumer<NewsBloc, NewsState>(
+                listener: (context, state) {
+                  if (state is PoliticalNewsSuccess) {} else
+                  if (state is PoliticalNewsFailure) {
+                    var snack = SnackBar(
+                      content: const Text('would you like to retry'),
+                      duration: Duration(hours: 1),
+                      action: SnackBarAction(
+                        onPressed: () {
+                          context
+                              .read<NewsBloc>()
+                              .add(GetPoliticalNorwayNewsList(url, norways));
+                        },
+                        label: "ok",
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snack);
+                  }
+                },
+                builder: (context, state) {
+                  if (state is PoliticalNewsSuccess) {
+                    return PoliticalNewsSuccessView(url: url,);
+                  } else {
+                    return PoliticalNewsLoadingView();
+                  }
+                },
+              )
+            ],
+          ),
         ),
       )
 

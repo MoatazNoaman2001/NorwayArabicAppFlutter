@@ -34,9 +34,8 @@ class _PlatformScreenState extends State<PlatformScreen> {
       body: BlocConsumer<PlatformBloc, PlatformState>(
         listener: (context, state) {
           if (state is PlatformSuccess){
-            Constants.makeToast('success');
-          }else{
-            Constants.makeToast('${state.toString()}');
+          }else if (state is PlatformFailure){
+            Constants.makeToast('Failed Loading Platforms');
           }
         },
         builder: (context, state) {
@@ -108,15 +107,15 @@ class PlatFormSuccessView extends StatelessWidget {
       child: GridView.count(
         crossAxisCount: 2,
         children: platforms.map((e) {
-          Widget image = Image.asset('assets/images/email.png', height: 100, width: 100,);
+          Widget image = Image.asset('assets/images/email.png', height: 90, width: 90,);
           switch(e.right){
-            case "Facebook" : image = Image.asset('assets/images/facebook.png', height: 100, width: 100,);
-            case "Twitter" :image = Image.asset('assets/images/twitter.png', height: 100, width: 100,);
-            case "Youtube" : image =Image.asset('assets/images/youtube.png', height: 100, width: 100,);
-            case "Instagram" :image = Image.asset('assets/images/instagram.png', height: 100, width: 100,);
-            case "Soundcloud" :image = Image.asset('assets/images/sound_cloud.png', height: 100, width: 100,);
-            case "Flickr" : image =Image.asset('assets/images/flickr.png', height: 100, width: 100,);
-            case "Tiktok" :image = Image.asset('assets/images/tiktok.png', height: 100, width: 100,);
+            case "Facebook" : image = Image.asset('assets/images/facebook.png', height: 90, width: 90,);
+            case "Twitter" :image = Image.asset('assets/images/twitter.png', height: 90, width: 90,);
+            case "Youtube" : image =Image.asset('assets/images/youtube.png', height: 90, width: 90,);
+            case "Instagram" :image = Image.asset('assets/images/instagram.png', height: 90, width: 90,);
+            case "Soundcloud" :image = Image.asset('assets/images/sound_cloud.png', height: 90, width: 90,);
+            case "Flickr" : image =Image.asset('assets/images/flickr.png', height: 90, width: 90,);
+            case "Tiktok" :image = Image.asset('assets/images/tiktok.png', height: 90, width: 90,);
 
           }
 

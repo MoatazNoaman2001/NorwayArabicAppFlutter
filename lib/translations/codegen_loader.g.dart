@@ -20,7 +20,18 @@ class CodegenLoader extends AssetLoader{
   "onBoard": "تحقيقات",
   "NightMode": "وضع الليلي",
   "Play_In_Background": "تشغيل بالخلفية",
-  "Language": "اللغة"
+  "Language": "اللغة",
+  "News": "الاخبار",
+  "Political": "السياسية",
+  "Local": "المحلية",
+  "Sport": "الرياضية",
+  "Youtube": "يوتيوب",
+  "SnapChat": "سناب شات",
+  "Platforms": "منصاتنا",
+  "Settings": "الاعدادات",
+  "Streams": "الاذاعات",
+  "AudioStream": "البث الاذاعي",
+  "TvStream": "قناه النرويج بالعربية"
 };
 static const Map<String,dynamic> en = {
   "title": "Arabic Norway FM",
@@ -28,15 +39,37 @@ static const Map<String,dynamic> en = {
   "onBoard": "on board",
   "NightMode": "Night Mode",
   "Play_In_Background": "Play In Background",
-  "Language": "Language"
+  "Language": "Language",
+  "News": "News",
+  "Political": "Political",
+  "Local": "Local",
+  "Sport": "Sport",
+  "Youtube": "Youtube",
+  "SnapChat": "SnapChat",
+  "Platforms": "Platforms",
+  "Settings": "Settings",
+  "Streams": "Broadcasts",
+  "AudioStream": "Audio Stream",
+  "TvStream": "Norway Arabic Tv"
 };
 static const Map<String,dynamic> no = {
-  "title": "Arabic Norway FM",
+  "title": "Norway Arabic FM",
   "general": "generell",
   "onBoard": "om bord",
-  "NightMode": "Night Mode",
-  "Play_In_Background": "Play In Background",
-  "Language": "Language"
+  "NightMode": "Nattmodus",
+  "Play_In_Background": "Spill i bakgrunnen",
+  "Language": "Språk",
+  "News": "Nyheter",
+  "Political": "Politisk",
+  "Local": "Lokalt",
+  "Sport": "Sport",
+  "Youtube": "Youtube",
+  "SnapChat": "SnapChat",
+  "Platforms": "Platforms",
+  "Settings": "Innstillinger",
+  "Streams": "Sendinger",
+  "AudioStream": "Lydstrøm",
+  "TvStream": "Norge Arabisk TV"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "en": en, "no": no};
 }

@@ -106,24 +106,27 @@ class DetailsLoadingScreen extends StatelessWidget {
         elevation: 4,
         child: Column(
           children: [
-            CachedNetworkImage(
-              height: 240,
-              imageUrl: norwayNew.image,
-              placeholderFadeInDuration: Durations.medium3,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(14), topLeft: Radius.circular(14)),
+              child: CachedNetworkImage(
+                height: 240,
+                imageUrl: norwayNew.image,
+                placeholderFadeInDuration: Durations.medium3,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                    child: CircularProgressIndicator(
+                  value: progress.progress,
+                )),
+                errorWidget: (context, url, error) =>
+                    Image.asset('assets/images/head_logo.jpeg'),
               ),
-              progressIndicatorBuilder: (context, url, progress) => Center(
-                  child: CircularProgressIndicator(
-                value: progress.progress,
-              )),
-              errorWidget: (context, url, error) =>
-                  Image.asset('assets/images/head_logo.jpeg'),
             ),
             SizedBox(
               height: 12,
@@ -132,37 +135,15 @@ class DetailsLoadingScreen extends StatelessWidget {
               padding: EdgeInsets.only(right: 8, left: 8),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        ' | ${norwayNew.readDuration}',
-                        style: GoogleFonts.rubik().copyWith(fontSize: 14),
+                  Shimmer.fromColors(
+                      child: Container(
+                        width: double.infinity,
+                        height: 60,
+                        padding: EdgeInsets.only(right: 8, left: 8),
+                        child: Card(),
                       ),
-                      Icon(Icons.timer_outlined),
-                      Text(
-                        '| نشر في ${norwayNew.date}',
-                        style: GoogleFonts.rubik().copyWith(fontSize: 14),
-                      ),
-                      Icon(Icons.calendar_month_outlined),
-
-                      // Text('المشاهدات ${norwayNew.votes}'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'by ${norwayNew.publisher}',
-                        style: GoogleFonts.rubik().copyWith(fontSize: 14),
-                      ),
-                      Icon(Icons.person_2_outlined),
-                      Text(
-                        ' | ${norwayNew.votes}',
-                        style: GoogleFonts.rubik().copyWith(fontSize: 14),
-                      ),
-                    ],
-                  ),
+                      baseColor: Colors.transparent,
+                      highlightColor: Colors.white24),
                   SizedBox(
                     height: 10,
                   ),
@@ -213,24 +194,27 @@ class DetailsSuccessView extends StatelessWidget {
           elevation: 4,
           child: Column(
             children: [
-              CachedNetworkImage(
-                height: 240,
-                imageUrl: norwayNew.image,
-                placeholderFadeInDuration: Durations.medium3,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
+              ClipRRect(
+                borderRadius: BorderRadius.only(topRight: Radius.circular(14), topLeft: Radius.circular(14)),
+                child: CachedNetworkImage(
+                  height: 240,
+                  imageUrl: norwayNew.image,
+                  placeholderFadeInDuration: Durations.medium3,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
+                  progressIndicatorBuilder: (context, url, progress) => Center(
+                      child: CircularProgressIndicator(
+                    value: progress.progress,
+                  )),
+                  errorWidget: (context, url, error) =>
+                      Image.asset('assets/images/head_logo.jpeg'),
                 ),
-                progressIndicatorBuilder: (context, url, progress) => Center(
-                    child: CircularProgressIndicator(
-                  value: progress.progress,
-                )),
-                errorWidget: (context, url, error) =>
-                    Image.asset('assets/images/head_logo.jpeg'),
               ),
               SizedBox(
                 height: 12,

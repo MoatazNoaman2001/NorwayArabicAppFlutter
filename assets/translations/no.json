@@ -1,8 +1,19 @@
 {
-  "title": "Arabic Norway FM",
+  "title": "Norway Arabic FM",
   "general": "generell",
   "onBoard": "om bord",
-  "NightMode" : "Night Mode",
-  "Play_In_Background" : "Play In Background",
-  "Language": "Language"
+  "NightMode" : "Nattmodus",
+  "Play_In_Background" : "Spill i bakgrunnen",
+  "Language": "Språk",
+  "News": "Nyheter",
+  "Political" : "Politisk",
+  "Local": "Lokalt",
+  "Sport"  : "Sport",
+  "Youtube": "Youtube",
+  "SnapChat" : "SnapChat",
+  "Platforms" : "Platforms",
+  "Settings" : "Innstillinger",
+  "Streams" : "Sendinger",
+  "AudioStream" : "Lydstrøm",
+  "TvStream" : "Norge Arabisk TV"
 }

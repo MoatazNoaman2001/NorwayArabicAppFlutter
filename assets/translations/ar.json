@@ -4,5 +4,16 @@
   "onBoard": "تحقيقات",
   "NightMode" : "وضع الليلي",
   "Play_In_Background" : "تشغيل بالخلفية",
-  "Language": "اللغة"
+  "Language": "اللغة",
+  "News": "الاخبار",
+  "Political" : "السياسية",
+  "Local": "المحلية",
+  "Sport"  : "الرياضية",
+  "Youtube": "يوتيوب",
+  "SnapChat" : "سناب شات",
+  "Platforms" : "منصاتنا",
+  "Settings" : "الاعدادات",
+  "Streams" : "الاذاعات",
+  "AudioStream" : "البث الاذاعي" ,
+  "TvStream" : "قناه النرويج بالعربية"
 }

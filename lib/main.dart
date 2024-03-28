@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
@@ -41,13 +41,12 @@ import 'package:data_store/data_store_repository.dart';
 import 'core/theme/color_schemes.g.dart';
 import 'features/app_controller/presentation/screens/init_app.dart';
 import 'features/app_controller/presentation/screens/select_language.dart';
-import 'features/news/data/models/norway_new.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'features/news/domain/usecases/platforms_usecase.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
+import 'core/streams/audio_hadler.dart';
 
-
+// MyAudioHandler audioHandler = MyAudioHandler();
 void main() async {
   // HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,7 +111,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
-    context.read<ControllerBloc>().add(LanguageGet());
   }
 
   @override
@@ -120,7 +118,6 @@ class _MyAppState extends State<MyApp> {
     return BlocConsumer<ControllerBloc, ControllerState>(
       listener: (context, state) {
         if (state is ThemeGetSuccess) {
-          Constants.makeToast(state.theme);
           setState(() {
             if (state.theme != "0") {
               _themeMode = ThemeMode.dark;
@@ -140,27 +137,12 @@ class _MyAppState extends State<MyApp> {
         }
       },
       builder: (context, state) {
-        return BlocConsumer<ControllerBloc, ControllerState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            var bloc = BlocProvider.of<ControllerBloc>(context);
-            if (state is LangGetSuccess || state is LangSetSuccess)
-              return EasyLocalization(
-                  supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
-                  path: 'assets/translations',
-                  assetLoader: CodegenLoader(),
-                  fallbackLocale: bloc.lang.isNotEmpty ? Locale(bloc.lang) : Locale('en'),
-                  child: MyAppMainEntry(thememode: _themeMode,));
-            else {
-              return EasyLocalization(
-                  supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
-                  path: 'assets/translations',
-                  assetLoader: CodegenLoader(),
-                  fallbackLocale: Locale('en'),
-                  child: MyAppMainEntry(thememode: _themeMode,));
-            }
-          },
-        );
+        return EasyLocalization(
+            supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
+            path: 'assets/translations',
+            assetLoader: CodegenLoader(),
+            fallbackLocale: state is LangGetSuccess? Locale(state.lang)  :Locale('en'),
+            child: MyAppMainEntry(thememode: _themeMode,));
       },
     );
   }
@@ -243,16 +225,16 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedPageIndex = value;
           });
         },
-        destinations: const <NavigationDestination>[
+        destinations: <NavigationDestination>[
           NavigationDestination(
             selectedIcon: Icon(Icons.home_filled),
             icon: Icon(Icons.home_outlined),
-            label: 'منوعات',
+            label: LocaleKeys.general.tr(),
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.article_rounded),
             icon: Icon(Icons.article_outlined),
-            label: "تحقيقات",
+            label: LocaleKeys.onBoard.tr(),
           )
         ],
       ),
@@ -279,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
               break;
             case 3:
               _launchUrl(Uri.parse(
-                  "https://www.youtube.com/watch?v=xGuKRoqcDqo&list=PLehaaLsoPPRgt7ryrzWthomamIaun121_"));
+                  "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
               break;
             case 4:
               _launchUrl(Uri.parse("https://soundcloud.com/norwayvoice"));
@@ -296,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ListTile(
             dense: true,
             title: Text(
-              "الاخبار",
+              LocaleKeys.News.tr(),
               style: TextStyle(
                   fontSize: 14,
                   color: Colors.white,
@@ -306,20 +288,20 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationDrawerDestination(
               icon: Icon(Icons.handshake_outlined),
               selectedIcon: Icon(Icons.handshake),
-              label: Text('سياسية')),
+              label: Text(LocaleKeys.Political.tr())),
           NavigationDrawerDestination(
               icon: Icon(Icons.newspaper_outlined),
               selectedIcon: Icon(Icons.newspaper),
-              label: Text('محلية')),
+              label: Text(LocaleKeys.Local.tr())),
           NavigationDrawerDestination(
               icon: Icon(Icons.sports_football_outlined),
               selectedIcon: Icon(Icons.sports_football),
-              label: Text('رياضية')),
+              label: Text(LocaleKeys.Sport.tr())),
           Divider(),
           ListTile(
             dense: true,
             title: Text(
-              "منصاتنا",
+              LocaleKeys.Platforms.tr(),
               style: TextStyle(
                   fontSize: 14,
                   color: Colors.white,
@@ -333,7 +315,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 24,
                 color: Colors.grey,
               ),
-              label: Text('يوتيوب')),
+              label: Text(LocaleKeys.Youtube.tr())),
           NavigationDrawerDestination(
               icon: Image.asset(
                 'assets/images/snapchat.png',
@@ -341,7 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 24,
                 color: Colors.grey,
               ),
-              label: Text('سناب شات')),
+              label: Text(LocaleKeys.SnapChat.tr())),
           NavigationDrawerDestination(
               icon: Image.asset(
                 'assets/images/cross-platform.png',
@@ -349,7 +331,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 24,
                 color: Colors.grey,
               ),
-              label: Text('باقي المنصات')),
+              label: Text(LocaleKeys.Platforms.tr())),
           Divider(),
           SizedBox(
             height: 270,
@@ -357,7 +339,7 @@ class _MyHomePageState extends State<MyHomePage> {
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),
               selectedIcon: Icon(Icons.settings),
-              label: Text('الاعدادات')),
+              label: Text(LocaleKeys.Settings.tr())),
         ],
       ),
       body: screens[selectedPageIndex],

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/local_news.dart';
 import 'package:norway_flutter_app/features/news/presentation/widgets/new_card_rcycle_item.dart';
 import 'package:norway_flutter_app/main.dart';
+import '../../../../translations/locale_keys.g.dart';
 import '../../data/models/norway_new.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 
@@ -46,82 +48,85 @@ class _SportNewsState extends State<SportNews> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'الرياضية',
+            LocaleKeys.Sport.tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w800,
             ),
           ),
         ),
-        body: ValueListenableBuilder(
-          valueListenable: connectivityController.isConnected,
-          builder: (context, value, child) {
-            if (value) {
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    BlocConsumer<NewsBloc, NewsState>(
-                      listener: (context, state) {
-                        if (state is SportNewsSuccess) {
-                        } else if (state is SportNewsFailure) {
-                          var snack = SnackBar(
-                            content: const Text('would you like to retry'),
-                            duration: Duration(hours: 1),
-                            action: SnackBarAction(
-                              onPressed: () {
-                                context
-                                    .read<NewsBloc>()
-                                    .add(GetPoliticalNorwayNewsList(url, norways));
-                              },
-                              label: "ok",
+        body: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              ValueListenableBuilder(
+                valueListenable: connectivityController.isConnected,
+                builder: (context, value, child) {
+                  if (value) {
+                    return SizedBox.shrink();
+                  } else {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Container(
+                              color: Colors.grey.shade800,
+                              child: const Text(
+                                'No Internet Connection',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snack);
-
-                          Constants.makeToast(
-                              'could not get list ${state.msg}');
-                        }
-                      },
-                      builder: (context, state) {
-                        var bloc = BlocProvider.of<NewsBloc>(context);
-                        if (state is SportNewsLoading && bloc.sport_norways.isEmpty) {
-                          return SportNewLoadingView();
-                        } else if (state is SportNewsSuccess
-                         || (state is SportNewsLoading && bloc.sport_norways.isNotEmpty)) {
-                          return SportNewSuccessView(url: url);
-                        } else if (state is SportNewsFailure) {
-                          return SportNewLoadingView();
-                        } else {
-                          return SportNewLoadingView();
-                        }
-                      },
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        color: Colors.grey.shade800,
-                        child: const Text(
-                          'No Internet Connection',
-                          textAlign: TextAlign.center,
-                        ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              );
-            }
-          },
-        ));
+                    );
+                  }
+                },
+              ),
+              BlocConsumer<NewsBloc, NewsState>(
+                listener: (context, state) {
+                  if (state is SportNewsSuccess) {
+                  } else if (state is SportNewsFailure) {
+                    var snack = SnackBar(
+                      content: const Text('would you like to retry'),
+                      duration: Duration(hours: 1),
+                      action: SnackBarAction(
+                        onPressed: () {
+                          context
+                              .read<NewsBloc>()
+                              .add(GetPoliticalNorwayNewsList(url, norways));
+                        },
+                        label: "ok",
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snack);
+
+                    Constants.makeToast(
+                        'could not get list ${state.msg}');
+                  }
+                },
+                builder: (context, state) {
+                  var bloc = BlocProvider.of<NewsBloc>(context);
+                  if (state is SportNewsLoading && bloc.sport_norways.isEmpty) {
+                    return SportNewLoadingView();
+                  } else if (state is SportNewsSuccess
+                      || (state is SportNewsLoading && bloc.sport_norways.isNotEmpty)) {
+                    return SportNewSuccessView(url: url);
+                  } else if (state is SportNewsFailure) {
+                    return SportNewLoadingView();
+                  } else {
+                    return SportNewLoadingView();
+                  }
+                },
+              )
+            ],
+          ),
+        )
+    );
   }
 }
 
@@ -170,7 +175,7 @@ class SportNewSuccessView extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height -
-          (MediaQuery.of(context).size.height * 0.205),
+          (MediaQuery.of(context).size.height * 0.15),
       child: Column(
         children: [
           // ListView(),

@@ -32,7 +32,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('الاعدادات'),
+        title: Text(LocaleKeys.Settings.tr(context: context)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -103,8 +103,22 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                 ),
                 BlocConsumer<ControllerBloc, ControllerState>(
-                  listener: (context, state) {
-
+                  listener: (context, state) async {
+                    if (state is LangGetSuccess) {
+                      Constants.makeToast('lang is ${state.lang}');
+                      setState(() {
+                        lang = state.lang;
+                      });
+                    } else if (state is LangSetSuccess) {
+                      var bloc = BlocProvider.of<ControllerBloc>(context);
+                      await context.setLocale(Locale(bloc.lang));
+                      Constants.makeToast('locale: ${EasyLocalization.of(context)?.locale}');
+                      final engine = WidgetsFlutterBinding.ensureInitialized();
+                      await engine.performReassemble();
+                      await EasyLocalization.ensureInitialized();
+                    } else if (state is LangFailure) {
+                      Constants.makeToast("Failed !: ${state.msg}");
+                    }
                   },
                   builder: (context, state) {
                     return Padding(
@@ -112,26 +126,33 @@ class _SettingScreenState extends State<SettingScreen> {
                             right: 22, left: 22, top: 10, bottom: 10),
                         child: DropdownMenu<String>(
                           dropdownMenuEntries: [
-                            DropdownMenuEntry<String>(value: 'ar', label: 'العربية'),
-                            DropdownMenuEntry<String>(value: 'en', label: 'English'),
-                            DropdownMenuEntry<String>(value: 'no', label: 'Nersik')
+                            DropdownMenuEntry<String>(
+                                value: 'ar', label: 'العربية'),
+                            DropdownMenuEntry<String>(
+                                value: 'en', label: 'English'),
+                            DropdownMenuEntry<String>(
+                                value: 'no', label: 'Nersik')
                           ],
-                          width: MediaQuery.of(context).size.width
-                           - MediaQuery.of(context).size.width * 0.19,
-                          label: Text(LocaleKeys.Language.tr() , style: GoogleFonts.rubik(),),
+                          width: MediaQuery.of(context).size.width -
+                              MediaQuery.of(context).size.width * 0.19,
+                          label: Text(
+                            LocaleKeys.Language.tr(),
+                            style: GoogleFonts.rubik(),
+                          ),
                           initialSelection: lang,
                           inputDecorationTheme: InputDecorationTheme(
                             hintFadeDuration: Durations.extralong4,
                             hintStyle: GoogleFonts.rubik(),
                             labelStyle: GoogleFonts.rubik(),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14)),
                             filled: true,
                           ),
                           onSelected: (value) {
-                            context.read<ControllerBloc>().add(
-                              LanguageChange(value!)
-                            );
-                            context.setLocale(Locale(value));
+                            // Constants.makeToast('value is $value');
+                            context
+                                .read<ControllerBloc>()
+                                .add(LanguageChange(value!));
                           },
                         ));
                   },
@@ -144,5 +165,3 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 }
-
-
