@@ -29,8 +29,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
   void dispose() {
     super.dispose();
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp
-      ,
+      DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
   }
@@ -43,7 +42,6 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(LocaleKeys.TvStream.tr()),
         centerTitle: true,
@@ -63,31 +61,47 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
                 if (state.link.contains('channel')) {
                   return Text('Youtube streams seems to be off');
                 } else{
-                  SystemChrome.setPreferredOrientations([
-                    DeviceOrientation.landscapeRight,
-                    DeviceOrientation.landscapeLeft,
-                  ]);
+                  // SystemChrome.setPreferredOrientations([
+                  //   DeviceOrientation.landscapeRight,
+                  //   DeviceOrientation.landscapeLeft,
+                  // ]);
                   YoutubePlayerController controller = YoutubePlayerController(
-                      initialVideoId: YoutubePlayer.convertUrlToId(state.link)!, flags: YoutubePlayerFlags(isLive: true));
-                  return YoutubePlayerBuilder(
-                    player: YoutubePlayer(
-                      liveUIColor: Colors.amber,
-                      controller: controller,
-                      onReady: () {
-                        controller.addListener(() {});
-                      },
-                    ),
-                    builder: (context, player) {
-                      return Column(
-                        children: [player],
-                      );
-                    },
+                      initialVideoId: YoutubePlayer.convertUrlToId(state.link)!,
+                      flags: YoutubePlayerFlags(isLive: true)
+                  );
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+
+                        padding: const EdgeInsets.only(bottom: 150),
+                        child: YoutubePlayerBuilder(
+                          player: YoutubePlayer(
+                            liveUIColor: Colors.amber,
+                            controller: controller,
+                            bottomActions: [
+                              CurrentPosition(),
+                              ProgressBar(isExpanded: true,),
+                            ],
+                            onReady: () {
+                              controller.addListener(() {});
+                            },
+                          ),
+                          builder: (context, player) {
+                            return Column(
+                              children: [player],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 }
               } else if (state is YoutubeStreamFailure){
                 return Text('failure : ${state.msg}');
               } else {
-                return Center();
+                return SizedBox.shrink();
               }
             },
           ),

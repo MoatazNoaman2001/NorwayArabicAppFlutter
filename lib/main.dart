@@ -159,8 +159,7 @@ class MyAppMainEntry extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-      darkTheme:
-      ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       themeMode: thememode,
       initialRoute: '/',
       routes: {

@@ -268,6 +268,7 @@ class DetailsSuccessView extends StatelessWidget {
                       padding: EdgeInsets.only(right: 8, left: 8),
                       height: 600,
                       child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemCount: norwayNew.articleContent.length,
                         padding: EdgeInsets.only(right: 8, left: 8),
                         itemBuilder: (context, index) {
