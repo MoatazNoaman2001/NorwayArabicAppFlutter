@@ -15,5 +15,7 @@
   "Settings" : "Innstillinger",
   "Streams" : "Sendinger",
   "AudioStream" : "Lydstrøm",
-  "TvStream" : "Norge Arabisk TV"
+  "TvStream" : "Norge Arabisk TV",
+  "StreamIsOff" : "Nåværende sending av arabisk Norge er AV NÅ"
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/main.dart';
 import 'package:video_player/video_player.dart';
@@ -31,11 +32,7 @@ class _InitiateAppState extends State<InitiateApp> {
               // Navigator.of(context).popAndPushNamed('/select_language');
             } else if (state is LangFailure) {
               print(state.msg);
-              Fluttertoast.showToast(
-                  msg: 'failed to get',
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1);
+              Constants.makeToast('failed load language');
             }
           },
           builder: (context, state) {
@@ -61,26 +58,21 @@ class _InitiateAppState extends State<InitiateApp> {
 
   @override
   void initState() {
+    super.initState();
     _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')
       ..initialize().then((_) {
-        setState(() {
-          // _controller.value.isPlaying
-          //     ? _controller.play()
-          //     : _controller.pause();
-        });
       });
 
     _controller.play();
     _controller.addListener(() {
-      inspicteVideo();
+      inspectVideo();
     });
   }
 
-  void inspicteVideo() {
+  void inspectVideo() {
     setState(() {
       if (_controller.value.isCompleted) {
         context.read<ControllerBloc>().add(LanguageGet());
-        // Navigator.of(context).popAndPushNamed('/select_language');
       }
     });
   }

@@ -15,5 +15,6 @@
   "Settings" : "Settings",
   "Streams" : "Broadcasts",
   "AudioStream" : "Audio Stream",
-  "TvStream" : "Norway Arabic Tv"
+  "TvStream" : "Norway Arabic Tv",
+  "StreamIsOff" : "Current Arabic Norway BroadCast Is OFF Now"
 }

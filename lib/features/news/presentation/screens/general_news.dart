@@ -257,8 +257,8 @@ class GeneralNewsLoading extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(15))),
                     ),
                   ),
-                  baseColor: Colors.white12,
-                  highlightColor: Colors.white24);
+                  baseColor: Colors.transparent,
+                  highlightColor: Colors.white12);
             },
           ))
         ]),
