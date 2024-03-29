@@ -14,12 +14,9 @@ class PlatformBloc extends Bloc<PlatformEvent, PlatformState> {
   PlatformBloc({required this.platformListUseCase}) : super(PlatformInitial()) {
     on<GetPlatFromList>((event, emit) async{
       emit(PlatformLoading());
-      Constants.makeToast('fetching');
       var res = await platformListUseCase();
-      Constants.makeToast('fetched');
       return res.fold((l) => emit(PlatformFailure(l.msg)), (r) {
         platforms = r;
-        Constants.makeToast('data : ${r.join()}');
         emit(PlatformSuccess());
       });
     },);

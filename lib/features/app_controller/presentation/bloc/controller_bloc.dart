@@ -47,16 +47,18 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
     on<ThemeChange>((event, emit) async {
       theme = event.theme == "0" ? false : true;
       final res = await changeThemeUseCase(event.theme);
-      return res.fold(
-          (l) => emit(ThemeFailure(l)), (r) => emit(ThemeSetSuccess(r)));
+      return res.fold((l) => emit(ThemeFailure(l)), (isChanged) {
+        if (isChanged) emit(ThemeSetSuccess(theme));
+        else emit(ThemeFailure('can not change theme'));
+      });
     });
 
     on<ThemeGet>(
       (event, emit) async {
-        final res = await getLanguageUseCase();
+        final res = await getThemeUseCase();
         return res.fold((l) => emit(ThemeFailure(l)), (r) {
           theme = r == "0" ? false : true;
-          emit(ThemeGetSuccess(r));
+          emit(ThemeGetSuccess(theme));
         });
       },
     );

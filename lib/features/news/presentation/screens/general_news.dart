@@ -33,7 +33,6 @@ class _GeneralNewsState extends State<GeneralNews> {
       ConnectivityController();
   List<NorwayNew> norways = [];
 
-
   @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<NewsBloc>(context);
@@ -84,6 +83,21 @@ class _GeneralNewsState extends State<GeneralNews> {
                   }
                 },
               ),
+              BlocConsumer<NewsBloc, NewsState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is SwiperNewsLoading || state is GeneralNewsLoading)
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: LinearProgressIndicator(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        minHeight: 8,
+                      ),
+                    );
+                  else
+                    return SizedBox.shrink();
+                },
+              ),
               SwiperWid(),
               SizedBox(
                 height: 10,
@@ -116,7 +130,7 @@ class _GeneralNewsState extends State<GeneralNews> {
                   } else if (state is GeneralNewsSuccess ||
                       (state is GeneralNewsLoading &&
                           bloc.general_norways.isNotEmpty)) {
-                    if (isTV){
+                    if (isTV) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height -
@@ -124,54 +138,58 @@ class _GeneralNewsState extends State<GeneralNews> {
                         child: Column(
                           children: [
                             Expanded(
-                                child:GridView.builder(
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount( crossAxisCount: 3),
-                                    itemCount: bloc.general_norways.length,
-                                    padding: EdgeInsets.only(right: 8 , left: 8),
-                                    itemBuilder: (context, index) {
-                                      return NewsCardRecycleItem(
-                                        norwayNew: bloc.general_norways.toList()[index],
-                                        callback: () {
-                                          makeToast('clicked');
-                                          Navigator.of(context).pushNamed('/details',
-                                              arguments: bloc.general_norways.toList()[index]);
-                                        },
-                                      );
-                                    },
-                                )
-
-                            )
+                                child: GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3),
+                              itemCount: bloc.general_norways.length,
+                              padding: EdgeInsets.only(right: 8, left: 8),
+                              itemBuilder: (context, index) {
+                                return NewsCardRecycleItem(
+                                  norwayNew:
+                                      bloc.general_norways.toList()[index],
+                                  callback: () {
+                                    makeToast('clicked');
+                                    Navigator.of(context).pushNamed('/details',
+                                        arguments: bloc.general_norways
+                                            .toList()[index]);
+                                  },
+                                );
+                              },
+                            ))
                           ],
                         ),
                       );
-                    }else
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height -
-                          (MediaQuery.of(context).size.height * 0.205),
-                      child: Column(
-                        children: [
-                          Expanded(
-                              child: ListView.builder(
-                            controller: controller,
-                            primary: false,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(right: 4, left: 4),
-                            itemCount: bloc.general_norways.length,
-                            itemBuilder: (context, index) {
-                              return NewsCardRecycleItem(
-                                norwayNew: bloc.general_norways.toList()[index],
-                                callback: () {
-                                  makeToast('clicked');
-                                  Navigator.of(context).pushNamed('/details',
-                                      arguments: bloc.general_norways.toList()[index]);
-                                },
-                              );
-                            },
-                          ))
-                        ],
-                      ),
-                    );
+                    } else
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height -
+                            (MediaQuery.of(context).size.height * 0.205),
+                        child: Column(
+                          children: [
+                            Expanded(
+                                child: ListView.builder(
+                              controller: controller,
+                              primary: false,
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.only(right: 4, left: 4),
+                              itemCount: bloc.general_norways.length,
+                              itemBuilder: (context, index) {
+                                return NewsCardRecycleItem(
+                                  norwayNew:
+                                      bloc.general_norways.toList()[index],
+                                  callback: () {
+                                    makeToast('clicked');
+                                    Navigator.of(context).pushNamed('/details',
+                                        arguments: bloc.general_norways
+                                            .toList()[index]);
+                                  },
+                                );
+                              },
+                            ))
+                          ],
+                        ),
+                      );
                   } else {
                     if (bloc.general_norways.isNotEmpty) {
                       return Container(
@@ -187,10 +205,12 @@ class _GeneralNewsState extends State<GeneralNews> {
                               itemCount: bloc.general_norways.length,
                               itemBuilder: (context, index) {
                                 return NewsCardRecycleItem(
-                                  norwayNew: bloc.general_norways.toList()[index],
+                                  norwayNew:
+                                      bloc.general_norways.toList()[index],
                                   callback: () {
                                     Navigator.of(context).pushNamed('/details',
-                                        arguments: bloc.general_norways.toList()[index]);
+                                        arguments: bloc.general_norways
+                                            .toList()[index]);
                                   },
                                 );
                               },
@@ -237,10 +257,6 @@ class GeneralNewsLoading extends StatelessWidget {
         height: MediaQuery.of(context).size.height -
             (MediaQuery.of(context).size.height * 0.2045),
         child: Column(children: [
-          LinearProgressIndicator(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            minHeight: 8,
-          ),
           Expanded(
               child: ListView.builder(
             padding: EdgeInsets.only(right: 4, left: 4),

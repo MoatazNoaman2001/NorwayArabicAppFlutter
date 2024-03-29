@@ -23,13 +23,13 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     super.initState();
-
     context.read<ControllerBloc>().add(ThemeGet());
     context.read<ControllerBloc>().add(LanguageGet());
   }
 
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<ControllerBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(LocaleKeys.Settings.tr(context: context)),
@@ -44,18 +44,17 @@ class _SettingScreenState extends State<SettingScreen> {
               children: [
                 BlocConsumer<ControllerBloc, ControllerState>(
                   listener: (context, state) {
-                    var bloc = BlocProvider.of<ControllerBloc>(context);
+                    print('event tracked');
                     // Constants.makeToast(bloc.theme.toString());
                     if (state is ThemeGetSuccess) {
-                      Constants.makeToast(state.theme);
+                      Constants.makeToast('theme :' + (state.theme? "dark" : "light"));
                     } else if (state is ThemeSetSuccess) {
-                      Constants.makeToast('theme is set successfully');
+                      Constants.makeToast('theme is set successfully : ${state.state}');
                     } else if (state is ThemeFailure) {
                       Constants.makeToast('failed');
                     }
                   },
                   builder: (context, state) {
-                    var bloc = BlocProvider.of<ControllerBloc>(context);
                     return Container(
                       padding: EdgeInsets.only(right: 22, left: 22, top: 8),
                       child: Row(
@@ -81,7 +80,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 BlocConsumer<ControllerBloc, ControllerState>(
                   listener: (context, state) {},
                   builder: (context, state) {
-                    var bloc = BlocProvider.of<ControllerBloc>(context);
                     return Padding(
                       padding: const EdgeInsets.only(
                           right: 22, left: 22, top: 10, bottom: 10),
@@ -105,14 +103,11 @@ class _SettingScreenState extends State<SettingScreen> {
                 BlocConsumer<ControllerBloc, ControllerState>(
                   listener: (context, state) async {
                     if (state is LangGetSuccess) {
-                      Constants.makeToast('lang is ${state.lang}');
                       setState(() {
                         lang = state.lang;
                       });
                     } else if (state is LangSetSuccess) {
-                      var bloc = BlocProvider.of<ControllerBloc>(context);
                       await context.setLocale(Locale(bloc.lang));
-                      Constants.makeToast('locale: ${EasyLocalization.of(context)?.locale}');
                       final engine = WidgetsFlutterBinding.ensureInitialized();
                       await engine.performReassemble();
                       await EasyLocalization.ensureInitialized();
@@ -153,6 +148,7 @@ class _SettingScreenState extends State<SettingScreen> {
                             context
                                 .read<ControllerBloc>()
                                 .add(LanguageChange(value!));
+                            // widget.engine.
                           },
                         ));
                   },

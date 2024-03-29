@@ -53,7 +53,9 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
       });
     });
 
-    radioPlayer.metadataStream.listen((event) {});
+    radioPlayer.metadataStream.listen((event) {
+      print('event : ' + event.join());
+    });
   }
 
   @override
@@ -97,7 +99,13 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
                         if (isPlaying) {
                           radioPlayer.stop();
                         } else {
-                          radioPlayer.play();
+                          try {
+                            radioPlayer.play();
+                          }catch(e){
+                            setState(() {
+                              streamisOff = true;
+                            });
+                          }
                         }
                       },
                       child: isPlaying

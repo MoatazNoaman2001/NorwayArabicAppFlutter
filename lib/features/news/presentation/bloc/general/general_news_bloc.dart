@@ -23,9 +23,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   NewsBloc({required this.getNewsListUseCase, required this.getSwiperNewsListUseCase}) : super(NewsInitial()) {
     on<GetSwiperNorwayNewsList>((event, emit) async{
       emit(SwiperNewsLoading());
-      Constants.makeToast('try to Fetch data');
       var res = await getSwiperNewsListUseCase();
-      Constants.makeToast('data fetched');
       return res.fold((l) => emit(SwiperNewsFailure(l.msg)), (r) {
         swiperList = r.toSet();
         return emit(SwiperNewsSuccess(r));

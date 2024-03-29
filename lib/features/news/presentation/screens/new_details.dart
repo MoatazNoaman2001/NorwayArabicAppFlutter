@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,6 +11,8 @@ import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/news/data/models/norway_new.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/details/details_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../../translations/locale_keys.g.dart';
 
 class NewDetails extends StatefulWidget {
   const NewDetails({super.key});
@@ -44,13 +47,13 @@ class _NewDetailsState extends State<NewDetails> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('تفاصيل'),
+        title: Text(LocaleKeys.Details.tr()),
         centerTitle: true,
       ),
       body: BlocConsumer<DetailsBloc, DetailsState>(
         listener: (context, state) {
           if (state is DetailsSuccess) {
-            Constants.makeToast('details received');
+
           } else if (state is DetailsFailure) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('error loading data'),

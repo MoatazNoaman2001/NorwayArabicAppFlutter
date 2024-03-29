@@ -27,7 +27,7 @@ final class ThemeSetSuccess extends ControllerState {
   ThemeSetSuccess(this.state);
 }
 final class ThemeGetSuccess extends ControllerState{
-  final String theme;
+  final bool theme;
 
   ThemeGetSuccess(this.theme);
 }

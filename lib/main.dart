@@ -49,7 +49,7 @@ import 'core/streams/audio_hadler.dart';
 // MyAudioHandler audioHandler = MyAudioHandler();
 void main() async {
   // HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
+  final engine = WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   runApp(MultiBlocProvider(
     providers: [
@@ -117,20 +117,21 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return BlocConsumer<ControllerBloc, ControllerState>(
       listener: (context, state) {
+        var bloc = BlocProvider.of<ControllerBloc>(context);
         if (state is ThemeGetSuccess) {
+        print('main theme : '+(bloc.theme? "dark" : "light"));
           setState(() {
-            if (state.theme != "0") {
+            if (bloc.theme){
               _themeMode = ThemeMode.dark;
-            } else {
+            }else {
               _themeMode = ThemeMode.light;
             }
           });
         } else if (state is ThemeSetSuccess) {
           setState(() {
-            var bloc = BlocProvider.of<ControllerBloc>(context);
             if (bloc.theme != false) {
               _themeMode = ThemeMode.dark;
-            } else {
+            } else if (bloc.theme != true) {
               _themeMode = ThemeMode.light;
             }
           });
@@ -165,13 +166,12 @@ class MyAppMainEntry extends StatelessWidget {
       routes: {
         '/': (context) => InitiateApp(),
         '/select_language': (context) => SelectLanguage(),
-        '/home': (context) =>
-        const MyHomePage(),
+        '/home': (context) => MyHomePage(),
         '/political': (context) =>
             PoliticalNews(url: Constants.newsUrls[2]),
         '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
         '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
-        '/details': (context) => const NewDetails(),
+        '/details': (context) => NewDetails(),
         '/platform': (context) => PlatformScreen(),
         '/setting': (context) => SettingScreen(),
         '/select_stream': (context) => SelectStreamType(),
@@ -280,8 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
               LocaleKeys.News.tr(),
               style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500),
+                  fontWeight: FontWeight.w800),
             ),
           ),
           NavigationDrawerDestination(
@@ -303,8 +302,7 @@ class _MyHomePageState extends State<MyHomePage> {
               LocaleKeys.Platforms.tr(),
               style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500),
+                  fontWeight: FontWeight.w800),
             ),
           ),
           NavigationDrawerDestination(
