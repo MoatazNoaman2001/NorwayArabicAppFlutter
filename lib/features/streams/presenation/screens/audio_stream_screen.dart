@@ -46,7 +46,7 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
     //   ]
     // );
 
-    audioParser.LiveStreamAvailable.whenComplete((){
+    audioParser.LiveStreamAvailable.whenComplete(() {
       setState(() {
         streamisOff = true;
       });
@@ -76,62 +76,72 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
       ),
       body: SingleChildScrollView(
         child: Center(
-              child: Card(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 25 , left:  25 , top: 30 , bottom:  30),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 18,
-                      ),
-                      Container(
-                        width: 250,
-                        height: 260,
-                        padding: EdgeInsets.only(
-                            top: 32, left: 28, right: 28, bottom: 28),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(14)),
-                            color: Colors.green.shade600,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('assets/images/nv1.png'))),
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      FloatingActionButton(
-                          onPressed: () {
-                            if (isPlaying) {
-                              radioPlayer.stop();
-                            } else {
-                              try {
-                                radioPlayer.play();
-                              }catch(e){
-                                setState(() {
-                                  streamisOff = true;
-                                });
-                              }
-                            }
-                          },
-                          child: isPlaying
-                              ? Icon(Icons.pause)
-                              : Icon(Icons.play_arrow)),
-                      SizedBox(height: 10,),
-                      if (streamisOff)
-                        Container(
-                          width: 250,
-                          height: 120,
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.green.shade100),
-                          child: Text(LocaleKeys.StreamIsOff.tr() , style: GoogleFonts.rubik(), textAlign: TextAlign.center,),
-                        )
-                    ],
+          child: Card(
+            child: Padding(
+              padding:
+                  EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 30),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 18,
                   ),
-                ),
+                  Container(
+                    width: 250,
+                    height: 260,
+                    padding: EdgeInsets.only(
+                        top: 32, left: 28, right: 28, bottom: 28),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                        color: Colors.green.shade600,
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/images/nv1.png'))),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  FloatingActionButton(
+                      onPressed: () {
+                        if (isPlaying) {
+                          radioPlayer.stop();
+                        } else {
+                          try {
+                            radioPlayer.play();
+                          } catch (e) {
+                            setState(() {
+                              streamisOff = true;
+                            });
+                          }
+                        }
+                      },
+                      child: isPlaying
+                          ? Icon(Icons.pause)
+                          : Icon(Icons.play_arrow)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if (streamisOff)
+                    Container(
+                      width: 250,
+                      height: 120,
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.green.shade100
+                                  : Colors.green.shade900.withBlue(90)),
+                      child: Text(
+                        LocaleKeys.StreamIsOff.tr(),
+                        style: GoogleFonts.rubik(),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                ],
               ),
+            ),
           ),
+        ),
       ),
     );
   }
