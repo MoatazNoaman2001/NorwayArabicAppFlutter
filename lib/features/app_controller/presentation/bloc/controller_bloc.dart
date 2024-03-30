@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:norway_flutter_app/features/app_controller/domain/Get_play_in_background_use_case.dart';
+import 'package:norway_flutter_app/features/app_controller/domain/change_play_in_background_use_case.dart';
 
 import '../../domain/Get_lang_use_case.dart';
 import '../../domain/Get_theme_use_case.dart';
@@ -15,6 +17,8 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
   final GetLanguageUseCase getLanguageUseCase;
   final GetThemeUseCase getThemeUseCase;
   final ChangeThemeUseCase changeThemeUseCase;
+  final GetPlayInBackGroundUseCase get_playInBackGroundUseCase;
+  final ChangePlayInBackGroundUseCase changePlayInBackGroundUseCase;
 
   bool theme = false;
   bool background = false;
@@ -24,7 +28,10 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
       {required this.changeLanguageUseCase,
       required this.getLanguageUseCase,
       required this.changeThemeUseCase,
-      required this.getThemeUseCase})
+      required this.getThemeUseCase,
+      required this.get_playInBackGroundUseCase,
+        required this.changePlayInBackGroundUseCase
+      })
       : super(ControllerInitial()) {
     on<LanguageChange>((event, emit) async {
       final res = await changeLanguageUseCase(event.lang);
@@ -62,5 +69,20 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
         });
       },
     );
+
+    on<ChangePlayInBackground>((event, emit) async{
+      var res = await changePlayInBackGroundUseCase(event.playinbackground? "1": "0");
+      return res.fold((l) => emit(PlayInBackGroundFailure(l)), (r){
+        background = event.playinbackground;
+        emit(PlayInBackGroundSetSuccess(background));
+      });
+    },);
+    on<CouldPlayInBackGround>((event, emit) async{
+      var res = await get_playInBackGroundUseCase();
+      return res.fold((l) => emit(PlayInBackGroundFailure(l)), (r){
+        background = r == "0"? false: true;
+        emit(PlayInBackGroundGetSuccess(background));
+      });
+    },);
   }
 }

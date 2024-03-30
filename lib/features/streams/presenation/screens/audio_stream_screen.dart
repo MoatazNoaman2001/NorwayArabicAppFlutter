@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:norway_flutter_app/core/constants.dart';
+import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/features/streams/data/audio_parser_impl.dart';
-import 'package:norway_flutter_app/features/streams/presenation/notifier/audio_state_notifier.dart';
 import 'package:norway_flutter_app/translations/locale_keys.g.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_player/radio_player.dart';
@@ -17,10 +18,11 @@ class AudioStreamScreen extends StatefulWidget {
 }
 
 class _AudioStreamScreenState extends State<AudioStreamScreen> {
-  RadioPlayer radioPlayer = RadioPlayer();
+  RadioPlayer radioPlayer = Constants.getInstanceOfRadioPlayer();
   final AudioParserImpl audioParser = AudioParserImpl();
   bool isPlaying = false;
   bool streamisOff = false;
+  bool playInBackGround = true;
 
   // final FRPSource frp_source = FRPSource(mediaSources: [
   //   MediaSources(
@@ -38,6 +40,7 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
         title: 'Norway Audio',
         url: 'http://63.141.232.90:9302/stream?type=http&nocache=26',
         imagePath: 'assets/images/nv1.png');
+    context.read<ControllerBloc>().add(CouldPlayInBackGround());
 
     // SystemChrome.setPreferredOrientations(
     //   [
@@ -136,7 +139,20 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
                         style: GoogleFonts.rubik(),
                         textAlign: TextAlign.center,
                       ),
-                    )
+                    ),
+                  BlocConsumer<ControllerBloc, ControllerState>(
+                    builder: (context, state) {
+                      return SizedBox.shrink();
+                    },
+                    listener: (context, state) {
+                      setState(() {
+                        if (state is PlayInBackGroundGetSuccess) {
+                          print('play in back ground value: ${state.value}');
+                          playInBackGround = state.value;
+                        }
+                      });
+                    },
+                  )
                 ],
               ),
             ),
@@ -149,6 +165,7 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
   @override
   void dispose() {
     super.dispose();
-    // _flutterRadioPlayer.stop();
+    if (playInBackGround == false)
+      radioPlayer.stop();
   }
 }

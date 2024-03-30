@@ -26,6 +26,7 @@ class _SettingScreenState extends State<SettingScreen> {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
     context.read<ControllerBloc>().add(LanguageGet());
+    context.read<ControllerBloc>().add(CouldPlayInBackGround());
   }
 
   @override
@@ -85,7 +86,12 @@ class _SettingScreenState extends State<SettingScreen> {
                             onChanged: (value) {
                               setState(() {
                                 bloc.background = !bloc.background;
+                                context.read<ControllerBloc>().add(
+                                  ChangePlayInBackground(bloc.background)
+                                );
+
                               });
+                              Constants.getInstanceOfRadioPlayer().stop();
                             },
                           ),
                         ],

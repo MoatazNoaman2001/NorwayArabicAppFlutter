@@ -9,7 +9,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:norway_flutter_app/features/app_controller/domain/Get_play_in_background_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
+import 'package:norway_flutter_app/features/app_controller/domain/change_play_in_background_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
@@ -62,6 +64,8 @@ void main() async {
           getLanguageUseCase: GetLanguageUseCase(LocalDataStore()),
           getThemeUseCase: GetThemeUseCase(LocalDataStore()),
           changeThemeUseCase: ChangeThemeUseCase(LocalDataStore()),
+          get_playInBackGroundUseCase: GetPlayInBackGroundUseCase(LocalDataStore()),
+          changePlayInBackGroundUseCase: ChangePlayInBackGroundUseCase(LocalDataStore()),
         ),
       ),
       BlocProvider(

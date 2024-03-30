@@ -16,4 +16,10 @@ final class ThemeChange extends ControllerEvent {
 }
 final class ThemeGet extends ControllerEvent {
 }
+final class ChangePlayInBackground extends ControllerEvent {
+  final bool playinbackground;
+  ChangePlayInBackground(this.playinbackground);
+}
+final class CouldPlayInBackGround extends ControllerEvent {
+}
 

@@ -36,3 +36,19 @@ final class ThemeFailure extends ControllerState{
 
   ThemeFailure(this.msg);
 }
+
+final class PlayInBackGroundSetSuccess extends ControllerState {
+  final bool state;
+
+  PlayInBackGroundSetSuccess(this.state);
+}
+final class PlayInBackGroundGetSuccess extends ControllerState{
+  final bool value;
+
+  PlayInBackGroundGetSuccess(this.value);
+}
+final class PlayInBackGroundFailure extends ControllerState{
+  final String msg;
+
+  PlayInBackGroundFailure(this.msg);
+}
