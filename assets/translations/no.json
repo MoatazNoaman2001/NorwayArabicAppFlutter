@@ -18,6 +18,8 @@
   "TvStream" : "Norge Arabisk TV",
   "Details": "detaljer",
   "AboutUs": "Om oss",
-  "StreamIsOff" : "Nåværende sending av arabisk Norge er AV NÅ"
+  "AudioStreamHead": "Voice Radio of Norway",
+  "VideoStreamHead": "Norge TV på YouTube",
+  "StreamIsOff" : "Nåværende Arabisk Norges kringkasting er AV"
 
 }

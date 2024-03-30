@@ -75,7 +75,7 @@ class SelectStreamType extends StatelessWidget {
                               width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * 0.70,
                               padding: const EdgeInsets.only(right: 20),
                               child: Text(
-                                'اذاعة النرويج علي اليوتيوب',
+                                LocaleKeys.AudioStreamHead.tr(),
                                 textAlign: TextAlign.right,
                                 style: GoogleFonts.rubik().copyWith(
                                     fontWeight: FontWeight.w600,
@@ -136,7 +136,7 @@ class SelectStreamType extends StatelessWidget {
                               width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * 0.65,
                               padding: const EdgeInsets.only(right: 20),
                               child: Text(
-                                'تيلفزيون النرويج علي اليوتيوب',
+                                LocaleKeys.VideoStreamHead.tr(),
                                 textAlign: TextAlign.right,
                                 style: GoogleFonts.rubik().copyWith(
                                   fontWeight: FontWeight.w600,

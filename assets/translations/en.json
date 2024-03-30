@@ -18,5 +18,7 @@
   "TvStream" : "Norway Arabic Tv",
   "Details": "Details",
   "AboutUs": "About Us",
-  "StreamIsOff" : "Current Arabic Norway BroadCast Is OFF Now"
+  "AudioStreamHead": "Voice Radio of Norway",
+  "VideoStreamHead": "Norway TV on YouTube",
+  "StreamIsOff" : "Current Arabic Norway BroadCast Is OFF"
 }

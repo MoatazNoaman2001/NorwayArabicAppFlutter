@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/streams/data/audio_parser_impl.dart';
 import 'package:norway_flutter_app/features/streams/presenation/notifier/audio_state_notifier.dart';
@@ -115,14 +116,16 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
                           child: isPlaying
                               ? Icon(Icons.pause)
                               : Icon(Icons.play_arrow)),
+                      SizedBox(height: 10,),
                       if (streamisOff)
                         Container(
                           width: 250,
                           height: 120,
+                          padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               color: Colors.green.shade100),
-                          child: Text(LocaleKeys.StreamIsOff.tr()),
+                          child: Text(LocaleKeys.StreamIsOff.tr() , style: GoogleFonts.rubik(), textAlign: TextAlign.center,),
                         )
                     ],
                   ),
