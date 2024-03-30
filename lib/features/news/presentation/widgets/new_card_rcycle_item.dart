@@ -21,6 +21,7 @@ class NewsCardRecycleItem extends StatelessWidget {
           onTap: callback,
           child: Card(
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(14), topRight: Radius.circular(14)),
@@ -42,7 +43,7 @@ class NewsCardRecycleItem extends StatelessWidget {
                             )
                         ),
                     errorWidget: (context, url, error) =>
-                        Image.asset('assets/images/head_logo.jpeg'),
+                        Image.asset('assets/images/image_not_found.jpeg'),
                   ),
                 ),
                 SizedBox(height: 4,),

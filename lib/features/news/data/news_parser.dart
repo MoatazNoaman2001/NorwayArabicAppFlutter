@@ -10,4 +10,5 @@ abstract interface class NorwaySiteParser{
   Future<NorwayNew> getNewDetails(String url);
   Future<List<NorwayNew>> banarNews();
   Future<List<WebPair>> platforms();
+  Future<List<WebPair>> aboutUs();
 }

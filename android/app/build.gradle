@@ -59,15 +59,24 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            keyAlias = 'upload'
+            keyPassword 'ffmpeg_norwayFM'
+            storeFile file('C:\\Users\\moata\\upload-keystore.jks')
+            storePassword 'ffmpeg_norwayFM'
+        }
+
+        debug {
+
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+
         release {
             signingConfig signingConfigs.release
+
         }
     }
 }

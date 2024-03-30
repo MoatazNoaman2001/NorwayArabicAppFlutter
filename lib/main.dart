@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/platfroms_scr.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/screens/setting.dart';
 import 'package:norway_flutter_app/features/streams/data/repo/youtube_repo_impl.dart';
@@ -41,6 +42,7 @@ import 'package:data_store/data_store_repository.dart';
 import 'core/theme/color_schemes.g.dart';
 import 'features/app_controller/presentation/screens/init_app.dart';
 import 'features/app_controller/presentation/screens/select_language.dart';
+import 'features/news/domain/usecases/aboutus_usecase.dart';
 import 'features/news/domain/usecases/platforms_usecase.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
@@ -77,7 +79,9 @@ void main() async {
       BlocProvider(
         create: (context) => PlatformBloc(
             platformListUseCase:
-                PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl()))),
+                PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl())),
+          aboutUsListUseCase: AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl()))
+        ),
       ),
       BlocProvider(
         create: (context) => YoutubeStreamBloc(
@@ -169,6 +173,7 @@ class MyAppMainEntry extends StatelessWidget {
         '/home': (context) => MyHomePage(),
         '/political': (context) =>
             PoliticalNews(url: Constants.newsUrls[2]),
+        '/aboutUs' : (context) => AboutUsScreen(),
         '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
         '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
         '/details': (context) => NewDetails(),
@@ -240,7 +245,6 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(LocaleKeys.title.tr()),
         centerTitle: true,
         elevation: 4,
@@ -269,6 +273,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/platform');
               break;
             case 6:
+              Navigator.of(context).pushNamed('/aboutUs');
+              break;
+            case 7:
               Navigator.of(context).pushNamed('/setting');
               break;
           }
@@ -280,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
               LocaleKeys.News.tr(),
               style: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w800),
+                  fontWeight: FontWeight.w800  ),
             ),
           ),
           NavigationDrawerDestination(
@@ -330,8 +337,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               label: Text(LocaleKeys.Platforms.tr())),
           Divider(),
+          NavigationDrawerDestination(
+              selectedIcon: Icon(Icons.people),
+              icon: Icon(Icons.people_alt_outlined),
+              label: Text(LocaleKeys.AboutUs.tr())),
           SizedBox(
-            height: 270,
+            height: 240,
           ),
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),

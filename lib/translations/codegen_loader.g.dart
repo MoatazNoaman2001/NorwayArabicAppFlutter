@@ -33,6 +33,7 @@ class CodegenLoader extends AssetLoader{
   "AudioStream": "البث الاذاعي",
   "TvStream": "قناه النرويج بالعربية",
   "Details": "تفاصيل",
+  "AboutUs": "من نحن",
   "StreamIsOff": "البث العربي النرويجي الحالي متوقف الآن"
 };
 static const Map<String,dynamic> en = {
@@ -54,6 +55,7 @@ static const Map<String,dynamic> en = {
   "AudioStream": "Audio Stream",
   "TvStream": "Norway Arabic Tv",
   "Details": "Details",
+  "AboutUs": "About Us",
   "StreamIsOff": "Current Arabic Norway BroadCast Is OFF Now"
 };
 static const Map<String,dynamic> no = {
@@ -75,6 +77,7 @@ static const Map<String,dynamic> no = {
   "AudioStream": "Lydstrøm",
   "TvStream": "Norge Arabisk TV",
   "Details": "detaljer",
+  "AboutUs": "Om oss",
   "StreamIsOff": "Nåværende sending av arabisk Norge er AV NÅ"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "en": en, "no": no};

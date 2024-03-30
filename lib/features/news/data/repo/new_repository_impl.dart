@@ -53,4 +53,13 @@ class NewsRepositoryImpl implements NewsRepository{
     }
   }
 
+  @override
+  Future<Either<Failure, List<WebPair>>> aboutUs() async{
+    try{
+      return right(await parser.aboutUs());
+    }catch(e){
+      return left(Failure(e.toString()));
+    }
+  }
+
 }

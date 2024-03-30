@@ -52,9 +52,9 @@ dependencies:
   just_audio_background: ^0.0.1-beta.11
   url_launcher: ^6.2.5
   youtube_player_flutter: ^9.0.0
-  firebase_core: ^2.27.1
-  cloud_firestore: ^4.15.9
-  firebase_database: ^10.4.10
+#  firebase_core: ^2.27.1
+#  cloud_firestore: ^4.15.9
+#  firebase_database: ^10.4.10
   flutter_launcher_icons: ^0.13.1
   rxdart: ^0.27.7
   easy_localization: ^3.0.5
@@ -63,6 +63,7 @@ dependencies:
   permission_handler: ^11.3.0
   provider: ^6.1.2
   radio_player: ^1.5.0
+  flutter_layout_grid: ^2.0.5
 #  flutter_radio_player: ^2.0.2
 
 #  on_audio_query: ^2.9.0 مش امان

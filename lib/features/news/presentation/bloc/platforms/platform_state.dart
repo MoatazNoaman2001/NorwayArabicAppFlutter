@@ -11,3 +11,11 @@ final class PlatformFailure extends PlatformState {
   final String msg;
   PlatformFailure(this.msg);
 }
+
+
+final class AboutUsLoading extends PlatformState {}
+final class AboutUSSuccess extends PlatformState {}
+final class AboutUSFailure extends PlatformState {
+  final String msg;
+  AboutUSFailure(this.msg);
+}

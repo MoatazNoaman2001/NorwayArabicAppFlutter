@@ -161,4 +161,15 @@ class NewsParserImpl implements NorwaySiteParser{
     return platformsBody!;
   }
 
+  @override
+  Future<List<WebPair>> aboutUs() async{
+    var body = await fetchUrl('https://norwayvoice.no/%d9%85%d9%86-%d9%86%d8%ad%d9%86/');
+    var soup = BeautifulSoup(body);
+    var content = soup.find('div' , class_: "entry-content")?.children.map((e){
+      return WebPair(e.name!, e.text.trim());
+    }).toList();
+
+    return content!;
+  }
+
 }
