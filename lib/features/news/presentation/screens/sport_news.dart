@@ -111,10 +111,12 @@ class _SportNewsState extends State<SportNews> {
                 },
                 builder: (context, state) {
                   var bloc = BlocProvider.of<NewsBloc>(context);
+                  if (state is SportNewsSuccess || state is SportNewsFailure){
+                    bloc.loadingPage = false;
+                  }
                   if (state is SportNewsLoading && bloc.sport_norways.isEmpty) {
                     return SportNewLoadingView();
-                  } else if (state is SportNewsSuccess
-                      || (state is SportNewsLoading && bloc.sport_norways.isNotEmpty)) {
+                  } else if (state is SportNewsSuccess || (state is SportNewsLoading && bloc.sport_norways.isNotEmpty)) {
                     return SportNewSuccessView(url: url);
                   } else if (state is SportNewsFailure) {
                     return SportNewLoadingView();
@@ -166,9 +168,14 @@ class SportNewSuccessView extends StatelessWidget {
         bool isTop = controller.position.pixels == 0;
         if (isTop) {
         } else {
-          context
-              .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url, bloc.sport_norways.toList()));
+          if (bloc.loadingPage == false) {
+            bloc.loadingPage = true;
+            bloc.pageNum[4] = bloc.pageNum[4] + 1;
+            context.read<NewsBloc>().add(GetSportNorwayNewsList(
+                '$url/page/${bloc.pageNum[4]}/', []));
+          }else {
+
+          }
         }
       }
     });
@@ -182,9 +189,9 @@ class SportNewSuccessView extends StatelessWidget {
           Expanded(
               child: ListView.builder(
                 controller: controller,
-                padding:
-                const EdgeInsets.only(right: 8, left: 8),
-                itemCount: bloc.sport_norways.length,
+                physics: BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(right: 8, left: 8),
+                itemCount: bloc.sport_norways.length - 1,
                 itemBuilder: (context, index) {
                   return NewsCardRecycleItem(
                     norwayNew: bloc.sport_norways.toList()[index],

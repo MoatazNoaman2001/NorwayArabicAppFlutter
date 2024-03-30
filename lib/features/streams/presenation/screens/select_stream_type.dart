@@ -32,40 +32,61 @@ class SelectStreamType extends StatelessWidget {
                   child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
-                      child: Container(
-                        foregroundDecoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [
-                              Colors.transparent,
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? darkColorScheme.surface
-                                  : lightColorScheme.surface
-                            ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Flexible(
-                                child: Container(
-                              decoration: BoxDecoration(
-                                  // border: Border.all(width: 30),
-                                  gradient: LinearGradient(
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.white12
-                                      ],
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft),
-                                  borderRadius: BorderRadius.circular(14),
-                                  image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          'assets/images/nerway_full_logo.png'))),
-                            ))
-                          ],
-                        ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            foregroundDecoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                  Colors.transparent,
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? darkColorScheme.surface
+                                      : lightColorScheme.surface
+                                ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight)),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Flexible(
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                      // border: Border.all(width: 30),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.white12
+                                          ],
+                                          begin: Alignment.topRight,
+                                          end: Alignment.bottomLeft),
+                                      borderRadius: BorderRadius.circular(14),
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: AssetImage(
+                                              'assets/images/nerway_full_logo.png'))),
+                                ))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * 0.70,
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Text(
+                                'اذاعة النرويج علي اليوتيوب',
+                                textAlign: TextAlign.right,
+                                style: GoogleFonts.rubik().copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: Colors.white
+                                ),
+                                maxLines: 3,
+                              ),
+                            ),
+                          )
+                        ],
                       )),
                 ),
               ),
@@ -112,14 +133,15 @@ class SelectStreamType extends StatelessWidget {
                           Container(
                             alignment: Alignment.centerRight,
                             child: Container(
-                              width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * 0.76,
-                              padding: const EdgeInsets.only(right: 40),
+                              width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * 0.65,
+                              padding: const EdgeInsets.only(right: 20),
                               child: Text(
                                 'تيلفزيون النرويج علي اليوتيوب',
                                 textAlign: TextAlign.right,
                                 style: GoogleFonts.rubik().copyWith(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 30,
+                                  fontSize: 18,
+                                  color: Colors.white
                                 ),
                                 maxLines: 3,
                               ),

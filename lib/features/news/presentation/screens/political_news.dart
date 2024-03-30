@@ -113,6 +113,10 @@ class _PoliticalNewsState extends State<PoliticalNews> {
                   }
                 },
                 builder: (context, state) {
+                  var bloc = BlocProvider.of<NewsBloc>(context);
+                  if ( state is PoliticalNewsSuccess || state is PoliticalNewsFailure){
+                    bloc.loadingPage = false;
+                  }
                   if (state is PoliticalNewsSuccess) {
                     return PoliticalNewsSuccessView(url: url,);
                   } else {
@@ -171,9 +175,14 @@ class PoliticalNewsSuccessView extends StatelessWidget {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
         if (isTop) {} else {
-          context
-              .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url, []));
+          if (bloc.loadingPage == false) {
+            bloc.loadingPage = true;
+            bloc.pageNum[2] = bloc.pageNum[2] + 1;
+            context.read<NewsBloc>().add(GetPoliticalNorwayNewsList(
+                '$url/page/${bloc.pageNum[2]}/', []));
+          }else {
+
+          }
         }
       }
     });
@@ -192,9 +201,10 @@ class PoliticalNewsSuccessView extends StatelessWidget {
           Expanded(
               child: ListView.builder(
                 controller: controller,
+                physics: BouncingScrollPhysics(),
                 padding:
                 const EdgeInsets.only(right: 8, left: 8),
-                itemCount: bloc.political_norways.length,
+                itemCount: bloc.political_norways.length - 1,
                 itemBuilder: (context, index) {
                   return NewsCardRecycleItem(
                     norwayNew: bloc.political_norways.toList()[index],

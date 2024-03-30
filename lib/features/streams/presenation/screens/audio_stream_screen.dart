@@ -75,7 +75,6 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
       ),
       body: SingleChildScrollView(
         child: Center(
-            child: Container(
               child: Card(
                 child: Padding(
                   padding: EdgeInsets.only(right: 25 , left:  25 , top: 30 , bottom:  30),
@@ -129,7 +128,6 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
                   ),
                 ),
               ),
-            ),
           ),
       ),
     );

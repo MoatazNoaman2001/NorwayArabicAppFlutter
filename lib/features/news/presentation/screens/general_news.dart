@@ -32,7 +32,7 @@ class _GeneralNewsState extends State<GeneralNews> {
   _GeneralNewsState(this.url);
 
   final ConnectivityController connectivityController =
-      ConnectivityController();
+  ConnectivityController();
   List<NorwayNew> norways = [];
 
   @override
@@ -44,18 +44,22 @@ class _GeneralNewsState extends State<GeneralNews> {
     controller.addListener(() {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
-        if (isTop) {
-        } else {
-          makeToast('current page is: ${bloc.pageNum[0]}');
-          bloc.pageNum[0] = bloc.pageNum[0] + 1;
-          context.read<NewsBloc>().add(GetGeneralNorwayNewsList(
-              '$url/page/${bloc.pageNum[0]}/', norways));
+        if (isTop) {} else {
+          if(bloc.loadingPage == false){
+            bloc.loadingPage = true;
+            bloc.pageNum[0] = bloc.pageNum[0] + 1;
+            context.read<NewsBloc>().add(GetGeneralNorwayNewsList(
+                '$url/page/${bloc.pageNum[0]}/', norways));
+          }
         }
       }
     });
     return SingleChildScrollView(
       child: Container(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           child: Column(
             children: [
               ValueListenableBuilder(
@@ -70,7 +74,10 @@ class _GeneralNewsState extends State<GeneralNews> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
                             child: Container(
                               color: Colors.grey.shade800,
                               child: const Text(
@@ -90,7 +97,10 @@ class _GeneralNewsState extends State<GeneralNews> {
                 builder: (context, state) {
                   if (state is SwiperNewsLoading || state is GeneralNewsLoading)
                     return Container(
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
                       child: LinearProgressIndicator(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         minHeight: 8,
@@ -106,8 +116,8 @@ class _GeneralNewsState extends State<GeneralNews> {
               ),
               BlocConsumer<NewsBloc, NewsState>(
                 listener: (context, state) {
-                  if (state is GeneralNewsSuccess) {
-                  } else if (state is GeneralNewsFailure) {
+                  if (state is GeneralNewsSuccess) {} else
+                  if (state is GeneralNewsFailure) {
                     var snack = SnackBar(
                       content: const Text('would you like to retry'),
                       duration: Duration(hours: 1),
@@ -126,6 +136,9 @@ class _GeneralNewsState extends State<GeneralNews> {
                   }
                 },
                 builder: (context, state) {
+                  if (state is GeneralNewsSuccess || state is GeneralNewsFailure){
+                    bloc.loadingPage = false;
+                  }
                   if (state is GeneralNewsLoading &&
                       bloc.general_norways.isEmpty) {
                     return GeneralNewsLoading();
@@ -134,9 +147,18 @@ class _GeneralNewsState extends State<GeneralNews> {
                           bloc.general_norways.isNotEmpty)) {
                     if (isTV) {
                       return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height -
-                            (MediaQuery.of(context).size.height * 0.205),
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height -
+                            (MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.205),
                         child: Column(
                           children: [
                             Expanded(
@@ -166,30 +188,42 @@ class _GeneralNewsState extends State<GeneralNews> {
                       );
                     } else
                       return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height -
-                            (MediaQuery.of(context).size.height * 0.205),
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height -
+                            (MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.205),
                         child: Column(
                           children: [
                             Expanded(
                                 child: ListView.builder(
-                              controller: controller,
-                              primary: false,
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.only(right: 4, left: 4),
-                              itemBuilder: (BuildContext context, int index) {
-                                return NewsCardRecycleItem(
-                                  norwayNew:
+                                  controller: controller,
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.only(
+                                      right: 4, left: 4),
+                                  itemBuilder: (BuildContext context,
+                                      int index) {
+                                    return NewsCardRecycleItem(
+                                      norwayNew:
                                       bloc.general_norways.toList()[index],
-                                  callback: () {
-                                    makeToast('clicked');
-                                    Navigator.of(context).pushNamed('/details',
-                                        arguments: bloc.general_norways
-                                            .toList()[index]);
+                                      callback: () {
+                                        makeToast('clicked');
+                                        Navigator.of(context).pushNamed(
+                                            '/details',
+                                            arguments: bloc.general_norways
+                                                .toList()[index]);
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                            ))
+                                ))
                           ],
                         ),
                       );
@@ -197,43 +231,62 @@ class _GeneralNewsState extends State<GeneralNews> {
                     if (bloc.general_norways.isNotEmpty) {
                       if (isTV) {
                         return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height -
-                              (MediaQuery.of(context).size.height * 0.205),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height -
+                              (MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.205),
                           child: Column(
                             children: [
                               Expanded(
                                   child: GridView.builder(
-                                controller: controller,
-                                primary: false,
-                                shrinkWrap: true,
-                                gridDelegate:
+                                    controller: controller,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2),
-                                padding:
+                                    padding:
                                     const EdgeInsets.only(right: 4, left: 4),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return NewsCardRecycleItem(
-                                    norwayNew:
+                                    itemBuilder: (BuildContext context,
+                                        int index) {
+                                      return NewsCardRecycleItem(
+                                        norwayNew:
                                         bloc.general_norways.toList()[index],
-                                    callback: () {
-                                      makeToast('clicked');
-                                      Navigator.of(context).pushNamed(
-                                          '/details',
-                                          arguments: bloc.general_norways
-                                              .toList()[index]);
+                                        callback: () {
+                                          makeToast('clicked');
+                                          Navigator.of(context).pushNamed(
+                                              '/details',
+                                              arguments: bloc.general_norways
+                                                  .toList()[index]);
+                                        },
+                                      );
                                     },
-                                  );
-                                },
-                              ))
+                                  ))
                             ],
                           ),
                         );
                       } else
                         return Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height -
-                                (MediaQuery.of(context).size.height * 0.205),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height -
+                                (MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.205),
                             child: Column(
                               children: [
                                 Expanded(
@@ -241,15 +294,19 @@ class _GeneralNewsState extends State<GeneralNews> {
                                     ListView.builder(
                                       controller: controller,
                                       primary: false,
+                                      itemCount: bloc.general_norways.length -1 ,
                                       shrinkWrap: true,
-                                      padding: const EdgeInsets.only(right: 4, left: 4),
-                                      itemBuilder: (BuildContext context, int index) {
+                                      padding: const EdgeInsets.only(
+                                          right: 4, left: 4),
+                                      itemBuilder: (BuildContext context,
+                                          int index) {
                                         return NewsCardRecycleItem(
                                           norwayNew:
                                           bloc.general_norways.toList()[index],
                                           callback: () {
                                             makeToast('clicked');
-                                            Navigator.of(context).pushNamed('/details',
+                                            Navigator.of(context).pushNamed(
+                                                '/details',
                                                 arguments: bloc.general_norways
                                                     .toList()[index]);
                                           },
@@ -300,30 +357,43 @@ class GeneralNewsLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height -
-            (MediaQuery.of(context).size.height * 0.2045),
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height -
+            (MediaQuery
+                .of(context)
+                .size
+                .height * 0.2045),
         child: Column(children: [
           Expanded(
               child: ListView.builder(
-            padding: EdgeInsets.only(right: 4, left: 4),
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return Shimmer.fromColors(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    padding: EdgeInsets.all(4),
-                    color: Colors.white70,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                    ),
-                  ),
-                  baseColor: Colors.transparent,
-                  highlightColor: Colors.white12);
-            },
-          ))
+                padding: EdgeInsets.only(right: 4, left: 4),
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Shimmer.fromColors(
+                      child: Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: 200,
+                        padding: EdgeInsets.all(4),
+                        color: Colors.white70,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(15))),
+                        ),
+                      ),
+                      baseColor: Colors.transparent,
+                      highlightColor: Colors.white12);
+                },
+              ))
         ]),
       ),
     );

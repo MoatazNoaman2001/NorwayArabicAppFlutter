@@ -19,6 +19,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     final Set<NorwayNew> political_norways = {};
     final Set<NorwayNew> local_norways = {};
     final Set<NorwayNew> sport_norways = {};
+    bool loadingPage= false;
     final List<int> pageNum = [1,1,1,1,1];
   NewsBloc({required this.getNewsListUseCase, required this.getSwiperNewsListUseCase}) : super(NewsInitial()) {
     on<GetSwiperNorwayNewsList>((event, emit) async{
@@ -43,7 +44,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final res = await getNewsListUseCase(event.url);
       return res.fold((l) => emit(OnBoardNewsFailure(l.msg)),(r) {
         onboard_norways.addAll(r);
-        pageNum[1] = pageNum[1]++;
         emit(OnBoardNewsSuccess(onboard_norways.toList()));
       });
     });
@@ -52,7 +52,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final res = await getNewsListUseCase(event.url);
       return res.fold((l) => emit(PoliticalNewsFailure(l.msg)),(r) {
         political_norways.addAll(r);
-        pageNum[2]=pageNum[2]++;
         emit(PoliticalNewsSuccess(political_norways.toList()));
       });
     });
@@ -62,7 +61,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final res = await getNewsListUseCase(event.url);
       return res.fold((l) => emit(LocalNewsFailure(l.msg)),(r) {
         local_norways.addAll(r);
-        pageNum[3]=pageNum[3]++;
         emit(LocalNewsSuccess(local_norways.toList()));
       });
     });
@@ -72,7 +70,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final res = await getNewsListUseCase(event.url);
       return res.fold((l) => emit(SportNewsFailure(l.msg)),(r) {
         sport_norways.addAll(r);
-        pageNum[4]=pageNum[4]++;
         emit(SportNewsSuccess(sport_norways.toList()));
       });
     });

@@ -106,6 +106,7 @@ class PlatFormSuccessView extends StatelessWidget {
           .height,
       child: GridView.count(
         crossAxisCount: 2,
+        physics: BouncingScrollPhysics(),
         children: platforms.map((e) {
           Widget image = Image.asset('assets/images/email.png', height: 90, width: 90,);
           switch(e.right){

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
@@ -46,7 +47,6 @@ import 'features/news/domain/usecases/aboutus_usecase.dart';
 import 'features/news/domain/usecases/platforms_usecase.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
-import 'core/streams/audio_hadler.dart';
 
 // MyAudioHandler audioHandler = MyAudioHandler();
 void main() async {
@@ -159,7 +159,7 @@ class MyAppMainEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       debugShowCheckedModeBanner: false,
@@ -217,7 +217,6 @@ class _MyHomePageState extends State<MyHomePage> {
     else
       fabBackColor = darkColorScheme.onPrimaryContainer;
 
-    String general = 'General'.tr();
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedPageIndex,

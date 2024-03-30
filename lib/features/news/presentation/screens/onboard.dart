@@ -93,6 +93,9 @@ class _OnBoardState extends State<OnBoard> {
               },
               builder: (context, state) {
                 var bloc = BlocProvider.of<NewsBloc>(context);
+                if ( state is OnBoardNewsSuccess || state is OnBoardNewsFailure){
+                  bloc.loadingPage = false;
+                }
                 if (state is OnBoardNewsLoading && bloc.onboard_norways.isEmpty) {
                   return SingleChildScrollView(
                     child: Container(
@@ -209,6 +212,8 @@ class OnBoardSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<NewsBloc>(context);
+
     var controller = ScrollController(
       onAttach: (position) {},
     );
@@ -218,10 +223,14 @@ class OnBoardSuccessView extends StatelessWidget {
         if (isTop) {
 
         } else {
-          var bloc = BlocProvider.of<NewsBloc>(context);
-          context.read<NewsBloc>().add(
-              GetOnBoardNorwayNewsList('$url/pages/${bloc.pageNum[1]}', n)
-          );
+          if (bloc.loadingPage == false) {
+            bloc.loadingPage = true;
+            bloc.pageNum[1] = bloc.pageNum[1] + 1;
+            context.read<NewsBloc>().add(GetOnBoardNorwayNewsList(
+                '$url/page/${bloc.pageNum[1]}/', []));
+          }else {
+
+          }
         }
       }
     });
@@ -244,6 +253,7 @@ class OnBoardSuccessView extends StatelessWidget {
           Expanded(
               child: ListView.builder(
                 controller: controller,
+                physics: BouncingScrollPhysics(),
                 padding: const EdgeInsets.only(
                     right: 8, left: 8),
                 itemCount: n.length,

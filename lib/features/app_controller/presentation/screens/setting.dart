@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
@@ -45,14 +46,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 BlocConsumer<ControllerBloc, ControllerState>(
                   listener: (context, state) {
                     print('event tracked');
-                    // Constants.makeToast(bloc.theme.toString());
-                    if (state is ThemeGetSuccess) {
-                      Constants.makeToast('theme :' + (state.theme? "dark" : "light"));
-                    } else if (state is ThemeSetSuccess) {
-                      Constants.makeToast('theme is set successfully : ${state.state}');
-                    } else if (state is ThemeFailure) {
-                      Constants.makeToast('failed');
-                    }
                   },
                   builder: (context, state) {
                     return Container(
@@ -107,10 +100,14 @@ class _SettingScreenState extends State<SettingScreen> {
                         lang = state.lang;
                       });
                     } else if (state is LangSetSuccess) {
-                      await context.setLocale(Locale(bloc.lang));
-                      final engine = WidgetsFlutterBinding.ensureInitialized();
-                      await engine.performReassemble();
-                      await EasyLocalization.ensureInitialized();
+                      setState(() {
+                        final new_local = Locale(bloc.lang);
+                        context.setLocale(new_local);
+                        Get.updateLocale(new_local);
+                      });
+                      // final engine = WidgetsFlutterBinding.ensureInitialized();
+                      // await engine.performReassemble();
+                      // await EasyLocalization.ensureInitialized();
                     } else if (state is LangFailure) {
                       Constants.makeToast("Failed !: ${state.msg}");
                     }

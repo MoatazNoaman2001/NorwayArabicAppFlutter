@@ -86,6 +86,9 @@ class _LocalNewsState extends State<LocalNews> {
                       },
                       builder: (context, state) {
                         final  bloc = BlocProvider.of<NewsBloc>(context);
+                        if ( state is LocalNewsSuccess || state is LocalNewsFailure){
+                          bloc.loadingPage = false;
+                        }
                         if (state is LocalNewsLoading && bloc.local_norways.isEmpty) {
                           return LocalNewLoadingView();
                         } else if (state is LocalNewsSuccess  ||
@@ -162,9 +165,14 @@ class LocalNewSuccessView extends StatelessWidget {
         bool isTop = controller.position.pixels == 0;
         if (isTop) {
         } else {
-          context
-              .read<NewsBloc>()
-              .add(GetPoliticalNorwayNewsList(url, bloc.local_norways.toList()));
+            if (bloc.loadingPage == false) {
+              bloc.loadingPage = true;
+              bloc.pageNum[3] = bloc.pageNum[3] + 1;
+              context.read<NewsBloc>().add(GetLocalNorwayNewsList(
+                  '$url/page/${bloc.pageNum[3]}/', []));
+            }else {
+
+            }
         }
       }
     });
@@ -178,6 +186,7 @@ class LocalNewSuccessView extends StatelessWidget {
           Expanded(
               child: ListView.builder(
                 controller: controller,
+                physics: BouncingScrollPhysics(),
                 padding:
                 const EdgeInsets.only(right: 8, left: 8),
                 itemCount: bloc.local_norways.length,
