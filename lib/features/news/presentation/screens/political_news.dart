@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,113 +25,110 @@ class PoliticalNews extends StatefulWidget {
 
 class _PoliticalNewsState extends State<PoliticalNews> {
   final String url;
+  bool isTV = false;
 
   _PoliticalNewsState(this.url);
 
   final ConnectivityController connectivityController =
-  ConnectivityController();
+      ConnectivityController();
   List<NorwayNew> norways = [];
 
   @override
   void initState() {
     super.initState();
     connectivityController.init();
-    context.read<NewsBloc>().add(
-        GetPoliticalNorwayNewsList(
-            url, []
-        )
-    );
+    context.read<NewsBloc>().add(GetPoliticalNorwayNewsList(url, []));
+    isDeviceIsTv();
+  }
+
+  void isDeviceIsTv() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    isTV = androidInfo.systemFeatures.contains('android.software.leanback');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          LocaleKeys.Political.tr(),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
+        appBar: AppBar(
+          title: Text(
+            LocaleKeys.Political.tr(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              ValueListenableBuilder(
-                valueListenable: connectivityController.isConnected,
-                builder: (context, value, child) {
-                  if (value) {
-                    return Center();
-                  } else {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
-                            child: Container(
-                              color: Colors.grey.shade800,
-                              child: const Text(
-                                'No Internet Connection',
-                                textAlign: TextAlign.center,
+        body: SingleChildScrollView(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: connectivityController.isConnected,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return Center();
+                    } else {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Container(
+                                color: Colors.grey.shade800,
+                                child: const Text(
+                                  'No Internet Connection',
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-              BlocConsumer<NewsBloc, NewsState>(
-                listener: (context, state) {
-                  if (state is PoliticalNewsSuccess) {} else
-                  if (state is PoliticalNewsFailure) {
-                    var snack = SnackBar(
-                      content: const Text('would you like to retry'),
-                      duration: Duration(hours: 1),
-                      action: SnackBarAction(
-                        onPressed: () {
-                          context
-                              .read<NewsBloc>()
-                              .add(GetPoliticalNorwayNewsList(url, norways));
-                        },
-                        label: "ok",
-                      ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snack);
-                  }
-                },
-                builder: (context, state) {
-                  var bloc = BlocProvider.of<NewsBloc>(context);
-                  if ( state is PoliticalNewsSuccess || state is PoliticalNewsFailure){
-                    bloc.loadingPage = false;
-                  }
-                  if (state is PoliticalNewsSuccess) {
-                    return PoliticalNewsSuccessView(url: url,);
-                  } else {
-                    return PoliticalNewsLoadingView();
-                  }
-                },
-              )
-            ],
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+                BlocConsumer<NewsBloc, NewsState>(
+                  listener: (context, state) {
+                    if (state is PoliticalNewsSuccess) {
+                    } else if (state is PoliticalNewsFailure) {
+                      var snack = SnackBar(
+                        content: const Text('would you like to retry'),
+                        duration: Duration(hours: 1),
+                        action: SnackBarAction(
+                          onPressed: () {
+                            context
+                                .read<NewsBloc>()
+                                .add(GetPoliticalNorwayNewsList(url, norways));
+                          },
+                          label: "ok",
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snack);
+                    }
+                  },
+                  builder: (context, state) {
+                    var bloc = BlocProvider.of<NewsBloc>(context);
+                    if (state is PoliticalNewsSuccess ||
+                        state is PoliticalNewsFailure) {
+                      bloc.loadingPage = false;
+                    }
+                    if (state is PoliticalNewsSuccess) {
+                      return PoliticalNewsSuccessView(
+                        url: url, isTV: isTV);
+                    } else {
+                      return PoliticalNewsLoadingView();
+                    }
+                  },
+                )
+              ],
+            ),
           ),
-        ),
-      )
-
-
-     );
+        ));
   }
 }
 
@@ -141,29 +139,25 @@ class PoliticalNewsLoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(children: [
           LinearProgressIndicator(
-            borderRadius:
-            BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ]),
       ),
-    );;
+    );
+    ;
   }
 }
 
 class PoliticalNewsSuccessView extends StatelessWidget {
   final String url;
+  final bool isTV;
 
-  const PoliticalNewsSuccessView({super.key, required this.url});
+  const PoliticalNewsSuccessView(
+      {super.key, required this.url, required this.isTV});
 
   @override
   Widget build(BuildContext context) {
@@ -174,50 +168,41 @@ class PoliticalNewsSuccessView extends StatelessWidget {
     controller.addListener(() {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
-        if (isTop) {} else {
+        if (isTop) {
+        } else {
           if (bloc.loadingPage == false) {
             bloc.loadingPage = true;
             bloc.pageNum[2] = bloc.pageNum[2] + 1;
             context.read<NewsBloc>().add(GetPoliticalNorwayNewsList(
                 '$url/page/${bloc.pageNum[2]}/', []));
-          }else {
-
-          }
+          } else {}
         }
       }
     });
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
           // ListView(),
           Expanded(
-              child: ListView.builder(
-                controller: controller,
-                physics: BouncingScrollPhysics(),
-                padding:
-                const EdgeInsets.only(right: 8, left: 8),
-                itemCount: bloc.political_norways.length - 1,
-                itemBuilder: (context, index) {
-                  return NewsCardRecycleItem(
-                    norwayNew: bloc.political_norways.toList()[index],
-                    callback: () {
-                      Navigator.of(context).pushNamed(
-                          '/details', arguments: bloc.political_norways.toList()[index]);
-                    },
-                  );
+              child: GridView.count(
+            crossAxisCount: isTV? 2 : 1,
+            shrinkWrap: true,
+            childAspectRatio: isTV? 1 : 0.7,
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            physics: BouncingScrollPhysics(),
+            children: bloc.political_norways.map((e) {
+              return NewsCardRecycleItem(
+                norwayNew: e,
+                callback: () {
+                  Navigator.of(context).pushNamed('/details', arguments: e);
                 },
-              ))
+              );
+            }).toList(),
+          ))
         ],
       ),
     );
   }
 }
-

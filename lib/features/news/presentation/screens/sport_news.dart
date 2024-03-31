@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class SportNews extends StatefulWidget {
 
 class _SportNewsState extends State<SportNews> {
   final String url;
+  bool isTv = false;
 
   _SportNewsState(this.url);
 
@@ -41,8 +43,14 @@ class _SportNewsState extends State<SportNews> {
             url,[]
         )
     );
+    isDeviceIsTv();
   }
 
+  void isDeviceIsTv() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    isTv = androidInfo.systemFeatures.contains('android.software.leanback');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +125,7 @@ class _SportNewsState extends State<SportNews> {
                   if (state is SportNewsLoading && bloc.sport_norways.isEmpty) {
                     return SportNewLoadingView();
                   } else if (state is SportNewsSuccess || (state is SportNewsLoading && bloc.sport_norways.isNotEmpty)) {
-                    return SportNewSuccessView(url: url);
+                    return SportNewSuccessView(url: url , isTV: isTv,);
                   } else if (state is SportNewsFailure) {
                     return SportNewLoadingView();
                   } else {
@@ -155,7 +163,8 @@ class SportNewLoadingView extends StatelessWidget {
 
 class SportNewSuccessView extends StatelessWidget {
   final String url;
-  const SportNewSuccessView({super.key, required this.url});
+  final bool isTV;
+  const SportNewSuccessView({super.key, required this.url, required this.isTV});
 
   @override
   Widget build(BuildContext context) {
@@ -187,20 +196,23 @@ class SportNewSuccessView extends StatelessWidget {
         children: [
           // ListView(),
           Expanded(
-              child: ListView.builder(
-                controller: controller,
+              child:
+              GridView.count(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                crossAxisCount: isTV ? 2 : 1,
+                shrinkWrap: true,
+                childAspectRatio: isTV ? 1 : 0.7,
                 physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(right: 8, left: 8),
-                itemCount: bloc.sport_norways.length - 1,
-                itemBuilder: (context, index) {
+                children: bloc.sport_norways.map((e) {
                   return NewsCardRecycleItem(
-                    norwayNew: bloc.sport_norways.toList()[index],
+                    norwayNew: e,
                     callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: bloc.sport_norways.toList()[index]);
+                      Navigator.of(context).pushNamed('/details' , arguments: e);
                     },
                   );
-                },
-              ))
+                }).toList()
+              )
+          )
         ],
       ),
     );

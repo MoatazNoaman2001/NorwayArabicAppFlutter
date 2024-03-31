@@ -20,48 +20,73 @@ class _InitiateAppState extends State<InitiateApp> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: BlocConsumer<ControllerBloc, ControllerState>(
+    return Scaffold(
+        body: Column(
+      children: [
+        BlocConsumer<ControllerBloc, ControllerState>(
           listener: (context, state) {
-            if (state is LangGetSuccess) {
-              if (state.lang.isEmpty){
-                Navigator.of(context).popAndPushNamed('/select_language');
-              }else{
-                Navigator.popAndPushNamed(context, '/home');
-              }
-              // Navigator.of(context).popAndPushNamed('/select_language');
-            } else if (state is LangFailure) {
-              print(state.msg);
-              Constants.makeToast('failed load language');
+            var bloc = BlocProvider.of<ControllerBloc>(context);
+            if (state is ThemeGetSuccess) {
+              print('main theme : ' + (bloc.theme ? "dark" : "light"));
+              setState(() {
+                MyApp.of(context).changeTheme(bloc.theme? ThemeMode.dark : ThemeMode.light);
+              });
+            } else if (state is ThemeSetSuccess) {
+              setState(() {
+                MyApp.of(context).changeTheme(bloc.theme? ThemeMode.dark : ThemeMode.light);
+              });
             }
           },
           builder: (context, state) {
-            return Stack(
-              children: <Widget>[
-                SizedBox.expand(
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: SizedBox(
-                      width: _controller.value.size.width ?? 0,
-                      height: _controller.value.size.height ?? 0,
-                      child: VideoPlayer(_controller),
+            return SizedBox.shrink();
+          },
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: BlocConsumer<ControllerBloc, ControllerState>(
+            listener: (context, state) {
+              if (state is LangGetSuccess) {
+                if (state.lang.isEmpty) {
+                  Navigator.of(context).popAndPushNamed('/select_language');
+                } else {
+                  Navigator.popAndPushNamed(context, '/home');
+                }
+                // Navigator.of(context).popAndPushNamed('/select_language');
+              } else if (state is LangFailure) {
+                print(state.msg);
+                Constants.makeToast('failed load language');
+              }
+            },
+            builder: (context, state) {
+              return Stack(
+                children: <Widget>[
+                  SizedBox.expand(
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: _controller.value.size.width ?? 0,
+                        height: _controller.value.size.height ?? 0,
+                        child: VideoPlayer(_controller),
+                      ),
                     ),
                   ),
-                ),
-                //FURTHER IMPLEMENTATION
-              ],
-            );
-          },
-        )
-    );
+                  //FURTHER IMPLEMENTATION
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    ));
   }
 
   @override
   void initState() {
     super.initState();
+    context.read<ControllerBloc>().add(ThemeGet());
     _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')
-      ..initialize().then((_) {
-      });
+      ..initialize().then((_) {});
 
     _controller.play();
     _controller.addListener(() {

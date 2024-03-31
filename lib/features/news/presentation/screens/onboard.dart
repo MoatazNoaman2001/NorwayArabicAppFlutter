@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,11 +23,12 @@ class OnBoard extends StatefulWidget {
 
 class _OnBoardState extends State<OnBoard> {
   final String url;
+  bool isTV = false;
 
   _OnBoardState(this.url);
 
   final ConnectivityController connectivityController =
-  ConnectivityController();
+      ConnectivityController();
   List<NorwayNew> norways = [];
 
   @override
@@ -37,10 +39,7 @@ class _OnBoardState extends State<OnBoard> {
     Color color = Colors.grey[800]!;
     return SingleChildScrollView(
       child: SizedBox(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
             ValueListenableBuilder(
@@ -57,7 +56,10 @@ class _OnBoardState extends State<OnBoard> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Container(
-                            color: Theme.of(context).brightness == Brightness.dark? Colors.white30 : Colors.white70,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white30
+                                    : Colors.white70,
                             child: const Text(
                               'No Internet Connection',
                               textAlign: TextAlign.center,
@@ -73,7 +75,6 @@ class _OnBoardState extends State<OnBoard> {
             BlocConsumer<NewsBloc, NewsState>(
               listener: (context, state) {
                 if (state is OnBoardNewsSuccess) {
-
                 } else if (state is OnBoardNewsFailure) {
                   print('onboard error msg: ${state.msg}');
                   var snack = SnackBar(
@@ -81,9 +82,9 @@ class _OnBoardState extends State<OnBoard> {
                     duration: Duration(seconds: 6),
                     action: SnackBarAction(
                       onPressed: () {
-                        context.read<NewsBloc>().add(
-                            GetOnBoardNorwayNewsList(url, norways)
-                        );
+                        context
+                            .read<NewsBloc>()
+                            .add(GetOnBoardNorwayNewsList(url, norways));
                       },
                       label: "ok",
                     ),
@@ -93,28 +94,20 @@ class _OnBoardState extends State<OnBoard> {
               },
               builder: (context, state) {
                 var bloc = BlocProvider.of<NewsBloc>(context);
-                if ( state is OnBoardNewsSuccess || state is OnBoardNewsFailure){
+                if (state is OnBoardNewsSuccess ||
+                    state is OnBoardNewsFailure) {
                   bloc.loadingPage = false;
                 }
-                if (state is OnBoardNewsLoading && bloc.onboard_norways.isEmpty) {
+                if (state is OnBoardNewsLoading &&
+                    bloc.onboard_norways.isEmpty) {
                   return SingleChildScrollView(
                     child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height -
-                          (MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.25),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height -
+                          (MediaQuery.of(context).size.height * 0.25),
                       child: Column(children: [
                         LinearProgressIndicator(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(8)),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                       ]),
                     ),
@@ -122,30 +115,24 @@ class _OnBoardState extends State<OnBoard> {
                 } else if (state is OnBoardNewsSuccess ||
                     (state is OnBoardNewsLoading &&
                         bloc.onboard_norways.isNotEmpty)) {
-                  return OnBoardSuccessView(n: bloc.onboard_norways.toList(), url: url);
+                  return OnBoardSuccessView(
+                    n: bloc.onboard_norways.toList(),
+                    url: url,
+                    isTv: isTV,
+                  );
                 } else if (state is OnBoardNewsFailure) {
                   if (bloc.onboard_norways.isNotEmpty) {
-                    return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
-                        url: url);
+                    return OnBoardSuccessView(
+                        n: bloc.onboard_norways.toList(), url: url, isTv: isTV);
                   } else {
                     return SingleChildScrollView(
                       child: Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height -
-                            (MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.25),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height -
+                            (MediaQuery.of(context).size.height * 0.25),
                         child: Column(children: [
                           LinearProgressIndicator(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(8)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
                         ]),
                       ),
@@ -153,27 +140,20 @@ class _OnBoardState extends State<OnBoard> {
                   }
                 } else {
                   if (bloc.onboard_norways.isNotEmpty) {
-                    return OnBoardSuccessView(n: bloc.onboard_norways.toList(),
-                        url: url);
+                    return OnBoardSuccessView(
+                      n: bloc.onboard_norways.toList(),
+                      url: url,
+                      isTv: isTV,
+                    );
                   } else {
                     return SingleChildScrollView(
                       child: Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height -
-                            (MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.25),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height -
+                            (MediaQuery.of(context).size.height * 0.25),
                         child: Column(children: [
                           LinearProgressIndicator(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(8)),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
                         ]),
                       ),
@@ -201,14 +181,23 @@ class _OnBoardState extends State<OnBoard> {
     super.initState();
     connectivityController.init();
     context.read<NewsBloc>().add(GetOnBoardNorwayNewsList(url, []));
+    isDeviceIsTv();
+  }
+
+  void isDeviceIsTv() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    isTV = androidInfo.systemFeatures.contains('android.software.leanback');
   }
 }
 
 class OnBoardSuccessView extends StatelessWidget {
   final List<NorwayNew> n;
   final String url;
+  final bool isTv;
 
-  const OnBoardSuccessView({super.key, required this.n, required this.url});
+  const OnBoardSuccessView(
+      {super.key, required this.n, required this.url, required this.isTv});
 
   @override
   Widget build(BuildContext context) {
@@ -221,57 +210,41 @@ class OnBoardSuccessView extends StatelessWidget {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
         if (isTop) {
-
         } else {
           if (bloc.loadingPage == false) {
             bloc.loadingPage = true;
             bloc.pageNum[1] = bloc.pageNum[1] + 1;
-            context.read<NewsBloc>().add(GetOnBoardNorwayNewsList(
-                '$url/page/${bloc.pageNum[1]}/', []));
-          }else {
-
-          }
+            context.read<NewsBloc>().add(
+                GetOnBoardNorwayNewsList('$url/page/${bloc.pageNum[1]}/', []));
+          } else {}
         }
       }
     });
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      height: MediaQuery
-          .of(context)
-          .size
-          .height
-          - (MediaQuery
-              .of(context)
-              .size
-              .height * 0.205),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height -
+          (MediaQuery.of(context).size.height * 0.205),
       child: Column(
         children: [
           // ListView(),
           Expanded(
-              child: ListView.builder(
-                controller: controller,
-                physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(
-                    right: 8, left: 8),
-                itemCount: n.length,
-                itemBuilder: (context, index) {
-                  return NewsCardRecycleItem(
-                    norwayNew: n[index],
-                    callback: () {
-                      Navigator.of(context).pushNamed(
-                          '/details', arguments: n[index]);
-                    },
-                  );
+              child: GridView.count(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            crossAxisCount: isTv ? 2 : 1,
+            shrinkWrap: true,
+            childAspectRatio: isTv ? 1 : 0.7,
+            physics: BouncingScrollPhysics(),
+            children: bloc.onboard_norways.map((e) {
+              return NewsCardRecycleItem(
+                norwayNew: e,
+                callback: () {
+                  Navigator.of(context).pushNamed('/details', arguments: e);
                 },
-              ))
+              );
+            }).toList(),
+          ))
         ],
       ),
     );
   }
 }
-
-
-

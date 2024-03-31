@@ -141,36 +141,23 @@ class _GeneralNewsState extends State<GeneralNews> {
                   }
                   if (state is GeneralNewsLoading &&
                       bloc.general_norways.isEmpty) {
-                    return GeneralNewsLoading();
+                    return GeneralNewsLoading(isTV: isTV,);
                   } else if (state is GeneralNewsSuccess ||
                       (state is GeneralNewsLoading &&
                           bloc.general_norways.isNotEmpty)) {
                     if (isTV) {
                       return Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height -
-                            (MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.205),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
                         child: Column(
                           children: [
                             Expanded(
-                              child: LayoutGrid(
-                                  columnSizes: [4.fr, 1.fr, 1.fr],
-                                  rowSizes: bloc.general_norways
-                                      .map((e) => auto)
-                                      .toList(),
-                                  columnGap: 24,
-                                  rowGap: 40,
-                                  // equivalent to crossAxisSpacing
-                                  // note: there's no childAspectRatio
+                                child: GridView.count(
+                                  controller: controller,
+                                  crossAxisCount: 2,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  physics: BouncingScrollPhysics(),
                                   children: bloc.general_norways.map((e) {
                                     return NewsCardRecycleItem(
                                       norwayNew: e,
@@ -181,25 +168,16 @@ class _GeneralNewsState extends State<GeneralNews> {
                                             arguments: e);
                                       },
                                     );
-                                  }).toList()),
+                                  }).toList(),
+                                )
                             )
                           ],
                         ),
                       );
                     } else
                       return Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height -
-                            (MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.205),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
                         child: Column(
                           children: [
                             Expanded(
@@ -207,6 +185,7 @@ class _GeneralNewsState extends State<GeneralNews> {
                                   controller: controller,
                                   primary: false,
                                   shrinkWrap: true,
+                                  itemCount: bloc.general_norways.length - 1,
                                   padding: const EdgeInsets.only(
                                       right: 4, left: 4),
                                   itemBuilder: (BuildContext context,
@@ -231,62 +210,37 @@ class _GeneralNewsState extends State<GeneralNews> {
                     if (bloc.general_norways.isNotEmpty) {
                       if (isTV) {
                         return Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height -
-                              (MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.205),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
                           child: Column(
                             children: [
                               Expanded(
-                                  child: GridView.builder(
+                                  child: GridView.count(
                                     controller: controller,
-                                    primary: false,
+                                    crossAxisCount: 2,
                                     shrinkWrap: true,
-                                    gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2),
-                                    padding:
-                                    const EdgeInsets.only(right: 4, left: 4),
-                                    itemBuilder: (BuildContext context,
-                                        int index) {
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    physics: BouncingScrollPhysics(),
+                                    children: bloc.general_norways.map((e) {
                                       return NewsCardRecycleItem(
-                                        norwayNew:
-                                        bloc.general_norways.toList()[index],
+                                        norwayNew: e,
                                         callback: () {
                                           makeToast('clicked');
                                           Navigator.of(context).pushNamed(
                                               '/details',
-                                              arguments: bloc.general_norways
-                                                  .toList()[index]);
+                                              arguments: e);
                                         },
                                       );
-                                    },
-                                  ))
+                                    }).toList(),
+                                  )
+                              )
                             ],
                           ),
                         );
                       } else
                         return Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height -
-                                (MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.205),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
                             child: Column(
                               children: [
                                 Expanded(
@@ -316,7 +270,7 @@ class _GeneralNewsState extends State<GeneralNews> {
                               ],
                             ));
                     } else {
-                      return GeneralNewsLoading();
+                      return GeneralNewsLoading(isTV: isTV,);
                     }
                   }
                 },
@@ -340,7 +294,7 @@ class _GeneralNewsState extends State<GeneralNews> {
     connectivityController.init();
     context.read<NewsBloc>().add(GetGeneralNorwayNewsList(url, []));
     context.read<NewsBloc>().add(GetSwiperNorwayNewsList());
-    // isDeviceIsTv();
+    isDeviceIsTv();
   }
 
   void isDeviceIsTv() async {
@@ -351,30 +305,22 @@ class _GeneralNewsState extends State<GeneralNews> {
 }
 
 class GeneralNewsLoading extends StatelessWidget {
-  const GeneralNewsLoading({super.key});
+  final bool isTV;
+  const GeneralNewsLoading({super.key , required this.isTV});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height -
-            (MediaQuery
-                .of(context)
-                .size
-                .height * 0.2045),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.2045),
         child: Column(children: [
           Expanded(
-              child: ListView.builder(
+              child:
+              GridView.count(
+                crossAxisCount: isTV? 2 : 1,
                 padding: EdgeInsets.only(right: 4, left: 4),
-                itemCount: 5,
-                itemBuilder: (context, index) {
+                children: List.generate(10, (index) {
                   return Shimmer.fromColors(
                       child: Container(
                         width: MediaQuery
@@ -392,8 +338,9 @@ class GeneralNewsLoading extends StatelessWidget {
                       ),
                       baseColor: Colors.transparent,
                       highlightColor: Colors.white12);
-                },
-              ))
+                })
+              )
+          )
         ]),
       ),
     );

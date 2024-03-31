@@ -201,10 +201,10 @@ class _M3CarouselState extends State<M3Carousel> {
                                   ),
                             ),
                               Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      colors: [ Colors.transparent, Colors.black.withOpacity(0.5) ],
+                                      colors: [ Colors.transparent, Theme.of(context).brightness == Brightness.dark?  Colors.black.withOpacity(0.5): Colors.white.withOpacity(0.5) ],
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                     )

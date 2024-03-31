@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:data_store/data_store_repository.dart';
@@ -12,13 +13,15 @@ class LocalDataStore implements DataStore{
   @override
   Future<Either<String , String>> get lang async{
     try{
-      final all = await _storage.readAll(aOptions: _getAndroidOptions());
-      final selected = all.entries.where((element) => element.key == lang_key);
-      if(selected.isEmpty){
+      final selected = await _storage.read(key: lang_key);
+      if(selected == null || selected.isEmpty){
         return Either.right('');
       }
-      return Either.right(selected.first.value);
+      return Either.right(selected);
     }catch(e){
+      if (kDebugMode) {
+        print('exception of loading language : ${e.toString()}');
+      }
       return Either.left(e.toString());
     }
   }
@@ -33,22 +36,10 @@ class LocalDataStore implements DataStore{
     }
   }
 
-  // IOSOptions _getIOSOptions() => IOSOptions(
-  //   accountName: _getAccountName(),
-  // );
-  // String? _getAccountName() =>
-  //     _accountNameController.text.isEmpty ? null : _accountNameController.text;
-
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-    encryptedSharedPreferences: true,
-    // sharedPreferencesName: 'Test2',
-    // preferencesKeyPrefix: 'Test'
-  );
-
   @override
   Future<Either<String, String>> get nightTheme async{
     try{
-      final all = await _storage.readAll(aOptions: _getAndroidOptions());
+      final all = await _storage.readAll();
       final selected = all.entries.where((element) => element.key == theme_key);
       if(selected.isEmpty){
         return Either.right('0');
@@ -72,7 +63,7 @@ class LocalDataStore implements DataStore{
   @override
   Future<Either<String, String>> get playInBackGround async{
     try{
-      final all = await _storage.readAll(aOptions: _getAndroidOptions());
+      final all = await _storage.readAll();
       final selected = all.entries.where((element) => element.key == play_in_background);
       if(selected.isEmpty){
         return Either.right('1');

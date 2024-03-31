@@ -8,6 +8,8 @@ import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/translations/locale_keys.g.dart';
 
+import '../../../../main.dart';
+
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
 
@@ -63,6 +65,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                 context
                                     .read<ControllerBloc>()
                                     .add(ThemeChange(!bloc.theme ? "0" : "1"));
+                                MyApp.of(context).changeTheme(bloc.theme? ThemeMode.dark : ThemeMode.light);
                               });
                             },
                           ),

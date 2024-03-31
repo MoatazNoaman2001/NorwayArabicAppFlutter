@@ -50,11 +50,12 @@ import 'features/news/domain/usecases/platforms_usecase.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
 
-// MyAudioHandler audioHandler = MyAudioHandler();
-void main() async {
+
+Future<void> main() async {
   // HttpOverrides.global = MyHttpOverrides();
-  final engine = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
@@ -92,7 +93,12 @@ void main() async {
             youtubeRepoImpl: YoutubeRepoImpl(YoutubeParserImpl())),
       )
     ],
-    child: MyApp(),
+    child: EasyLocalization(
+        supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
+        path: 'assets/translations',
+        assetLoader: CodegenLoader(),
+        fallbackLocale: Locale('en'),
+        child: MyApp()),
   ));
 }
 
@@ -105,91 +111,58 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>()!;
 }
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<ControllerBloc>().add(ThemeGet());
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ControllerBloc, ControllerState>(
-      listener: (context, state) {
-        var bloc = BlocProvider.of<ControllerBloc>(context);
-        if (state is ThemeGetSuccess) {
-        print('main theme : '+(bloc.theme? "dark" : "light"));
-          setState(() {
-            if (bloc.theme){
-              _themeMode = ThemeMode.dark;
-            }else {
-              _themeMode = ThemeMode.light;
-            }
-          });
-        } else if (state is ThemeSetSuccess) {
-          setState(() {
-            if (bloc.theme != false) {
-              _themeMode = ThemeMode.dark;
-            } else if (bloc.theme != true) {
-              _themeMode = ThemeMode.light;
-            }
-          });
-        }
-      },
-      builder: (context, state) {
-        return EasyLocalization(
-            supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
-            path: 'assets/translations',
-            assetLoader: CodegenLoader(),
-            fallbackLocale: state is LangGetSuccess? Locale(state.lang)  :Locale('en'),
-            child: MyAppMainEntry(thememode: _themeMode,));
-      },
-    );
+    return
+      GetMaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+        themeMode: _themeMode,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => InitiateApp(),
+          '/select_language': (context) => SelectLanguage(),
+          '/home': (context) => MyHomePage(),
+          '/political': (context) =>
+              PoliticalNews(url: Constants.newsUrls[2]),
+          '/aboutUs' : (context) => AboutUsScreen(),
+          '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
+          '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
+          '/details': (context) => NewDetails(),
+          '/platform': (context) => PlatformScreen(),
+          '/setting': (context) => SettingScreen(),
+          '/select_stream': (context) => SelectStreamType(),
+          '/audio_stream': (context) => AudioStreamScreen(),
+          '/video_stream': (context) => VideoStreamScreen(),
+        },
+      );
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
   }
 }
 
-class MyAppMainEntry extends StatelessWidget {
-  final ThemeMode thememode;
-  const MyAppMainEntry({super.key , required this.thememode});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-      themeMode: thememode,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => InitiateApp(),
-        '/select_language': (context) => SelectLanguage(),
-        '/home': (context) => MyHomePage(),
-        '/political': (context) =>
-            PoliticalNews(url: Constants.newsUrls[2]),
-        '/aboutUs' : (context) => AboutUsScreen(),
-        '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
-        '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
-        '/details': (context) => NewDetails(),
-        '/platform': (context) => PlatformScreen(),
-        '/setting': (context) => SettingScreen(),
-        '/select_stream': (context) => SelectStreamType(),
-        '/audio_stream': (context) => AudioStreamScreen(),
-        '/video_stream': (context) => VideoStreamScreen(),
-      },
-    );
-  }
-}
 
 
 class MyHomePage extends StatefulWidget {
@@ -223,6 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
+        animationDuration: Duration(milliseconds: 200),
         selectedIndex: selectedPageIndex,
         onDestinationSelected: (int value) {
           setState(() {
@@ -345,7 +319,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.people_alt_outlined),
               label: Text(LocaleKeys.AboutUs.tr())),
           SizedBox(
-            height: 240,
+            height: 220,
           ),
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),

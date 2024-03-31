@@ -102,75 +102,77 @@ class DetailsLoadingScreen extends StatelessWidget {
       padding: EdgeInsets.all(7),
       width: double.infinity,
       height: double.infinity,
-      child: Card(
-        borderOnForeground: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(14))),
-        elevation: 4,
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(14), topLeft: Radius.circular(14)),
-              child: CachedNetworkImage(
-                height: 240,
-                imageUrl: norwayNew.image,
-                placeholderFadeInDuration: Durations.medium3,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
+      child: SingleChildScrollView(
+        child: Card(
+          borderOnForeground: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14))),
+          elevation: 4,
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(topRight: Radius.circular(14), topLeft: Radius.circular(14)),
+                child: CachedNetworkImage(
+                  height: 240,
+                  imageUrl: norwayNew.image,
+                  placeholderFadeInDuration: Durations.medium3,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
+                  progressIndicatorBuilder: (context, url, progress) => Center(
+                      child: CircularProgressIndicator(
+                    value: progress.progress,
+                  )),
+                  errorWidget: (context, url, error) =>
+                      Image.asset('assets/images/head_logo.jpeg'),
                 ),
-                progressIndicatorBuilder: (context, url, progress) => Center(
-                    child: CircularProgressIndicator(
-                  value: progress.progress,
-                )),
-                errorWidget: (context, url, error) =>
-                    Image.asset('assets/images/head_logo.jpeg'),
               ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              padding: EdgeInsets.only(right: 8, left: 8),
-              child: Column(
-                children: [
-                  Shimmer.fromColors(
-                      child: Container(
-                        width: double.infinity,
-                        height: 60,
-                        padding: EdgeInsets.only(right: 8, left: 8),
-                        child: Card(),
-                      ),
-                      baseColor: Colors.transparent,
-                      highlightColor: Colors.white24),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    norwayNew.title,
-                    textAlign: TextAlign.right,
-                    style: GoogleFonts.rubik().copyWith(fontSize: 24),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Shimmer.fromColors(
-                      child: Container(
-                        width: double.infinity,
-                        height: 200,
-                        padding: EdgeInsets.only(right: 8, left: 8),
-                        child: Card(),
-                      ),
-                      baseColor: Colors.transparent,
-                      highlightColor: Colors.white24)
-                ],
+              SizedBox(
+                height: 12,
               ),
-            ),
-          ],
+              Container(
+                padding: EdgeInsets.only(right: 8, left: 8),
+                child: Column(
+                  children: [
+                    Shimmer.fromColors(
+                        child: Container(
+                          width: double.infinity,
+                          height: 60,
+                          padding: EdgeInsets.only(right: 8, left: 8),
+                          child: Card(),
+                        ),
+                        baseColor: Colors.transparent,
+                        highlightColor: Colors.white24),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      norwayNew.title,
+                      textAlign: TextAlign.right,
+                      style: GoogleFonts.rubik().copyWith(fontSize: 24),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Shimmer.fromColors(
+                        child: Container(
+                          width: double.infinity,
+                          height: 200,
+                          padding: EdgeInsets.only(right: 8, left: 8),
+                          child: Card(),
+                        ),
+                        baseColor: Colors.transparent,
+                        highlightColor: Colors.white24)
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

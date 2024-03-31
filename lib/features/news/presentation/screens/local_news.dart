@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class LocalNews extends StatefulWidget {
 
 class _LocalNewsState extends State<LocalNews> {
   final String url;
+  bool isTV = false;
 
   _LocalNewsState(this.url);
 
@@ -40,6 +42,13 @@ class _LocalNewsState extends State<LocalNews> {
             url,[]
         )
     );
+    isDeviceIsTv();
+  }
+
+  void isDeviceIsTv() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    isTV = androidInfo.systemFeatures.contains('android.software.leanback');
   }
 
   @override
@@ -93,7 +102,7 @@ class _LocalNewsState extends State<LocalNews> {
                           return LocalNewLoadingView();
                         } else if (state is LocalNewsSuccess  ||
                             (state is LocalNewsLoading && bloc.local_norways.isNotEmpty)) {
-                          return LocalNewSuccessView(url: url);
+                          return LocalNewSuccessView(url: url, isTV: isTV,);
                         } else if (state is LocalNewsFailure) {
                           return LocalNewLoadingView();
                         } else {
@@ -152,7 +161,8 @@ class LocalNewLoadingView extends StatelessWidget {
 
 class LocalNewSuccessView extends StatelessWidget {
   final String url;
-  const LocalNewSuccessView({super.key , required this.url});
+  final bool isTV;
+  const LocalNewSuccessView({super.key , required this.url, required this.isTV});
 
   @override
   Widget build(BuildContext context) {
@@ -184,21 +194,23 @@ class LocalNewSuccessView extends StatelessWidget {
         children: [
           // ListView(),
           Expanded(
-              child: ListView.builder(
-                controller: controller,
-                physics: BouncingScrollPhysics(),
-                padding:
-                const EdgeInsets.only(right: 8, left: 8),
-                itemCount: bloc.local_norways.length,
-                itemBuilder: (context, index) {
-                  return NewsCardRecycleItem(
-                    norwayNew: bloc.local_norways.toList()[index],
-                    callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: bloc.local_norways.toList()[index]);
-                    },
-                  );
-                },
-              ))
+              child:
+              GridView.count(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  crossAxisCount: isTV ? 2 : 1,
+                  shrinkWrap: true,
+                  childAspectRatio: isTV ? 1 : 0.7,
+                  physics: BouncingScrollPhysics(),
+                  children: bloc.local_norways.map((e) {
+                    return NewsCardRecycleItem(
+                      norwayNew: e,
+                      callback: () {
+                        Navigator.of(context).pushNamed('/details' , arguments: e);
+                      },
+                    );
+                  }).toList()
+              )
+          )
         ],
       ),
     );

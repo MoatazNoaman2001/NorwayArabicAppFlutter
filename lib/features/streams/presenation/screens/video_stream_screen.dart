@@ -41,72 +41,76 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.TvStream.tr()),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        titleTextStyle: GoogleFonts.rubik().copyWith(fontSize: 20),
-      ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: BlocConsumer<YoutubeStreamBloc, YoutubeStreamState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              if (state is YoutubeStreamLoading) {
-                return CircularProgressIndicator();
-              } else if (state is YoutubeStreamSuccess) {
-                if (state.link.contains('channel')) {
-                  return Text('Youtube streams seems to be off');
-                } else{
-                  // SystemChrome.setPreferredOrientations([
-                  //   DeviceOrientation.landscapeRight,
-                  //   DeviceOrientation.landscapeLeft,
-                  // ]);
-                  YoutubePlayerController controller = YoutubePlayerController(
-                      initialVideoId: YoutubePlayer.convertUrlToId(state.link)!,
-                      flags: YoutubePlayerFlags(isLive: true)
-                  );
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-
-                        padding: const EdgeInsets.only(bottom: 150),
-                        child: YoutubePlayerBuilder(
-                          player: YoutubePlayer(
-                            liveUIColor: Colors.amber,
-                            controller: controller,
-                            bottomActions: [
-                              CurrentPosition(),
-                              ProgressBar(isExpanded: true,),
-                            ],
-                            onReady: () {
-                              controller.addListener(() {});
-                            },
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Scaffold(
+          extendBodyBehindAppBar: orientation == Orientation.landscape,
+          appBar: AppBar(
+            title: Text(LocaleKeys.TvStream.tr() , style: TextStyle( color: Theme.of(context).brightness == Brightness.light? Colors.black : Colors.white),),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            leading: GestureDetector(child: Icon(Icons.arrow_back_ios), onTap: () {
+              Navigator.of(context).pop();
+            },),
+            titleTextStyle: GoogleFonts.rubik().copyWith(fontSize: 20),
+          ),
+          body: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Center(
+              child: BlocConsumer<YoutubeStreamBloc, YoutubeStreamState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is YoutubeStreamLoading) {
+                    return CircularProgressIndicator();
+                  } else if (state is YoutubeStreamSuccess) {
+                    if (state.link.contains('channel')) {
+                      return Text('Youtube streams seems to be off');
+                    } else{
+                      // SystemChrome.setPreferredOrientations([
+                      //   DeviceOrientation.landscapeRight,
+                      //   DeviceOrientation.landscapeLeft,
+                      // ]);
+                      YoutubePlayerController controller = YoutubePlayerController(
+                        // initialVideoId: '6nxPpEdjdPE',
+                          initialVideoId: YoutubePlayer.convertUrlToId(state.link)!,
+                          flags: YoutubePlayerFlags(isLive: true)
+                      );
+                      return YoutubePlayerBuilder(
+                        player:
+                        YoutubePlayer(
+                          controller: controller,
+                          showVideoProgressIndicator: true,
+                          progressIndicatorColor: Colors.amber,
+                          liveUIColor: Colors.amber,
+                          progressColors: const ProgressBarColors(
+                            playedColor: Colors.amber,
+                            handleColor: Colors.amberAccent,
                           ),
-                          builder: (context, player) {
-                            return Column(
-                              children: [player],
-                            );
+                          onReady: () {
+                            controller.addListener(() {
+
+                            },);
                           },
                         ),
-                      ),
-                    ],
-                  );
-                }
-              } else if (state is YoutubeStreamFailure){
-                return Text('failure : ${state.msg}');
-              } else {
-                return SizedBox.shrink();
-              }
-            },
+                        builder: (context, player) {
+                          return Column(
+                            children: [player],
+                          );
+                        },
+                      );
+                    }
+                  } else if (state is YoutubeStreamFailure){
+                    return Text('failure : ${state.msg}');
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

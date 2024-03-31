@@ -104,22 +104,26 @@ class SwiperSuccessState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      padding: EdgeInsets.only(top: 8, left: 8, right: 8),
-      width: MediaQuery.of(context).size.width,
-      child: M3Carousel(
-        visible: 3,
-        borderRadius: 20,
-        slideAnimationDuration: 500,
-        titleFadeAnimationDuration: 300,
-        childClick: (int index) {
-          Navigator.of(context)
-              .pushNamed('/details', arguments: norways[index]);
-        },
-        children:
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          padding: EdgeInsets.only(top: 8, left: 8, right: 8),
+          child: M3Carousel(
+            visible: 3,
+            borderRadius: 20,
+            slideAnimationDuration: 500,
+            titleFadeAnimationDuration: 200,
+            childClick: (int index) {
+              Navigator.of(context)
+                  .pushNamed('/details', arguments: norways[index]);
+            },
+            children:
             norways.map((e) => {"image": e.image, "title": e.title}).toList(),
-      ),
+          ),
+        );
+      },
     );
   }
 }

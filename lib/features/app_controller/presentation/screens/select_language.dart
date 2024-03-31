@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 
 class SelectLanguage extends StatefulWidget {
@@ -21,18 +22,9 @@ class _SelectLanguageState extends State<SelectLanguage> {
       child: BlocConsumer<ControllerBloc, ControllerState>(
         listener: (context, state) {
           if (state is LangSetSuccess) {
-            Fluttertoast.showToast(
-                msg: "lng",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1);
             Navigator.of(context).popAndPushNamed('/home');
           } else if (state is LangFailure) {
-            Fluttertoast.showToast(
-                msg: "error happened" + state.msg,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1);
+            Constants.makeToast('failed to save language! : ${state.msg}');
           }
         },
         builder: (context, state) {
@@ -54,7 +46,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
                             .read<ControllerBloc>()
                             .add(LanguageChange('no'));
                       },
-                      child: Text('Nirsik')),
+                      child: Text('Norsk')),
                   const SizedBox(
                     width: 4,
                   ),
