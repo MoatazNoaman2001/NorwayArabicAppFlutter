@@ -18,7 +18,7 @@ class SwiperWid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 160,
       child: BlocConsumer<NewsBloc, NewsState>(
         listener: (context, state) {
           // if (state is SwiperNewsSuccess) {
@@ -108,7 +108,7 @@ class SwiperSuccessState extends StatelessWidget {
       builder: (context, orientation) {
         return Container(
           width: MediaQuery.of(context).size.width,
-          height: 200,
+          height: 100,
           padding: EdgeInsets.only(top: 8, left: 8, right: 8),
           child: M3Carousel(
             visible: 3,

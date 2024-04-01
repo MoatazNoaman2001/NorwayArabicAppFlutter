@@ -85,13 +85,20 @@ class _InitiateAppState extends State<InitiateApp> {
   void initState() {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
-    _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')
-      ..initialize().then((_) {});
+    _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')..initialize().then((_) {
+
+    });
 
     _controller.play();
     _controller.addListener(() {
       inspectVideo();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   void inspectVideo() {

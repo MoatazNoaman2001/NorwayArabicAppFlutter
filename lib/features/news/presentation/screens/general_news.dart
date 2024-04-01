@@ -41,10 +41,17 @@ class _GeneralNewsState extends State<GeneralNews> {
     var controller = ScrollController(
       onAttach: (position) {},
     );
+    var parent_controller = ScrollController(
+      onAttach: (position) {
+
+      },
+    );
     controller.addListener(() {
       if (controller.position.atEdge) {
         bool isTop = controller.position.pixels == 0;
-        if (isTop) {} else {
+        if (isTop) {
+          parent_controller.animateTo(0.0, duration: Duration(milliseconds: 200), curve: Curves.ease);
+        } else {
           if(bloc.loadingPage == false){
             bloc.loadingPage = true;
             bloc.pageNum[0] = bloc.pageNum[0] + 1;
@@ -53,8 +60,16 @@ class _GeneralNewsState extends State<GeneralNews> {
           }
         }
       }
+
+      final current_pos = controller.offset;
+      var topindex = current_pos ~/ (MediaQuery.of(context).size.width / 0.75);
+      print(topindex);
+      if (topindex != 0)
+        parent_controller.animateTo(120.0, duration: Duration(milliseconds: 200), curve: Curves.ease);
+
     });
     return SingleChildScrollView(
+      controller: parent_controller,
       child: Container(
           width: MediaQuery
               .of(context)
