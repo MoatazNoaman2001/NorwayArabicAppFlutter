@@ -33,6 +33,7 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
     //   DeviceOrientation.portraitDown,
     // ]);
   }
+
   @override
   void initState() {
     super.initState();
@@ -46,12 +47,21 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
         return Scaffold(
           extendBodyBehindAppBar: orientation == Orientation.landscape,
           appBar: AppBar(
-            title: Text(LocaleKeys.TvStream.tr() , style: TextStyle( color: Theme.of(context).brightness == Brightness.light? Colors.black : Colors.white),),
+            title: Text(
+              LocaleKeys.TvStream.tr(),
+              style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white),
+            ),
             centerTitle: true,
             backgroundColor: Colors.transparent,
-            leading: GestureDetector(child: Icon(Icons.arrow_back_ios), onTap: () {
-              Navigator.of(context).pop();
-            },),
+            leading: GestureDetector(
+              child: Icon(Icons.arrow_back_ios),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
             titleTextStyle: GoogleFonts.rubik().copyWith(fontSize: 20),
           ),
           body: Container(
@@ -66,19 +76,19 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
                   } else if (state is YoutubeStreamSuccess) {
                     if (state.link.contains('channel')) {
                       return Text('Youtube streams seems to be off');
-                    } else{
+                    } else {
                       // SystemChrome.setPreferredOrientations([
                       //   DeviceOrientation.landscapeRight,
                       //   DeviceOrientation.landscapeLeft,
                       // ]);
-                      YoutubePlayerController controller = YoutubePlayerController(
-                        // initialVideoId: '6nxPpEdjdPE',
-                          initialVideoId: YoutubePlayer.convertUrlToId(state.link)!,
-                          flags: YoutubePlayerFlags(isLive: true)
-                      );
+                      YoutubePlayerController controller =
+                          YoutubePlayerController(
+                              // initialVideoId: '6nxPpEdjdPE',
+                              initialVideoId:
+                                  YoutubePlayer.convertUrlToId(state.link)!,
+                              flags: YoutubePlayerFlags(isLive: true));
                       return YoutubePlayerBuilder(
-                        player:
-                        YoutubePlayer(
+                        player: YoutubePlayer(
                           controller: controller,
                           showVideoProgressIndicator: true,
                           progressIndicatorColor: Colors.amber,
@@ -88,19 +98,21 @@ class _VideoStreamScreenState extends State<VideoStreamScreen> {
                             handleColor: Colors.amberAccent,
                           ),
                           onReady: () {
-                            controller.addListener(() {
-
-                            },);
+                            controller.addListener(
+                              () {},
+                            );
                           },
                         ),
                         builder: (context, player) {
-                          return Column(
-                            children: [player],
+                          return Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            child: player,
                           );
                         },
                       );
                     }
-                  } else if (state is YoutubeStreamFailure){
+                  } else if (state is YoutubeStreamFailure) {
                     return Text('failure : ${state.msg}');
                   } else {
                     return SizedBox.shrink();

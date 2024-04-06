@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:radio_player/radio_player.dart';
+import 'package:video_player/video_player.dart';
 
 class Constants {
   static final List<String> newsUrls = [
@@ -10,6 +11,13 @@ class Constants {
     "https://norwayvoice.no/category/%d8%a7%d9%84%d8%a3%d8%ae%d8%a8%d8%a7%d8%b1-%d8%a7%d9%84%d9%85%d8%ad%d9%84%d9%8a%d8%a9/",
     "https://norwayvoice.no/category/%d8%a7%d9%84%d8%a3%d8%ae%d8%a8%d8%a7%d8%b1-%d8%a7%d9%84%d8%b1%d9%8a%d8%a7%d8%b6%d9%8a%d8%a9/"
   ];
+
+  static VideoPlayerController? _videoPlayerController;
+  VideoPlayerController? initPlayer(){
+    _videoPlayerController = VideoPlayerController.asset('assets/videos/splash_video.mp4')..initialize().then((_) {
+    });
+    return _videoPlayerController;
+  }
 
   static final RadioPlayer _player = RadioPlayer();
   static RadioPlayer getInstanceOfRadioPlayer() => _player;

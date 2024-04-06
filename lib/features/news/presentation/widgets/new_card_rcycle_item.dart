@@ -43,7 +43,7 @@ class NewsCardRecycleItem extends StatelessWidget {
                             )
                         ),
                     errorWidget: (context, url, error) =>
-                        Image.asset('assets/images/image_not_found.jpeg'),
+                        Image.asset('assets/images/image_not_found.jpg'),
                   ),
                 ),
                 SizedBox(height: 4,),
@@ -85,6 +85,8 @@ class NewsCardRecycleItem extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                       norwayNew.content,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 6,
                     textDirection: TextDirection.rtl,
                     style: GoogleFonts.rubik().copyWith(
                         fontSize: 13

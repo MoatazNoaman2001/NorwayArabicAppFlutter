@@ -188,33 +188,33 @@ class SportNewSuccessView extends StatelessWidget {
         }
       }
     });
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height -
-          (MediaQuery.of(context).size.height * 0.15),
-      child: Column(
-        children: [
-          // ListView(),
-          Expanded(
-              child:
-              GridView.count(
+    return OrientationBuilder(
+        builder: (context, orientation) {
+          var width =  MediaQuery.of(context).size.width;
+          var height =  MediaQuery.of(context).size.height;
+          print(orientation.toString() + 'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
+          return Container(
+            width: width,
+            height: height - (height *( width > height? 0.22 : 0.15)),
+            child: GridView.count(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                crossAxisCount: isTV ? 2 : 1,
+                crossAxisCount:
+                isTV || width > height ? 2 : 1,
                 shrinkWrap: true,
-                childAspectRatio: isTV ? 1 : 0.7,
+                controller: controller,
+                childAspectRatio: isTV ? 1 : 0.75,
                 physics: BouncingScrollPhysics(),
                 children: bloc.sport_norways.map((e) {
                   return NewsCardRecycleItem(
                     norwayNew: e,
                     callback: () {
-                      Navigator.of(context).pushNamed('/details' , arguments: e);
+                      Navigator.of(context)
+                          .pushNamed('/details', arguments: e);
                     },
                   );
-                }).toList()
-              )
-          )
-        ],
-      ),
+                }).toList()),
+          );
+        }
     );
   }
 }

@@ -19,9 +19,6 @@ class LocalDataStore implements DataStore{
       }
       return Either.right(selected);
     }catch(e){
-      if (kDebugMode) {
-        print('exception of loading language : ${e.toString()}');
-      }
       return Either.left(e.toString());
     }
   }

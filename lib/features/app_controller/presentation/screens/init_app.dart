@@ -86,7 +86,6 @@ class _InitiateAppState extends State<InitiateApp> {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
     _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')..initialize().then((_) {
-
     });
 
     _controller.play();

@@ -37,11 +37,7 @@ class _LocalNewsState extends State<LocalNews> {
   void initState() {
     super.initState();
     connectivityController.init();
-    context.read<NewsBloc>().add(
-        GetLocalNorwayNewsList(
-            url,[]
-        )
-    );
+    context.read<NewsBloc>().add(GetLocalNorwayNewsList(url, []));
     isDeviceIsTv();
   }
 
@@ -80,9 +76,8 @@ class _LocalNewsState extends State<LocalNews> {
                             duration: Duration(hours: 1),
                             action: SnackBarAction(
                               onPressed: () {
-                                context
-                                    .read<NewsBloc>()
-                                    .add(GetPoliticalNorwayNewsList(url, norways));
+                                context.read<NewsBloc>().add(
+                                    GetPoliticalNorwayNewsList(url, norways));
                               },
                               label: "ok",
                             ),
@@ -94,15 +89,21 @@ class _LocalNewsState extends State<LocalNews> {
                         }
                       },
                       builder: (context, state) {
-                        final  bloc = BlocProvider.of<NewsBloc>(context);
-                        if ( state is LocalNewsSuccess || state is LocalNewsFailure){
+                        final bloc = BlocProvider.of<NewsBloc>(context);
+                        if (state is LocalNewsSuccess ||
+                            state is LocalNewsFailure) {
                           bloc.loadingPage = false;
                         }
-                        if (state is LocalNewsLoading && bloc.local_norways.isEmpty) {
+                        if (state is LocalNewsLoading &&
+                            bloc.local_norways.isEmpty) {
                           return LocalNewLoadingView();
-                        } else if (state is LocalNewsSuccess  ||
-                            (state is LocalNewsLoading && bloc.local_norways.isNotEmpty)) {
-                          return LocalNewSuccessView(url: url, isTV: isTV,);
+                        } else if (state is LocalNewsSuccess ||
+                            (state is LocalNewsLoading &&
+                                bloc.local_norways.isNotEmpty)) {
+                          return LocalNewSuccessView(
+                            url: url,
+                            isTV: isTV,
+                          );
                         } else if (state is LocalNewsFailure) {
                           return LocalNewLoadingView();
                         } else {
@@ -150,8 +151,7 @@ class LocalNewLoadingView extends StatelessWidget {
             (MediaQuery.of(context).size.height * 0.15),
         child: Column(children: [
           LinearProgressIndicator(
-            borderRadius:
-            BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ]),
       ),
@@ -162,7 +162,8 @@ class LocalNewLoadingView extends StatelessWidget {
 class LocalNewSuccessView extends StatelessWidget {
   final String url;
   final bool isTV;
-  const LocalNewSuccessView({super.key , required this.url, required this.isTV});
+
+  const LocalNewSuccessView({super.key, required this.url, required this.isTV});
 
   @override
   Widget build(BuildContext context) {
@@ -175,45 +176,42 @@ class LocalNewSuccessView extends StatelessWidget {
         bool isTop = controller.position.pixels == 0;
         if (isTop) {
         } else {
-            if (bloc.loadingPage == false) {
-              bloc.loadingPage = true;
-              bloc.pageNum[3] = bloc.pageNum[3] + 1;
-              context.read<NewsBloc>().add(GetLocalNorwayNewsList(
-                  '$url/page/${bloc.pageNum[3]}/', []));
-            }else {
-
-            }
+          if (bloc.loadingPage == false) {
+            bloc.loadingPage = true;
+            bloc.pageNum[3] = bloc.pageNum[3] + 1;
+            context.read<NewsBloc>().add(
+                GetLocalNorwayNewsList('$url/page/${bloc.pageNum[3]}/', []));
+          } else {}
         }
       }
     });
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height -
-          (MediaQuery.of(context).size.height * 0.15),
-      child: Column(
-        children: [
-          // ListView(),
-          Expanded(
-              child:
-              GridView.count(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  crossAxisCount: isTV ? 2 : 1,
-                  shrinkWrap: true,
-                  childAspectRatio: isTV ? 1 : 0.7,
-                  physics: BouncingScrollPhysics(),
-                  children: bloc.local_norways.map((e) {
-                    return NewsCardRecycleItem(
-                      norwayNew: e,
-                      callback: () {
-                        Navigator.of(context).pushNamed('/details' , arguments: e);
-                      },
-                    );
-                  }).toList()
-              )
-          )
-        ],
-      ),
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        var width =  MediaQuery.of(context).size.width;
+        var height =  MediaQuery.of(context).size.height;
+        print(orientation.toString() + 'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
+        return Container(
+          width: width,
+          height: height - (height *( width > height? 0.22 : 0.15)),
+          child: GridView.count(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              crossAxisCount:
+              isTV || width > height ? 2 : 1,
+              shrinkWrap: true,
+              controller: controller,
+              childAspectRatio: isTV ? 1 : 0.75,
+              physics: BouncingScrollPhysics(),
+              children: bloc.local_norways.map((e) {
+                return NewsCardRecycleItem(
+                  norwayNew: e,
+                  callback: () {
+                    Navigator.of(context)
+                        .pushNamed('/details', arguments: e);
+                  },
+                );
+              }).toList()),
+        );
+      }
     );
   }
 }
-

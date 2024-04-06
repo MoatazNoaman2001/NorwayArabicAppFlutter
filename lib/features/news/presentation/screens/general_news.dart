@@ -151,7 +151,8 @@ class _GeneralNewsState extends State<GeneralNews> {
                   }
                 },
                 builder: (context, state) {
-                  if (state is GeneralNewsSuccess || state is GeneralNewsFailure){
+                  if (state is GeneralNewsSuccess ||
+                      state is GeneralNewsFailure) {
                     bloc.loadingPage = false;
                   }
                   if (state is GeneralNewsLoading &&
@@ -160,135 +161,16 @@ class _GeneralNewsState extends State<GeneralNews> {
                   } else if (state is GeneralNewsSuccess ||
                       (state is GeneralNewsLoading &&
                           bloc.general_norways.isNotEmpty)) {
-                    if (isTV) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
-                        child: Column(
-                          children: [
-                            Expanded(
-                                child: GridView.count(
-                                  controller: controller,
-                                  crossAxisCount: 2,
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  physics: BouncingScrollPhysics(),
-                                  children: bloc.general_norways.map((e) {
-                                    return NewsCardRecycleItem(
-                                      norwayNew: e,
-                                      callback: () {
-                                        makeToast('clicked');
-                                        Navigator.of(context).pushNamed(
-                                            '/details',
-                                            arguments: e);
-                                      },
-                                    );
-                                  }).toList(),
-                                )
-                            )
-                          ],
-                        ),
-                      );
-                    } else
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
-                        child: Column(
-                          children: [
-                            Expanded(
-                                child: ListView.builder(
-                                  controller: controller,
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  itemCount: bloc.general_norways.length - 1,
-                                  padding: const EdgeInsets.only(
-                                      right: 4, left: 4),
-                                  itemBuilder: (BuildContext context,
-                                      int index) {
-                                    return NewsCardRecycleItem(
-                                      norwayNew:
-                                      bloc.general_norways.toList()[index],
-                                      callback: () {
-                                        makeToast('clicked');
-                                        Navigator.of(context).pushNamed(
-                                            '/details',
-                                            arguments: bloc.general_norways
-                                                .toList()[index]);
-                                      },
-                                    );
-                                  },
-                                ))
-                          ],
-                        ),
-                      );
-                  } else {
-                    if (bloc.general_norways.isNotEmpty) {
-                      if (isTV) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                  child: GridView.count(
-                                    controller: controller,
-                                    crossAxisCount: 2,
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
-                                    physics: BouncingScrollPhysics(),
-                                    children: bloc.general_norways.map((e) {
-                                      return NewsCardRecycleItem(
-                                        norwayNew: e,
-                                        callback: () {
-                                          makeToast('clicked');
-                                          Navigator.of(context).pushNamed(
-                                              '/details',
-                                              arguments: e);
-                                        },
-                                      );
-                                    }).toList(),
-                                  )
-                              )
-                            ],
-                          ),
-                        );
-                      } else
-                        return Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.205),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                    child:
-                                    ListView.builder(
-                                      controller: controller,
-                                      primary: false,
-                                      itemCount: bloc.general_norways.length -1 ,
-                                      shrinkWrap: true,
-                                      padding: const EdgeInsets.only(
-                                          right: 4, left: 4),
-                                      itemBuilder: (BuildContext context,
-                                          int index) {
-                                        return NewsCardRecycleItem(
-                                          norwayNew:
-                                          bloc.general_norways.toList()[index],
-                                          callback: () {
-                                            makeToast('clicked');
-                                            Navigator.of(context).pushNamed(
-                                                '/details',
-                                                arguments: bloc.general_norways
-                                                    .toList()[index]);
-                                          },
-                                        );
-                                      },
-                                    ))
-                              ],
-                            ));
-                    } else {
-                      return GeneralNewsLoading(isTV: isTV,);
-                    }
+                    return GeneralListSuccessView(
+                        n: bloc.general_norways.toList(), url: url, isTv: isTV , parentController: parent_controller,);
                   }
-                },
+                  else if (bloc.general_norways.isNotEmpty) {
+                    return GeneralListSuccessView(
+                        n: bloc.general_norways.toList(), url: url, isTv: isTV, parentController:  parent_controller,);
+                  } else {
+                    return GeneralNewsLoading(isTV: isTV,);
+                  }
+                }
               )
             ],
           )),
@@ -360,5 +242,74 @@ class GeneralNewsLoading extends StatelessWidget {
       ),
     );
     ;
+  }
+}
+
+class GeneralListSuccessView extends StatelessWidget {
+  final List<NorwayNew> n;
+  final ScrollController parentController;
+  final String url;
+  final bool isTv;
+
+  const GeneralListSuccessView(
+      {super.key, required this.n, required this.url, required this.isTv , required this.parentController});
+
+  @override
+  Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<NewsBloc>(context);
+
+    var controller = ScrollController(
+      onAttach: (position) {},
+    );
+    controller.addListener(() {
+      if (controller.position.atEdge) {
+        bool isTop = controller.position.pixels == 0;
+        if (isTop) {
+          parentController.animateTo(0.0, duration: Duration(milliseconds: 200), curve: Curves.ease);
+        } else {
+          if(bloc.loadingPage == false){
+            bloc.loadingPage = true;
+            bloc.pageNum[0] = bloc.pageNum[0] + 1;
+            context.read<NewsBloc>().add(GetGeneralNorwayNewsList(
+                '$url/page/${bloc.pageNum[0]}/', n));
+          }
+        }
+      }
+
+      final current_pos = controller.offset;
+      var topindex = current_pos ~/ (MediaQuery.of(context).size.width / 0.75);
+      print(topindex);
+      if (topindex != 0)
+        parentController.animateTo(120.0, duration: Duration(milliseconds: 200), curve: Curves.ease);
+
+    });
+    return OrientationBuilder(
+        builder: (context, orientation) {
+          var width =  MediaQuery.of(context).size.width;
+          var height =  MediaQuery.of(context).size.height;
+          print(orientation.toString() + 'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
+          return Container(
+            width: width,
+            height: height - (height *( width > height? 0.22 : 0.15)),
+            child: GridView.count(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                crossAxisCount:
+                isTv || width > height ? 2 : 1,
+                shrinkWrap: true,
+                controller: controller,
+                childAspectRatio: isTv ? 1 : 0.75,
+                physics: BouncingScrollPhysics(),
+                children: bloc.general_norways.map((e) {
+                  return NewsCardRecycleItem(
+                    norwayNew: e,
+                    callback: () {
+                      Navigator.of(context)
+                          .pushNamed('/details', arguments: e);
+                    },
+                  );
+                }).toList()),
+          );
+        }
+    );
   }
 }
