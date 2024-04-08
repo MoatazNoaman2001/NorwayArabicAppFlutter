@@ -20,6 +20,7 @@ abstract class  LocaleKeys {
   static const TvStream = 'TvStream';
   static const Details = 'Details';
   static const AboutUs = 'AboutUs';
+  static const LiveStream = 'LiveStream';
   static const AudioStreamHead = 'AudioStreamHead';
   static const VideoStreamHead = 'VideoStreamHead';
   static const StreamIsOff = 'StreamIsOff';

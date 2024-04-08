@@ -15,8 +15,8 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> ar = {
-  "title": "اذاعة النرويج بالعربية",
-  "general": "منوعات",
+  "title": "مؤسسة صوت النرويج الاعلامية",
+  "general": "الاخبار",
   "onBoard": "تحقيقات",
   "NightMode": "وضع الليلي",
   "Play_In_Background": "تشغيل بالخلفية",
@@ -34,8 +34,9 @@ class CodegenLoader extends AssetLoader{
   "TvStream": "قناه النرويج بالعربية",
   "Details": "تفاصيل",
   "AboutUs": "من نحن",
-  "AudioStreamHead": "الاذاعة الصوتية لنرويج",
-  "VideoStreamHead": "تيلفزيون النرويج بالعربية مباشر",
+  "LiveStream": "بث مباشر",
+  "AudioStreamHead": "اذاعة النرويج بالعربي",
+  "VideoStreamHead": "التلفزيون النرويجي باللغة العربية",
   "StreamIsOff": "البث العربي النرويجي الحالي متوقف"
 };
 static const Map<String,dynamic> en = {
@@ -58,6 +59,7 @@ static const Map<String,dynamic> en = {
   "TvStream": "Norway Arabic Tv",
   "Details": "Details",
   "AboutUs": "About Us",
+  "LiveStream": "Live Stream",
   "AudioStreamHead": "Voice Radio of Norway",
   "VideoStreamHead": "Norway TV in Arabic live",
   "StreamIsOff": "Current Arabic Norway BroadCast Is OFF"
@@ -82,6 +84,7 @@ static const Map<String,dynamic> no = {
   "TvStream": "Norge Arabisk TV",
   "Details": "detaljer",
   "AboutUs": "Om oss",
+  "LiveStream": "Direktestrømming",
   "AudioStreamHead": "Voice Radio of Norway",
   "VideoStreamHead": "Norge TV på arabisk direkte",
   "StreamIsOff": "Nåværende Arabisk Norges kringkasting er AV"

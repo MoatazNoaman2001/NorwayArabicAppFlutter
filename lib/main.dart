@@ -15,8 +15,10 @@ import 'package:norway_flutter_app/features/app_controller/domain/change_play_in
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/fb_videos_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/platfroms_scr.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/screens/setting.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/youtube_list_screen.dart';
 import 'package:norway_flutter_app/features/streams/data/repo/youtube_repo_impl.dart';
 import 'package:norway_flutter_app/features/streams/data/youtube_parser_impl.dart';
 import 'package:norway_flutter_app/features/streams/presenation/bloc/youtube_stream_bloc.dart';
@@ -50,7 +52,6 @@ import 'features/news/domain/usecases/platforms_usecase.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
 
-
 Future<void> main() async {
   // HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,8 +66,10 @@ Future<void> main() async {
           getLanguageUseCase: GetLanguageUseCase(LocalDataStore()),
           getThemeUseCase: GetThemeUseCase(LocalDataStore()),
           changeThemeUseCase: ChangeThemeUseCase(LocalDataStore()),
-          get_playInBackGroundUseCase: GetPlayInBackGroundUseCase(LocalDataStore()),
-          changePlayInBackGroundUseCase: ChangePlayInBackGroundUseCase(LocalDataStore()),
+          get_playInBackGroundUseCase:
+              GetPlayInBackGroundUseCase(LocalDataStore()),
+          changePlayInBackGroundUseCase:
+              ChangePlayInBackGroundUseCase(LocalDataStore()),
         ),
       ),
       BlocProvider(
@@ -85,8 +88,8 @@ Future<void> main() async {
         create: (context) => PlatformBloc(
             platformListUseCase:
                 PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl())),
-          aboutUsListUseCase: AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl()))
-        ),
+            aboutUsListUseCase:
+                AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl()))),
       ),
       BlocProvider(
         create: (context) => YoutubeStreamBloc(
@@ -97,7 +100,8 @@ Future<void> main() async {
         supportedLocales: [Locale('en'), Locale('ar'), Locale('no')],
         path: 'assets/translations',
         assetLoader: CodegenLoader(),
-        fallbackLocale: Locale('en'),
+        fallbackLocale: Locale('ar'),
+        startLocale: Locale('ar'),
         child: MyApp()),
   ));
 }
@@ -110,7 +114,6 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -125,35 +128,35 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
-
   @override
   Widget build(BuildContext context) {
-    return
-      GetMaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-        themeMode: _themeMode,
-        initialRoute: '/',
-        routes: {
-          '/': (context) => InitiateApp(),
-          '/select_language': (context) => SelectLanguage(),
-          '/home': (context) => MyHomePage(),
-          '/political': (context) =>
-              PoliticalNews(url: Constants.newsUrls[2]),
-          '/aboutUs' : (context) => AboutUsScreen(),
-          '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
-          '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
-          '/details': (context) => NewDetails(),
-          '/platform': (context) => PlatformScreen(),
-          '/setting': (context) => SettingScreen(),
-          '/select_stream': (context) => SelectStreamType(),
-          '/audio_stream': (context) => AudioStreamScreen(),
-          '/video_stream': (context) => VideoStreamScreen(),
-        },
-      );
+    return GetMaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      themeMode: _themeMode,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => InitiateApp(),
+        '/select_language': (context) => SelectLanguage(),
+        '/home': (context) => MyHomePage(),
+        '/onBoard': (context) => OnBoard(url: Constants.newsUrls[1]),
+        '/political': (context) => PoliticalNews(url: Constants.newsUrls[2]),
+        '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
+        '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
+        '/youtube_list_screen' : (context) => YoutubeListScreen(selected: 0),
+        'fb_screen': (context) => FbVideosScreen(),
+        '/aboutUs': (context) => AboutUsScreen(),
+        '/details': (context) => NewDetails(),
+        '/platform': (context) => PlatformScreen(),
+        '/setting': (context) => SettingScreen(),
+        '/select_stream': (context) => SelectStreamType(),
+        '/audio_stream': (context) => AudioStreamScreen(),
+        '/video_stream': (context) => VideoStreamScreen(),
+      },
+    );
   }
 
   void changeTheme(ThemeMode themeMode) {
@@ -163,10 +166,9 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
   //
   // final String title;
 
@@ -179,11 +181,17 @@ class _MyHomePageState extends State<MyHomePage> {
   int drawerSelect = -1;
   final screens = [
     GeneralNews(url: Constants.newsUrls[0]),
-    OnBoard(url: Constants.newsUrls[1]),
+    SelectStreamType(),
+    PlatformScreen()
   ];
 
   void _navigateToSelectStream() {
     Navigator.of(context).pushNamed('/select_stream');
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -200,9 +208,6 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedIndex: selectedPageIndex,
         onDestinationSelected: (int value) {
           setState(() {
-            // context.read<NewsBloc>().add(
-            //     GetNorwayNewsList(Constants.generalNewsUrl[value], [])
-            // );
             selectedPageIndex = value;
           });
         },
@@ -213,16 +218,33 @@ class _MyHomePageState extends State<MyHomePage> {
             label: LocaleKeys.general.tr(),
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.article_rounded),
-            icon: Icon(Icons.article_outlined),
-            label: LocaleKeys.onBoard.tr(),
-          )
+              enabled: false,
+              icon: Icon(null),
+              label: LocaleKeys.LiveStream.tr()),
+          NavigationDestination(
+              selectedIcon: Image.asset(
+                'assets/images/cross-platform.png',
+                height: 24,
+                width: 24,
+                color: Colors.black,
+              ),
+              icon: Image.asset(
+                'assets/images/cross-platform.png',
+                height: 24,
+                width: 24,
+                color: Colors.grey,
+              ),
+              label: LocaleKeys.Platforms.tr()),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       appBar: AppBar(
-        title: Text(LocaleKeys.title.tr()),
+        title: Text(
+          LocaleKeys.title.tr(),
+          // "مؤسسة صوت النرويج الاعلامية",
+          style: TextStyle(fontSize: 20),
+        ),
         centerTitle: true,
         elevation: 4,
       ),
@@ -231,23 +253,23 @@ class _MyHomePageState extends State<MyHomePage> {
         onDestinationSelected: (value) {
           switch (value) {
             case 0:
+              Navigator.of(context).pushNamed('/onBoard');
+            case 1:
               Navigator.of(context).pushNamed('/political');
               break;
-            case 1:
+            case 2:
               Navigator.of(context).pushNamed('/local');
               break;
-            case 2:
+            case 3:
               Navigator.of(context).pushNamed('/sport');
               break;
-            case 3:
-              _launchUrl(Uri.parse(
-                  "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
-              break;
             case 4:
-              _launchUrl(Uri.parse("https://soundcloud.com/norwayvoice"));
-              break;
+              Navigator.of(context).pushNamed('/youtube_list_screen');
+              // _launchUrl(Uri.parse(
+              //     "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
+              // break;
             case 5:
-              Navigator.of(context).pushNamed('/platform');
+              _launchUrl(Uri.parse("https://soundcloud.com/norwayvoice"));
               break;
             case 6:
               Navigator.of(context).pushNamed('/aboutUs');
@@ -256,17 +278,20 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/setting');
               break;
           }
+          selectedPageIndex = value;
         },
         children: [
           ListTile(
             dense: true,
             title: Text(
               LocaleKeys.News.tr(),
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800  ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
             ),
           ),
+          NavigationDrawerDestination(
+              icon: Icon(Icons.article_outlined),
+              selectedIcon: Icon(Icons.article_rounded),
+              label: Text(LocaleKeys.onBoard.tr())),
           NavigationDrawerDestination(
               icon: Icon(Icons.handshake_outlined),
               selectedIcon: Icon(Icons.handshake),
@@ -284,9 +309,7 @@ class _MyHomePageState extends State<MyHomePage> {
             dense: true,
             title: Text(
               LocaleKeys.Platforms.tr(),
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
             ),
           ),
           NavigationDrawerDestination(
@@ -305,14 +328,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.grey,
               ),
               label: Text(LocaleKeys.SnapChat.tr())),
-          NavigationDrawerDestination(
-              icon: Image.asset(
-                'assets/images/cross-platform.png',
-                height: 24,
-                width: 24,
-                color: Colors.grey,
-              ),
-              label: Text(LocaleKeys.Platforms.tr())),
           Divider(),
           NavigationDrawerDestination(
               selectedIcon: Icon(Icons.people),
@@ -330,7 +345,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: screens[selectedPageIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToSelectStream,
-        backgroundColor: fabBackColor,
+        // backgroundColor: fabBackColor,
+        backgroundColor: darkColorScheme.onPrimaryContainer,
         tooltip: 'Increment',
         child: Container(
           padding: EdgeInsets.all(10),

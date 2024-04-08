@@ -94,10 +94,12 @@ class NewsParserImpl implements NorwaySiteParser{
   @override
   Future<List<NorwayNew>> getNewsList(String url) async {
     final List<NorwayNew> news = [];
-    final body = await fetchUrl(url);
-    BeautifulSoup soup = BeautifulSoup(body);
-    if(soup.find('section' , class_: 'error-404 not-found') != null){
-      print('end is reached');
+    String body;
+    BeautifulSoup soup;
+    try{
+      body = await fetchUrl(url);
+      soup = BeautifulSoup(body);
+    }catch (e){
       return [];
     }
 

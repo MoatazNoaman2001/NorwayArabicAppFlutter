@@ -14,7 +14,6 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     on<GetNewDetails>((event, emit) async {
       emit(DetailsLoading());
       final res = await getNewsDetailsUseCase(event.url);
-      Constants.makeToast(res.toString());
       return res.fold((l) => emit(DetailsFailure(l.msg)), (r) {
         emit(DetailsSuccess(r));
       });

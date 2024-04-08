@@ -36,12 +36,7 @@ class _PlatformScreenState extends State<PlatformScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('منصاتنا'),
-        centerTitle: true,
-      ),
-      body: BlocConsumer<PlatformBloc, PlatformState>(
+    return BlocConsumer<PlatformBloc, PlatformState>(
         listener: (context, state) {
           if (state is PlatformSuccess){
           }else if (state is PlatformFailure){
@@ -56,8 +51,7 @@ class _PlatformScreenState extends State<PlatformScreen> {
             return PlatFormLoadingView(isTv: isTV,);
           }
         },
-      ),
-    );
+      );
   }
 }
 

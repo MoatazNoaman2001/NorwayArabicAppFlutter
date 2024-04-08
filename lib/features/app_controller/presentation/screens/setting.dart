@@ -102,6 +102,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     );
                   },
                 ),
+                if( false)
                 BlocConsumer<ControllerBloc, ControllerState>(
                   listener: (context, state) async {
                     if (state is LangGetSuccess) {

@@ -268,66 +268,57 @@ class DetailsSuccessView extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.only(right: 8, left: 8),
-                      height: 600,
-                      child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemCount: norwayNew.articleContent.length,
-                        padding: EdgeInsets.only(right: 8, left: 8),
-                        itemBuilder: (context, index) {
-                          // return Text(norwayNew.articleContent[index].left , style: GoogleFonts.rubik().copyWith(
-                          //     fontSize: 14
-                          // ),);
-                          if (norwayNew.articleContent[index].right == 'txt') {
-                            return Text(
-                              norwayNew.articleContent[index].left,
-                              textAlign: TextAlign.right,
-                              style: GoogleFonts.rubik().copyWith(fontSize: 14),
-                            );
-                          } else if (norwayNew.articleContent[index].right ==
-                              'img') {
-                            return CachedNetworkImage(
-                              height: 140,
-                              imageUrl: norwayNew.articleContent[index].left,
-                              placeholderFadeInDuration: Durations.medium3,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
+                    Column(
+                      children: norwayNew.articleContent.map((phrase) {
+                        if (phrase.right == 'txt') {
+                          return Text(
+                            phrase.left,
+                            textAlign: TextAlign.right,
+                            style: GoogleFonts.rubik().copyWith(fontSize: 14),
+                          );
+                        } else if (phrase.right ==
+                            'img') {
+                          return CachedNetworkImage(
+                            height: 140,
+                            imageUrl: phrase.left,
+                            placeholderFadeInDuration: Durations.medium3,
+                            imageBuilder: (context, imageProvider) =>
+                                Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              progressIndicatorBuilder:
-                                  (context, url, progress) => Center(
-                                      child: CircularProgressIndicator(
-                                value: progress.progress,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  Image.asset('assets/images/head_logo.jpeg'),
-                            );
-                          } else if (norwayNew.articleContent[index].left
-                              .startsWith('https')) {
-                            print(norwayNew.articleContent[index]);
-                            return TextButton(
-                                onPressed: () {
-                                  _launchUrl(Uri.parse(
-                                      norwayNew.articleContent[index].left));
-                                },
-                                child: Text(
-                                  textAlign: TextAlign.right,
-                                  norwayNew.articleContent[index].right.trim(),
-                                  style: GoogleFonts.rubik().copyWith(
-                                    fontSize: 14,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ));
-                          }
-                        },
-                      ),
+                            progressIndicatorBuilder:
+                                (context, url, progress) => Center(
+                                child: CircularProgressIndicator(
+                                  value: progress.progress,
+                                )),
+                            errorWidget: (context, url, error) =>
+                                Image.asset('assets/images/head_logo.jpeg'),
+                          );
+                        } else if (phrase.left
+                            .startsWith('https')) {
+                          print(phrase);
+                          return TextButton(
+                              onPressed: () {
+                                _launchUrl(Uri.parse(
+                                    phrase.left));
+                              },
+                              child: Text(
+                                textAlign: TextAlign.right,
+                                phrase.right.trim(),
+                                style: GoogleFonts.rubik().copyWith(
+                                  fontSize: 14,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ));
+                        }else {
+                          return Container();
+                        }
+                      }).toList(),
                     ),
                     SizedBox(
                       height: 10,

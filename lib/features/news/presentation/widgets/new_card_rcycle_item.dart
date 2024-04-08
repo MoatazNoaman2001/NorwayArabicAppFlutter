@@ -77,22 +77,24 @@ class NewsCardRecycleItem extends StatelessWidget {
                     style: GoogleFonts.rubik().copyWith(
                       fontSize: 24
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                     textDirection: TextDirection.rtl,
                   ),
                 ),
                 SizedBox(height: 4,),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      norwayNew.content,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 6,
-                    textDirection: TextDirection.rtl,
-                    style: GoogleFonts.rubik().copyWith(
-                        fontSize: 13
-                    ),
-                  ),
-                )
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Text(
+                //       norwayNew.content,
+                //     overflow: TextOverflow.ellipsis,
+                //     maxLines: 6,
+                //     textDirection: TextDirection.rtl,
+                //     style: GoogleFonts.rubik().copyWith(
+                //         fontSize: 13
+                //     ),
+                //   ),
+                // )
               ],
             ),
           ),

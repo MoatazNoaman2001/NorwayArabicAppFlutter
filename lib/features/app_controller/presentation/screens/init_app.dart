@@ -1,4 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Trans;
+import 'package:get/get_core/src/get_main.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/main.dart';
@@ -47,11 +50,11 @@ class _InitiateAppState extends State<InitiateApp> {
           child: BlocConsumer<ControllerBloc, ControllerState>(
             listener: (context, state) {
               if (state is LangGetSuccess) {
-                if (state.lang.isEmpty) {
-                  Navigator.of(context).popAndPushNamed('/select_language');
-                } else {
-                  Navigator.popAndPushNamed(context, '/home');
-                }
+                Navigator.popAndPushNamed(context, '/home');
+                // if (state.lang.isEmpty) {
+                //   Navigator.of(context).popAndPushNamed('/select_language');
+                // } else {
+                // }
                 // Navigator.of(context).popAndPushNamed('/select_language');
               } else if (state is LangFailure) {
                 print(state.msg);
@@ -92,6 +95,7 @@ class _InitiateAppState extends State<InitiateApp> {
     _controller.addListener(() {
       inspectVideo();
     });
+
   }
 
   @override
