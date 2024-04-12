@@ -10,4 +10,5 @@ abstract interface class NewsRepository{
   Future<Either<Failure , List<NorwayNew>>> getNewsBanar();
   Future<Either<Failure , List<WebPair>>> platforms();
   Future<Either<Failure, List<WebPair>>> aboutUs();
+  Future<Either<Failure , List<WebPair>>> contactUs();
 }

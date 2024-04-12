@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:fpdart/src/either.dart';
 import 'package:norway_flutter_app/core/error/Failure.dart';
@@ -172,6 +174,59 @@ class NewsParserImpl implements NorwaySiteParser{
     }).toList();
 
     return content!;
+  }
+
+  Future<List<WebPair>> contactUs() async{
+    var body = await fetchUrl('https://norwayvoice.no/%d9%84%d9%84%d8%a7%d8%aa%d8%b5%d8%a7%d9%84-%d8%a8%d9%86%d8%a7/?fbclid=IwAR35_9aWz78tKvGj8GrZc2DM_dt6S8rpCZnaoPN8TWQ7xJUQK6HHfP7d_zo');
+    var soup = BeautifulSoup(body);
+    var contactBody = soup.find('div' , class_: 'entry-content')?.children.map((e){
+      print(e.children);
+      if (e.find('img') != null){
+        return WebPair(e.find('img')!.getAttrValue('src')!.trim(), e.find('strong')!.text.trim());
+      }else{
+        if (e.find('strong')!.text.substring(0, e.find('strong')!.text.indexOf(':')).trim() == 'الايميل') {
+
+          List<int> decoded = hexToBytes(e.find('strong')!.find('a')!.getAttrValue('data-cfemail')!);
+          int firstByte = decoded[0];
+          List<int> newBytes = List<int>.filled(decoded.length - 1, 0);
+
+          for (int i = 0; i < decoded.length; i++) {
+            int result = (decoded[i] ^ firstByte) & 0xFF;
+
+            if (i == 0) {
+              continue;
+            }
+
+            newBytes[i - 1] = result;
+          }
+          // var encoded = String.fromCharCodes(hex.decode(e.find('strong')!.find('a')!.getAttrValue('data-cfemail')!));
+          // Uint8List bytes= Uint8List(encoded.length -1);
+          // var email = '';
+          // for(int i = 1; i < encoded.length ; i++){
+          //   bytes[i-1] = pow(encoded[i].toIntOption.getOrElse(() =>0), encoded[0].toIntOption.getOrElse(() => 0)).toInt();
+          // }
+          // email = String.fromCharCodes(bytes);
+          // print('encoded: $email');
+          return WebPair(
+              e.find('strong')!.text.substring(0, e.find('strong')!.text.indexOf(':')).trim(),
+              utf8.decode(newBytes));
+        }
+
+        return WebPair(e.find('strong')!.text.substring(0, e.find('strong')!.text.indexOf(':')).trim(),
+            e.find('strong')!.text.substring(e.find('strong')!.text.indexOf(':') + 1).trim());
+      }
+    }).toList();
+    print(contactBody?.join('\n'));
+
+    return contactBody!;
+  }
+
+  List<int> hexToBytes(String hex) {
+    List<int> bytes = [];
+    for (int i = 0; i < hex.length; i += 2) {
+      bytes.add(int.parse(hex.substring(i, i + 2), radix: 16));
+    }
+    return bytes;
   }
 
 }

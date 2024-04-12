@@ -11,4 +11,5 @@ abstract interface class NorwaySiteParser{
   Future<List<NorwayNew>> banarNews();
   Future<List<WebPair>> platforms();
   Future<List<WebPair>> aboutUs();
+  Future<List<WebPair>> contactUs();
 }

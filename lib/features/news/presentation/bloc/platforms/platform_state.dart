@@ -19,3 +19,13 @@ final class AboutUSFailure extends PlatformState {
   final String msg;
   AboutUSFailure(this.msg);
 }
+
+final class ContactUSLoading extends PlatformState {}
+final class ContactUSSuccess extends PlatformState {
+  final List<WebPair> contents;
+  ContactUSSuccess(this.contents);
+}
+final class ContactUSFailure extends PlatformState {
+  final String msg;
+  ContactUSFailure(this.msg);
+}

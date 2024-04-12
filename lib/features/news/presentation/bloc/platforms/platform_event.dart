@@ -5,3 +5,4 @@ sealed class PlatformEvent {}
 
 class GetPlatFromList extends PlatformEvent{}
 class GetAboutUSList extends PlatformEvent{}
+class ContactUSList extends PlatformEvent{}

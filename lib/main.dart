@@ -13,6 +13,7 @@ import 'package:norway_flutter_app/features/app_controller/domain/Get_play_in_ba
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_play_in_background_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
+import 'package:norway_flutter_app/features/news/domain/usecases/get_contact_us.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/fb_videos_screen.dart';
@@ -49,6 +50,7 @@ import 'features/app_controller/presentation/screens/init_app.dart';
 import 'features/app_controller/presentation/screens/select_language.dart';
 import 'features/news/domain/usecases/aboutus_usecase.dart';
 import 'features/news/domain/usecases/platforms_usecase.dart';
+import 'features/news/presentation/screens/contact_us.dart';
 import 'features/streams/presenation/screens/audio_stream_screen.dart';
 import 'features/streams/presenation/screens/video_stream_screen.dart';
 
@@ -89,7 +91,10 @@ Future<void> main() async {
             platformListUseCase:
                 PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl())),
             aboutUsListUseCase:
-                AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl()))),
+                AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl())),
+          contactUsUseCase: ContactUsUseCase(NewsRepositoryImpl(NewsParserImpl()))
+
+        ),
       ),
       BlocProvider(
         create: (context) => YoutubeStreamBloc(
@@ -147,7 +152,8 @@ class _MyAppState extends State<MyApp> {
         '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
         '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
         '/youtube_list_screen' : (context) => YoutubeListScreen(selected: 0),
-        'fb_screen': (context) => FbVideosScreen(),
+        '/contact_us' : (context) => ContactUSScreen(),
+        '/fb_screen': (context) => FbVideosScreen(),
         '/aboutUs': (context) => AboutUsScreen(),
         '/details': (context) => NewDetails(),
         '/platform': (context) => PlatformScreen(),
@@ -275,6 +281,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/aboutUs');
               break;
             case 7:
+              Navigator.of(context).pushNamed('/contact_us');
+              break;
+            case 8:
               Navigator.of(context).pushNamed('/setting');
               break;
           }
@@ -333,8 +342,12 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedIcon: Icon(Icons.people),
               icon: Icon(Icons.people_alt_outlined),
               label: Text(LocaleKeys.AboutUs.tr())),
+          NavigationDrawerDestination(
+              selectedIcon: Icon(Icons.contact_phone_rounded),
+              icon: Icon(Icons.contact_phone_outlined),
+              label: Text('للاتصال بنا')),
           SizedBox(
-            height: 220,
+            height: 180,
           ),
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),
