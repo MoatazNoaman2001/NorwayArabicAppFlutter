@@ -49,6 +49,7 @@ class _PoliticalNewsState extends State<PoliticalNews> {
 
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<NewsBloc>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -68,7 +69,7 @@ class _PoliticalNewsState extends State<PoliticalNews> {
                 ValueListenableBuilder(
                   valueListenable: connectivityController.isConnected,
                   builder: (context, value, child) {
-                    if (value) {
+                    if (value || isTV) {
                       return Center();
                     } else {
                       return SizedBox(
@@ -95,7 +96,9 @@ class _PoliticalNewsState extends State<PoliticalNews> {
                 BlocConsumer<NewsBloc, NewsState>(
                   listener: (context, state) {
                     if (state is PoliticalNewsSuccess) {
+                      bloc.loadingPage = false;
                     } else if (state is PoliticalNewsFailure) {
+                      bloc.loadingPage = false;
                       var snack = SnackBar(
                         content: const Text('would you like to retry'),
                         duration: Duration(hours: 1),
@@ -112,15 +115,13 @@ class _PoliticalNewsState extends State<PoliticalNews> {
                     }
                   },
                   builder: (context, state) {
-                    var bloc = BlocProvider.of<NewsBloc>(context);
-                    if (state is PoliticalNewsSuccess ||
-                        state is PoliticalNewsFailure) {
-                      bloc.loadingPage = false;
-                    }
                     if (state is PoliticalNewsSuccess) {
                       return PoliticalNewsSuccessView(
                         url: url, isTV: isTV);
                     } else {
+                      if (bloc.political_norways.isNotEmpty)
+                        return PoliticalNewsSuccessView(
+                            url: url, isTV: isTV);
                       return PoliticalNewsLoadingView();
                     }
                   },
@@ -193,7 +194,7 @@ class PoliticalNewsSuccessView extends StatelessWidget {
                 isTV || width > height ? 2 : 1,
                 shrinkWrap: true,
                 controller: controller,
-                childAspectRatio: isTV ? 1 : 0.75,
+                childAspectRatio: isTV ? 1.5 : 1.2,
                 physics: BouncingScrollPhysics(),
                 children: bloc.political_norways.map((e) {
                   return NewsCardRecycleItem(

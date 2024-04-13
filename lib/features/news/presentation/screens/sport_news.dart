@@ -71,7 +71,7 @@ class _SportNewsState extends State<SportNews> {
               ValueListenableBuilder(
                 valueListenable: connectivityController.isConnected,
                 builder: (context, value, child) {
-                  if (value) {
+                  if (value || isTv) {
                     return SizedBox.shrink();
                   } else {
                     return SizedBox(
@@ -202,7 +202,7 @@ class SportNewSuccessView extends StatelessWidget {
                 isTV || width > height ? 2 : 1,
                 shrinkWrap: true,
                 controller: controller,
-                childAspectRatio: isTV ? 1 : 0.75,
+                childAspectRatio: isTV ? 1.5 : 1.2,
                 physics: BouncingScrollPhysics(),
                 children: bloc.sport_norways.map((e) {
                   return NewsCardRecycleItem(

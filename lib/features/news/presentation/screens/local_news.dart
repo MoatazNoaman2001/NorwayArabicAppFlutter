@@ -59,82 +59,82 @@ class _LocalNewsState extends State<LocalNews> {
             ),
           ),
         ),
-        body: ValueListenableBuilder(
-          valueListenable: connectivityController.isConnected,
-          builder: (context, value, child) {
-            if (value) {
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    BlocConsumer<NewsBloc, NewsState>(
-                      listener: (context, state) {
-                        if (state is LocalNewsSuccess) {
-                        } else if (state is LocalNewsFailure) {
-                          var snack = SnackBar(
-                            content: const Text('would you like to retry'),
-                            duration: Duration(hours: 1),
-                            action: SnackBarAction(
-                              onPressed: () {
-                                context.read<NewsBloc>().add(
-                                    GetPoliticalNorwayNewsList(url, norways));
-                              },
-                              label: "ok",
-                            ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snack);
+        body: Column(
+          children: [
+            ValueListenableBuilder(
+              valueListenable: connectivityController.isConnected,
+              builder: (context, value, child) {
+                if (value || isTV) {
+                  return SizedBox(
 
-                          Constants.makeToast(
-                              'could not get list ${state.msg}');
-                        }
+                  );
+                } else {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Container(
+                            color: Colors.grey.shade800,
+                            child: const Text(
+                              'No Internet Connection',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocConsumer<NewsBloc, NewsState>(
+              listener: (context, state) {
+                if (state is LocalNewsSuccess) {
+                } else if (state is LocalNewsFailure) {
+                  var snack = SnackBar(
+                    content: const Text('would you like to retry'),
+                    duration: Duration(hours: 1),
+                    action: SnackBarAction(
+                      onPressed: () {
+                        context.read<NewsBloc>().add(
+                            GetPoliticalNorwayNewsList(url, norways));
                       },
-                      builder: (context, state) {
-                        final bloc = BlocProvider.of<NewsBloc>(context);
-                        if (state is LocalNewsSuccess ||
-                            state is LocalNewsFailure) {
-                          bloc.loadingPage = false;
-                        }
-                        if (state is LocalNewsLoading &&
-                            bloc.local_norways.isEmpty) {
-                          return LocalNewLoadingView();
-                        } else if (state is LocalNewsSuccess ||
-                            (state is LocalNewsLoading &&
-                                bloc.local_norways.isNotEmpty)) {
-                          return LocalNewSuccessView(
-                            url: url,
-                            isTV: isTV,
-                          );
-                        } else if (state is LocalNewsFailure) {
-                          return LocalNewLoadingView();
-                        } else {
-                          return LocalNewLoadingView();
-                        }
-                      },
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return SizedBox(
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        color: Colors.grey.shade800,
-                        child: const Text(
-                          'No Internet Connection',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }
-          },
+                      label: "ok",
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snack);
+
+                  Constants.makeToast(
+                      'could not get list ${state.msg}');
+                }
+              },
+              builder: (context, state) {
+                final bloc = BlocProvider.of<NewsBloc>(context);
+                if (state is LocalNewsSuccess ||
+                    state is LocalNewsFailure) {
+                  bloc.loadingPage = false;
+                }
+                if (state is LocalNewsLoading &&
+                    bloc.local_norways.isEmpty) {
+                  return LocalNewLoadingView();
+                } else if (state is LocalNewsSuccess ||
+                    (state is LocalNewsLoading &&
+                        bloc.local_norways.isNotEmpty)) {
+                  return LocalNewSuccessView(
+                    url: url,
+                    isTV: isTV,
+                  );
+                } else if (state is LocalNewsFailure) {
+                  return LocalNewLoadingView();
+                } else {
+                  return LocalNewLoadingView();
+                }
+              },
+            )
+          ],
         ));
   }
 }
@@ -199,7 +199,7 @@ class LocalNewSuccessView extends StatelessWidget {
               isTV || width > height ? 2 : 1,
               shrinkWrap: true,
               controller: controller,
-              childAspectRatio: isTV ? 1 : 0.75,
+              childAspectRatio: isTV ? 1.5 : 1.2,
               physics: BouncingScrollPhysics(),
               children: bloc.local_norways.map((e) {
                 return NewsCardRecycleItem(

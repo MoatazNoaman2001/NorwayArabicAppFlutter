@@ -79,7 +79,7 @@ class _GeneralNewsState extends State<GeneralNews> {
               ValueListenableBuilder(
                 valueListenable: connectivityController.isConnected,
                 builder: (context, value, child) {
-                  if (value) {
+                  if (value || isTV) {
                     return Center();
                   } else {
                     return SizedBox(
@@ -308,7 +308,7 @@ class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
                 crossAxisCount: widget.isTv || width > height ? 2 : 1,
                 shrinkWrap: true,
                 controller: controller,
-                childAspectRatio: widget.isTv ? 1 : 1.2,
+                childAspectRatio: widget.isTv ? 1.5 : 1.2,
                 physics: BouncingScrollPhysics(),
                 children: bloc.general_norways.map((e) {
                   return NewsCardRecycleItem(

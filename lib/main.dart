@@ -14,11 +14,13 @@ import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_
 import 'package:norway_flutter_app/features/app_controller/domain/change_play_in_background_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_contact_us.dart';
+import 'package:norway_flutter_app/features/news/domain/usecases/get_tiktok_embed.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/fb_videos_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/platfroms_scr.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/screens/setting.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/tiktok_videos_list.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/youtube_list_screen.dart';
 import 'package:norway_flutter_app/features/streams/data/repo/youtube_repo_impl.dart';
 import 'package:norway_flutter_app/features/streams/data/youtube_parser_impl.dart';
@@ -84,7 +86,9 @@ Future<void> main() async {
       BlocProvider(
         create: (context) => DetailsBloc(
             getNewsDetailsUseCase:
-                GetNewsDetailsUseCase(NewsRepositoryImpl(NewsParserImpl()))),
+                GetNewsDetailsUseCase(NewsRepositoryImpl(NewsParserImpl())),
+          getTiktokEmbedUseCase: GetTiktokEmbedUseCase(NewsRepositoryImpl(NewsParserImpl()))
+        ),
       ),
       BlocProvider(
         create: (context) => PlatformBloc(
@@ -154,6 +158,7 @@ class _MyAppState extends State<MyApp> {
         '/youtube_list_screen' : (context) => YoutubeListScreen(selected: 0),
         '/contact_us' : (context) => ContactUSScreen(),
         '/fb_screen': (context) => FbVideosScreen(),
+        '/tiktok':(context) => TiktokVideListScreen(),
         '/aboutUs': (context) => AboutUsScreen(),
         '/details': (context) => NewDetails(),
         '/platform': (context) => PlatformScreen(),
@@ -270,20 +275,23 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/sport');
               break;
             case 4:
+              Navigator.of(context).pushNamed('/tiktok');
+              break;
+            case 5:
               Navigator.of(context).pushNamed('/youtube_list_screen');
               // _launchUrl(Uri.parse(
               //     "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
               // break;
-            case 5:
+            case 6:
               _launchUrl(Uri.parse("https://soundcloud.com/norwayvoice"));
               break;
-            case 6:
+            case 7:
               Navigator.of(context).pushNamed('/aboutUs');
               break;
-            case 7:
+            case 8:
               Navigator.of(context).pushNamed('/contact_us');
               break;
-            case 8:
+            case 9:
               Navigator.of(context).pushNamed('/setting');
               break;
           }
@@ -313,6 +321,10 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.sports_football_outlined),
               selectedIcon: Icon(Icons.sports_football),
               label: Text(LocaleKeys.Sport.tr())),
+          NavigationDrawerDestination(
+              icon: Icon(Icons.video_collection_outlined),
+              selectedIcon: Icon(Icons.video_collection),
+              label: Text('الاخبار و التقارير')),
           Divider(),
           ListTile(
             dense: true,

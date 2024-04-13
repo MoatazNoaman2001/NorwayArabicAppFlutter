@@ -50,7 +50,7 @@ class _OnBoardState extends State<OnBoard> {
               ValueListenableBuilder(
                 valueListenable: connectivityController.isConnected,
                 builder: (context, value, child) {
-                  if (value) {
+                  if (value || isTV) {
                     return Center();
                   } else {
                     return SizedBox(

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:get/get_core/src/get_main.dart';
+import 'package:gif_view/gif_view.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
 import 'package:norway_flutter_app/main.dart';
@@ -67,14 +68,28 @@ class _InitiateAppState extends State<InitiateApp> {
                   SizedBox.expand(
                     child: FittedBox(
                       fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: _controller.value.size.width ?? 0,
-                        height: _controller.value.size.height ?? 0,
-                        child: VideoPlayer(_controller),
+                      child: GestureDetector(
+                        onDoubleTap: () {
+                          context.read<ControllerBloc>().add(LanguageGet());
+                        },
+                        child: SizedBox(
+                          width: _controller.value.size.width ?? 0,
+                          height: _controller.value.size.height ?? 0,
+                          child: VideoPlayer(_controller),
+                          // child: GifView.asset(
+                          //   'assets/videos/splash.gif',
+                          //   repeat: ImageRepeat.noRepeat,
+                          //   controller: GifController(
+                          //     autoPlay: true,
+                          //     onFinish: () {
+                          //       context.read<ControllerBloc>().add(LanguageGet());
+                          //     },
+                          //   ),
+                          // ),
+                        ),
                       ),
                     ),
                   ),
-                  //FURTHER IMPLEMENTATION
                 ],
               );
             },

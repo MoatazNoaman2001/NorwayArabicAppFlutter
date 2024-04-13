@@ -15,3 +15,14 @@ final class DetailsFailure extends DetailsState {
   final String msg;
   DetailsFailure(this.msg);
 }
+
+
+final class GetTiktokEmbedLoading extends DetailsState {}
+final class GetTiktokEmbedSuccess extends DetailsState {
+  final TiktokVid tiktokVid;
+  GetTiktokEmbedSuccess(this.tiktokVid);
+}
+final class GetTiktokEmbedFailure extends DetailsState {
+  final String msg;
+  GetTiktokEmbedFailure(this.msg);
+}

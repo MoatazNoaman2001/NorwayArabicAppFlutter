@@ -7,3 +7,8 @@ class GetNewDetails extends DetailsEvent{
   final String url;
   GetNewDetails(this.url);
 }
+
+class GetTiktokEmbed extends DetailsEvent{
+  final String url;
+  GetTiktokEmbed(this.url);
+}

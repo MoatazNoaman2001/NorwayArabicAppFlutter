@@ -1,15 +1,18 @@
 import 'dart:convert';
 
 import 'package:fpdart/fpdart.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:dio/dio.dart';
+
 import 'package:norway_flutter_app/core/error/Failure.dart';
 import 'package:norway_flutter_app/features/news/data/models/norway_new.dart';
+import 'package:norway_flutter_app/features/news/data/models/tiktok.dart';
 import 'news_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'models/web_pairs.dart';
 
 class NewsParserImpl implements NorwaySiteParser{
+  var dio = Dio();
 
   @override
   Future<NorwayNew> getNewDetails(String url) async {
@@ -24,20 +27,25 @@ class NewsParserImpl implements NorwaySiteParser{
     var readDuration = soup.find('span', class_: 'reading_duration')?.text;
     var publisher = soup.find('span' , class_: 'author vcard')?.text;
     var likes = soup.find('div', class_: 'count-thumbsup')?.text;
-    var articles = soup.find('div', class_: 'entry-content')?.findAll('p')
-        .toList().map((e) {
-      if (e.img != null) {
-        var lnk = e.img!.getAttrValue('src');
-        return WebPair('img', lnk!);
-      }else if(e.find('strong')?.a != null){
-        var a = e.find('strong')?.a;
-        return WebPair(a!.text, a.getAttrValue('href')!);
-      } else {
-        if (e.text.isNotEmpty) return WebPair('txt', e.text);
-        return WebPair('', '');
+    var articles = soup.find('article')?.find('div' ,class_:'entry-content')?.children.map((e) {
+      if(e.name == 'p') {
+        if (e.img != null) {
+          var lnk = e.img!.getAttrValue('src');
+          return WebPair('img', lnk!);
+        } else if (e.find('strong')?.a != null) {
+          var a = e.find('strong')?.a;
+          return WebPair(a!.text, a.getAttrValue('href')!);
+        } else {
+          if (e.text.isNotEmpty) return WebPair('txt', e.text);
+          return WebPair('', '');
+        }
+      }else if (e.name == 'blockquote'){
+        return WebPair('blockquote', e.getAttrValue('cite')!);
+      }else {
+        return WebPair('' , '');
       }
     }).filter((t) {
-      if(t.right.trim().isEmpty) {
+      if(t.left.trim().isEmpty) {
         return false;
       }
       return true;
@@ -227,6 +235,19 @@ class NewsParserImpl implements NorwaySiteParser{
       bytes.add(int.parse(hex.substring(i, i + 2), radix: 16));
     }
     return bytes;
+  }
+
+  @override
+  Future<List<TiktokVid>> getTiktokVideos() {
+    // TODO: implement getTiktokVideos
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<TiktokVid> getTiktokEmbed(String url) async{
+    var response = await dio.get('https://www.tiktok.com/oembed?url=${url}');
+    var tiktokVid = TiktokVid.fromJson(response.data);
+    return tiktokVid;
   }
 
 }

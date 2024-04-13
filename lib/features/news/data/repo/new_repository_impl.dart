@@ -7,6 +7,7 @@ import 'package:norway_flutter_app/features/news/data/models/web_pairs.dart';
 import 'package:norway_flutter_app/features/news/data/news_parser_impl.dart';
 
 import '../../domain/repo/news_repo.dart';
+import '../models/tiktok.dart';
 import '../news_parser.dart';
 
 class NewsRepositoryImpl implements NewsRepository{
@@ -67,6 +68,15 @@ class NewsRepositoryImpl implements NewsRepository{
     try{
       return right(await parser.contactUs());
     }catch(e){
+      return left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TiktokVid>> getTiktokEmbed(String url) async{
+    try{
+      return right(await parser.getTiktokEmbed(url));
+    }catch (e){
       return left(Failure(e.toString()));
     }
   }
