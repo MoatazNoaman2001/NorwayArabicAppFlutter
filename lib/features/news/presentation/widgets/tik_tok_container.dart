@@ -60,10 +60,8 @@ class _TiktokContainerState extends State<TiktokContainer> {
                 // Update loading bar.
               },
               onPageStarted: (String url) {
-                Constants.makeToast('started');
               },
               onPageFinished: (String url) {
-                Constants.makeToast('finished');
               },
               onWebResourceError: (WebResourceError error) {
                 print('flutter webview error: ' + error.description);
@@ -90,10 +88,8 @@ class _TiktokContainerState extends State<TiktokContainer> {
                   // Update loading bar.
                 },
                 onPageStarted: (String url) {
-                  Constants.makeToast('started');
                 },
                 onPageFinished: (String url) {
-                  Constants.makeToast('finished');
                 },
                 onWebResourceError: (WebResourceError error) {
                   print('flutter webview error: ' + error.toString());

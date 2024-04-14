@@ -180,16 +180,11 @@ class _MyAppState extends State<MyApp> {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-  //
-  // final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int selectedPageIndex = 0;
-  int drawerSelect = -1;
   final screens = [
     GeneralNews(url: Constants.newsUrls[0]),
     SelectStreamType(),
@@ -203,10 +198,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    var bloc = BlocProvider.of<ControllerBloc>(context);
+    bloc.drawerSelect = -1;
+    bloc.selectedPageIndex = 0;
+
   }
 
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<ControllerBloc>(context);
+    print('selectedPage: ${bloc.selectedPageIndex}');
     Color fabBackColor;
     if (Theme.of(context).brightness == Brightness.light)
       fabBackColor = lightColorScheme.onPrimaryContainer;
@@ -216,10 +217,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         animationDuration: Duration(milliseconds: 200),
-        selectedIndex: selectedPageIndex,
+        selectedIndex: bloc.selectedPageIndex,
         onDestinationSelected: (int value) {
           setState(() {
-            selectedPageIndex = value;
+            bloc.selectedPageIndex = value;
           });
         },
         destinations: <NavigationDestination>[
@@ -260,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 4,
       ),
       drawer: NavigationDrawer(
-        selectedIndex: drawerSelect,
+        selectedIndex: bloc.drawerSelect,
         onDestinationSelected: (value) {
           switch (value) {
             case 0:
@@ -295,7 +296,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/setting');
               break;
           }
-          selectedPageIndex = value;
+          // setState(() {
+          //   bloc.drawerSelect = value;
+          // });
         },
         children: [
           ListTile(
@@ -359,7 +362,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.contact_phone_outlined),
               label: Text('للاتصال بنا')),
           SizedBox(
-            height: 180,
+            height: 120,
           ),
           NavigationDrawerDestination(
               icon: Icon(Icons.settings_outlined),
@@ -367,7 +370,7 @@ class _MyHomePageState extends State<MyHomePage> {
               label: Text(LocaleKeys.Settings.tr())),
         ],
       ),
-      body: screens[selectedPageIndex],
+      body: screens[bloc.selectedPageIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToSelectStream,
         // backgroundColor: fabBackColor,

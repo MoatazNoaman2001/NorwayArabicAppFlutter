@@ -24,6 +24,9 @@ class ControllerBloc extends Bloc<ControllerEvent, ControllerState> {
   bool background = false;
   String lang = "en";
 
+  int selectedPageIndex = 0;
+  int drawerSelect = -1;
+
   ControllerBloc(
       {required this.changeLanguageUseCase,
       required this.getLanguageUseCase,
