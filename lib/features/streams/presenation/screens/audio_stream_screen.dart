@@ -76,9 +76,15 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
       appBar: AppBar(
         title: Text(LocaleKeys.AudioStream.tr()),
         centerTitle: true,
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
+      body: Center(
+        child: SingleChildScrollView(
           child: Card(
             child: Padding(
               padding:

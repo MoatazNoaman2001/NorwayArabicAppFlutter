@@ -29,6 +29,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       appBar: AppBar(
         title: Text(LocaleKeys.AboutUs.tr()),
         centerTitle: true,
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,

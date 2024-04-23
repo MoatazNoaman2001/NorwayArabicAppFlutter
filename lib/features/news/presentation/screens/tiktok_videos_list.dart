@@ -37,6 +37,12 @@ class _TiktokVideListScreenState extends State<TiktokVideListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('الاخبار و التقارير'),
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,

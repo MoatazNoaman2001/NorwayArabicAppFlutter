@@ -34,6 +34,12 @@ class _ContactUSScreenState extends State<ContactUSScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('للاتصال بنا'),
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,

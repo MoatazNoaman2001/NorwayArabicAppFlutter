@@ -15,6 +15,12 @@ class SelectStreamType extends StatelessWidget {
       appBar: AppBar(
         title: Text(LocaleKeys.Streams.tr()),
         centerTitle: true,
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(

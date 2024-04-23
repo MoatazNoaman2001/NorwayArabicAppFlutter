@@ -62,6 +62,12 @@ class _SportNewsState extends State<SportNews> {
               fontWeight: FontWeight.w800,
             ),
           ),
+          leading: GestureDetector(
+            child: Icon(Icons.arrow_back_ios),
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         body: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -198,8 +204,7 @@ class SportNewSuccessView extends StatelessWidget {
             height: height - (height *( width > height? 0.22 : 0.15)),
             child: GridView.count(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                crossAxisCount:
-                isTV || width > height ? 2 : 1,
+                crossAxisCount: isTV || width > height ? 2 : MediaQuery.of(context).size.shortestSide < 600? 1 : 2,
                 shrinkWrap: true,
                 controller: controller,
                 childAspectRatio: isTV ? 1.5 : 1.2,

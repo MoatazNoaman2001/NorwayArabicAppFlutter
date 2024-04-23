@@ -48,6 +48,7 @@ class _NewDetailsState extends State<NewDetails> {
 
   @override
   void dispose() {
+    snackbar.dispose();
     ScaffoldMessenger.of(context).dispose();
     super.dispose();
   }
@@ -61,6 +62,12 @@ class _NewDetailsState extends State<NewDetails> {
       appBar: AppBar(
         title: Text(LocaleKeys.Details.tr()),
         centerTitle: true,
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: BlocConsumer<DetailsBloc, DetailsState>(
         listener: (context, state) {

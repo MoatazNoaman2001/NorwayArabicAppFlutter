@@ -293,48 +293,51 @@ class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
         widget.parentController.animateTo(120.0,
             duration: Duration(milliseconds: 200), curve: Curves.ease);
     });
-    return Column(
-      children: [
-        OrientationBuilder(builder: (context, orientation) {
-          var width = MediaQuery.of(context).size.width;
-          var height = MediaQuery.of(context).size.height;
-          print(orientation.toString() +
-              'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
-          return Container(
-            width: width,
-            height: height - (height * (width > height ? 0.22 : 0.15)),
-            child: GridView.count(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                crossAxisCount: widget.isTv || width > height ? 2 : 1,
-                shrinkWrap: true,
-                controller: controller,
-                childAspectRatio: widget.isTv ? 1.5 : 1.2,
-                physics: BouncingScrollPhysics(),
-                children: bloc.general_norways.map((e) {
-                  return NewsCardRecycleItem(
-                    norwayNew: e,
-                    callback: () {
-                      Navigator.of(context).pushNamed('/details', arguments: e);
-                    },
-                  );
-                }).toList()),
-          );
-        }),
-        if (bloc.loadingPage)
-          Container(
-            height: 120,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text('loading', style: GoogleFonts.rubik())
-                ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32.0),
+      child: Column(
+        children: [
+          OrientationBuilder(builder: (context, orientation) {
+            var width = MediaQuery.of(context).size.width;
+            var height = MediaQuery.of(context).size.height;
+            print(orientation.toString() +
+                'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
+            return Container(
+              width: width,
+              height: height - (height * (width > height ? 0.22 : 0.15)),
+              child: GridView.count(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  crossAxisCount: widget.isTv || width > height ? 2 : MediaQuery.of(context).size.shortestSide < 600? 1 : 2,
+                  shrinkWrap: true,
+                  controller: controller,
+                  childAspectRatio: widget.isTv ? 1.5 : 1.2,
+                  physics: BouncingScrollPhysics(),
+                  children: bloc.general_norways.map((e) {
+                    return NewsCardRecycleItem(
+                      norwayNew: e,
+                      callback: () {
+                        Navigator.of(context).pushNamed('/details', arguments: e);
+                      },
+                    );
+                  }).toList()),
+            );
+          }),
+          if (bloc.loadingPage)
+            Container(
+              height: 120,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text('loading', style: GoogleFonts.rubik())
+                  ],
+                ),
               ),
-            ),
-          )
-      ],
+            )
+        ],
+      ),
     );
   }
 }

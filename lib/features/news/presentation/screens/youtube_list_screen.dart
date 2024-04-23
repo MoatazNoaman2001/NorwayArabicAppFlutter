@@ -51,6 +51,12 @@ class _YoutubeListScreenState extends State<YoutubeListScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(LocaleKeys.Youtube.tr()),
+          leading: GestureDetector(
+            child: Icon(Icons.arrow_back_ios),
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,

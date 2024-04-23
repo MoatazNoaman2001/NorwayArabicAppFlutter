@@ -41,6 +41,12 @@ class _OnBoardState extends State<OnBoard> {
     return Scaffold(
       appBar: AppBar(
         title: Text(LocaleKeys.onBoard.tr()),
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: SizedBox(
@@ -236,8 +242,7 @@ class OnBoardSuccessView extends StatelessWidget {
             height: height - (height *( width > height? 0.22 : 0.15)),
             child: GridView.count(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                crossAxisCount:
-                isTv || width > height ? 2 : 1,
+                crossAxisCount: isTv || width > height ? 2 : MediaQuery.of(context).size.shortestSide < 600? 1 : 2,
                 shrinkWrap: true,
                 controller: controller,
                 childAspectRatio: isTv ? 1 : 1.2,

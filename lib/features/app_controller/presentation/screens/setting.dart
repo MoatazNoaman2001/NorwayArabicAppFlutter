@@ -38,6 +38,12 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: AppBar(
         title: Text(LocaleKeys.Settings.tr(context: context)),
         centerTitle: true,
+        leading: GestureDetector(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(

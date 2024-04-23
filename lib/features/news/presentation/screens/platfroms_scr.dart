@@ -144,6 +144,7 @@ class PlatFormSuccessView extends StatelessWidget {
                         _launchUrl(Uri.parse(e.left));
                       },
                       child: Container(padding:EdgeInsets.all(34),child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           image,
                           SizedBox(height: 4,),
