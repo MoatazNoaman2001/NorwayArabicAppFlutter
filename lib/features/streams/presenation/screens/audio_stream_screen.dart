@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:norway_flutter_app/core/constants.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
@@ -85,83 +86,102 @@ class _AudioStreamScreenState extends State<AudioStreamScreen> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          child: Card(
-            child: Padding(
-              padding:
-                  EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 30),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 18,
-                  ),
-                  Container(
-                    width: 250,
-                    height: 260,
-                    padding: EdgeInsets.only(
-                        top: 32, left: 28, right: 28, bottom: 28),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(14)),
-                        color: Colors.green.shade600,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/images/nv1.png'))),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  FloatingActionButton(
-                      onPressed: () {
-                        if (isPlaying) {
-                          radioPlayer.stop();
-                        } else {
-                          try {
-                            radioPlayer.play();
-                          } catch (e) {
-                            setState(() {
-                              streamisOff = true;
-                            });
-                          }
-                        }
-                      },
-                      child: isPlaying
-                          ? Icon(Icons.pause)
-                          : Icon(Icons.play_arrow)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  if (streamisOff)
-                    Container(
-                      width: 250,
-                      height: 120,
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.green.shade100
-                                  : Colors.green.shade900.withBlue(90)),
-                      child: Text(
-                        LocaleKeys.StreamIsOff.tr(),
-                        style: GoogleFonts.rubik(),
-                        textAlign: TextAlign.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Card(
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 30),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 18,
                       ),
-                    ),
-                  BlocConsumer<ControllerBloc, ControllerState>(
-                    builder: (context, state) {
-                      return SizedBox.shrink();
-                    },
-                    listener: (context, state) {
-                      setState(() {
-                        if (state is PlayInBackGroundGetSuccess) {
-                          print('play in back ground value: ${state.value}');
-                          playInBackGround = state.value;
-                        }
-                      });
-                    },
-                  )
-                ],
+                      Container(
+                        width: 250,
+                        height: 260,
+                        padding: EdgeInsets.only(
+                            top: 32, left: 28, right: 28, bottom: 28),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(14)),
+                            color: Colors.green.shade600,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/images/nv1.png'))),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      FloatingActionButton(
+                          onPressed: () {
+                            if (isPlaying) {
+                              radioPlayer.stop();
+                            } else {
+                              try {
+                                radioPlayer.play();
+                              } catch (e) {
+                                setState(() {
+                                  streamisOff = true;
+                                });
+                              }
+                            }
+                          },
+                          child: isPlaying
+                              ? Icon(Icons.pause)
+                              : Icon(Icons.play_arrow)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      if (streamisOff)
+                        Container(
+                          width: 250,
+                          height: 120,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color:
+                                  Theme.of(context).brightness == Brightness.light
+                                      ? Colors.green.shade100
+                                      : Colors.green.shade900.withBlue(90)),
+                          child: Text(
+                            LocaleKeys.StreamIsOff.tr(),
+                            style: GoogleFonts.rubik(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+
+                      BlocConsumer<ControllerBloc, ControllerState>(
+                        builder: (context, state) {
+                          return SizedBox.shrink();
+                        },
+                        listener: (context, state) {
+                          setState(() {
+                            if (state is PlayInBackGroundGetSuccess) {
+                              print('play in back ground value: ${state.value}');
+                              playInBackGround = state.value;
+                            }
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
+              Container(
+                width: Get.width,
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Text(
+                    "This Stream is powered by Norway Voice",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.rubik().copyWith(
+                    color: Colors.grey.shade500,
+                    fontSize: 12
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
