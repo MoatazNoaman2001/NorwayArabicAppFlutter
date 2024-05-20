@@ -15,6 +15,8 @@ class NorwayNew {
   List<WebPair> cats;
   List<WebPair>? tags;
   List<WebPair> socialShare = [];
+  WebPair? prev;
+  WebPair? next;
 
   NorwayNew(
       this.title,
@@ -41,7 +43,7 @@ class NorwayNew {
     this.articleContent,
     this.socialShare,
     this.cats,
-    this.tags,
+    this.tags, {required this.next, required this.prev}
   );
 
 

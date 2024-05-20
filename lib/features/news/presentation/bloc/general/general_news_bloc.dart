@@ -14,13 +14,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     final GetNewsListUseCase getNewsListUseCase;
     final GetSwiperNewsListUseCase getSwiperNewsListUseCase;
     final Set<NorwayNew> general_norways = {};
+    final Set<NorwayNew> application_news = {};
     final Set<NorwayNew> onboard_norways = {};
     Set<NorwayNew> swiperList = {};
     final Set<NorwayNew> political_norways = {};
     final Set<NorwayNew> local_norways = {};
     final Set<NorwayNew> sport_norways = {};
     bool loadingPage= false;
-    final List<int> pageNum = [1,1,1,1,1];
+    final List<int> pageNum = [1,1,1,1,1,1];
   NewsBloc({required this.getNewsListUseCase, required this.getSwiperNewsListUseCase}) : super(NewsInitial()) {
     on<GetSwiperNorwayNewsList>((event, emit) async{
       emit(SwiperNewsLoading());
@@ -30,10 +31,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         return emit(SwiperNewsSuccess(r));
       });
     },);
+    on<GetApplicationNewsList>((event, emit) async {
+      emit(ApplicationNewsLoading());
+      final res = await getNewsListUseCase(event.url);
+      return res.fold((l) => emit(ApplicationNewListFailure(l.msg)),(r) {
+        application_news.addAll(r);
+        emit(ApplicationNewListSuccess(general_norways.toList()));
+      });
+    });
     on<GetGeneralNorwayNewsList>((event, emit) async {
       emit(GeneralNewsLoading());
       final res = await getNewsListUseCase(event.url);
-      return res.fold((l) => emit(SwiperNewsFailure(l.msg)),(r) {
+      return res.fold((l) => emit(GeneralNewsFailure(l.msg)),(r) {
         general_norways.addAll(r);
         emit(GeneralNewsSuccess(general_norways.toList()));
       });

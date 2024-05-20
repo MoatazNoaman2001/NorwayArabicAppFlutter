@@ -7,6 +7,7 @@ final class NewsInitial extends NewsState {}
 final class NewsLoading extends NewsState {}
 final class SwiperNewsLoading extends NewsState {}
 final class GeneralNewsLoading extends NewsState {}
+final class ApplicationNewsLoading extends NewsState {}
 final class OnBoardNewsLoading extends NewsState {}
 final class PoliticalNewsLoading extends NewsState {}
 final class LocalNewsLoading extends NewsState {}
@@ -18,6 +19,14 @@ final class NewsListSuccess extends NewsState {
 final class NewsListFailure extends NewsState {
   final String msg;
   NewsListFailure(this.msg);
+}
+final class ApplicationNewListSuccess extends NewsState {
+  final List<NorwayNew> norways;
+  ApplicationNewListSuccess(this.norways);
+}
+final class ApplicationNewListFailure extends NewsState {
+  final String msg;
+  ApplicationNewListFailure(this.msg);
 }
 
 final class SwiperNewsSuccess extends NewsListSuccess{

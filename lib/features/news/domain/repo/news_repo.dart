@@ -13,4 +13,5 @@ abstract interface class NewsRepository{
   Future<Either<Failure, List<WebPair>>> aboutUs();
   Future<Either<Failure , List<WebPair>>> contactUs();
   Future<Either<Failure , TiktokVid>> getTiktokEmbed(String url);
+  Future<Either<String , List<WebPair>>> appPage(String url);
 }

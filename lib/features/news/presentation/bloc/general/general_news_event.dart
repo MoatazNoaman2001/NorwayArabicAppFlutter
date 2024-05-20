@@ -14,6 +14,10 @@ class GetNorwayNewsList extends NewsEvent{
 class GetSwiperNorwayNewsList extends NewsEvent{
 }
 
+class GetApplicationNewsList extends GetNorwayNewsList{
+  GetApplicationNewsList(super.url, super.norways);
+}
+
 class GetGeneralNorwayNewsList extends GetNorwayNewsList{
   GetGeneralNorwayNewsList(super.url, super.norways);
 }

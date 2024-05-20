@@ -13,10 +13,13 @@ import 'package:norway_flutter_app/features/app_controller/domain/Get_play_in_ba
 import 'package:norway_flutter_app/features/app_controller/domain/Get_theme_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_play_in_background_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_theme_use_case.dart';
+import 'package:norway_flutter_app/features/news/domain/usecases/app_page_usecase.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_contact_us.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_tiktok_embed.dart';
 import 'package:norway_flutter_app/features/news/presentation/bloc/platforms/platform_bloc.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/about_us_screen.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/app_page.dart';
+import 'package:norway_flutter_app/features/news/presentation/screens/application_news.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/fb_videos_screen.dart';
 import 'package:norway_flutter_app/features/news/presentation/screens/platfroms_scr.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/screens/setting.dart';
@@ -87,18 +90,19 @@ Future<void> main() async {
         create: (context) => DetailsBloc(
             getNewsDetailsUseCase:
                 GetNewsDetailsUseCase(NewsRepositoryImpl(NewsParserImpl())),
-          getTiktokEmbedUseCase: GetTiktokEmbedUseCase(NewsRepositoryImpl(NewsParserImpl()))
-        ),
+            getTiktokEmbedUseCase:
+                GetTiktokEmbedUseCase(NewsRepositoryImpl(NewsParserImpl()))),
       ),
       BlocProvider(
         create: (context) => PlatformBloc(
+            appPageUseCase:
+                AppPageUseCase(NewsRepositoryImpl(NewsParserImpl())),
             platformListUseCase:
                 PlatformListUseCase(NewsRepositoryImpl(NewsParserImpl())),
             aboutUsListUseCase:
                 AboutUsListUseCase(NewsRepositoryImpl(NewsParserImpl())),
-          contactUsUseCase: ContactUsUseCase(NewsRepositoryImpl(NewsParserImpl()))
-
-        ),
+            contactUsUseCase:
+                ContactUsUseCase(NewsRepositoryImpl(NewsParserImpl()))),
       ),
       BlocProvider(
         create: (context) => YoutubeStreamBloc(
@@ -151,14 +155,17 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => InitiateApp(),
         '/select_language': (context) => SelectLanguage(),
         '/home': (context) => MyHomePage(),
+        '/application': (context) =>
+            ApplicationNews(url: Constants.newsUrls[5]),
+        '/general': (context) => GeneralNews(url: Constants.newsUrls[0]),
         '/onBoard': (context) => OnBoard(url: Constants.newsUrls[1]),
         '/political': (context) => PoliticalNews(url: Constants.newsUrls[2]),
         '/local': (context) => LocalNews(url: Constants.newsUrls[3]),
         '/sport': (context) => SportNews(url: Constants.newsUrls[4]),
-        '/youtube_list_screen' : (context) => YoutubeListScreen(selected: 0),
-        '/contact_us' : (context) => ContactUSScreen(),
+        '/youtube_list_screen': (context) => YoutubeListScreen(selected: 0),
+        '/contact_us': (context) => ContactUSScreen(),
         '/fb_screen': (context) => FbVideosScreen(),
-        '/tiktok':(context) => TiktokVideListScreen(),
+        '/tiktok': (context) => TiktokVideListScreen(),
         '/aboutUs': (context) => AboutUsScreen(),
         '/details': (context) => NewDetails(),
         '/platform': (context) => PlatformScreen(),
@@ -186,9 +193,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final screens = [
-    GeneralNews(url: Constants.newsUrls[0]),
+    ApplicationNews(url: Constants.newsUrls[5]),
     SelectStreamType(),
-    PlatformScreen()
+    AppPageScreen()
   ];
 
   void _navigateToSelectStream() {
@@ -201,7 +208,6 @@ class _MyHomePageState extends State<MyHomePage> {
     var bloc = BlocProvider.of<ControllerBloc>(context);
     bloc.drawerSelect = -1;
     bloc.selectedPageIndex = 0;
-
   }
 
   @override
@@ -276,23 +282,28 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context).pushNamed('/sport');
               break;
             case 4:
+              Navigator.of(context).pushNamed('/general');
+            case 5:
               Navigator.of(context).pushNamed('/tiktok');
               break;
-            case 5:
-              Navigator.of(context).pushNamed('/youtube_list_screen');
-              // _launchUrl(Uri.parse(
-              //     "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
-              // break;
             case 6:
+              Navigator.of(context).pushNamed('/youtube_list_screen');
+            // _launchUrl(Uri.parse(
+            //     "https://www.youtube.com/playlist?list=PLehaaLsoPPRinl-P5ibncWU3TbrHwjPzP"));
+            // break;
+            case 7:
               _launchUrl(Uri.parse("https://soundcloud.com/norwayvoice"));
               break;
-            case 7:
-              Navigator.of(context).pushNamed('/aboutUs');
-              break;
             case 8:
-              Navigator.of(context).pushNamed('/contact_us');
+              Navigator.of(context).pushNamed('/platform');
               break;
             case 9:
+              Navigator.of(context).pushNamed('/aboutUs');
+              break;
+            case 10:
+              Navigator.of(context).pushNamed('/contact_us');
+              break;
+            case 11:
               Navigator.of(context).pushNamed('/setting');
               break;
           }
@@ -325,6 +336,10 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedIcon: Icon(Icons.sports_football),
               label: Text(LocaleKeys.Sport.tr())),
           NavigationDrawerDestination(
+              icon: Icon(Icons.collections_bookmark_outlined),
+              selectedIcon: Icon(Icons.collections_bookmark),
+              label: Text(LocaleKeys.general.tr())),
+          NavigationDrawerDestination(
               icon: Icon(Icons.video_collection_outlined),
               selectedIcon: Icon(Icons.video_collection),
               label: Text('الاخبار و التقارير')),
@@ -352,6 +367,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.grey,
               ),
               label: Text(LocaleKeys.SnapChat.tr())),
+          NavigationDrawerDestination(
+            selectedIcon: Icon(Icons.devices),
+              icon: Icon(Icons.devices_outlined),
+              label: Text(LocaleKeys.Platforms.tr())),
           Divider(),
           NavigationDrawerDestination(
               selectedIcon: Icon(Icons.people),

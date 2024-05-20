@@ -15,4 +15,5 @@ abstract interface class NorwaySiteParser{
   Future<List<WebPair>> contactUs();
   Future<List<TiktokVid>> getTiktokVideos();
   Future<TiktokVid> getTiktokEmbed(String url);
+  Future<List<WebPair>> appPage(String url);
 }

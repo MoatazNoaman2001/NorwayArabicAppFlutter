@@ -81,4 +81,13 @@ class NewsRepositoryImpl implements NewsRepository{
     }
   }
 
+  @override
+  Future<Either<String, List<WebPair>>> appPage(String url) async{
+    try{
+      return right(await parser.appPage(url));
+    }catch(e){
+      return left(e.toString());
+    }
+  }
+
 }

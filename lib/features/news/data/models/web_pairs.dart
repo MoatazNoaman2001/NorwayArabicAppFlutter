@@ -1,6 +1,6 @@
 class WebPair {
   final String right;
-  final String left;
+  final dynamic left;
 
   WebPair(this.right, this.left);
 

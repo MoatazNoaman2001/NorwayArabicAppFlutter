@@ -11,6 +11,12 @@ final class PlatformFailure extends PlatformState {
   final String msg;
   PlatformFailure(this.msg);
 }
+final class AppPageLoading extends PlatformState {}
+final class AppPageSuccess extends PlatformState {}
+final class AppPageFailure extends PlatformState {
+  final String msg;
+  AppPageFailure(this.msg);
+}
 
 
 final class AboutUsLoading extends PlatformState {}

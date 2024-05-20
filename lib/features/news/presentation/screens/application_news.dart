@@ -1,5 +1,4 @@
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,20 +19,20 @@ import 'package:infinite_carousel/infinite_carousel.dart';
 import '../bloc/general/general_news_bloc.dart';
 import '../widgets/swipper_view.dart';
 
-class GeneralNews extends StatefulWidget {
+class ApplicationNews extends StatefulWidget {
   final String url;
 
-  const GeneralNews({super.key, required this.url});
+  const ApplicationNews({super.key, required this.url});
 
   @override
-  State<GeneralNews> createState() => _GeneralNewsState(url);
+  State<ApplicationNews> createState() => _ApplicationNewsState(url);
 }
 
-class _GeneralNewsState extends State<GeneralNews> {
+class _ApplicationNewsState extends State<ApplicationNews> {
   final String url;
   bool isTV = false;
 
-  _GeneralNewsState(this.url);
+  _ApplicationNewsState(this.url);
 
   final ConnectivityController connectivityController =
       ConnectivityController();
@@ -57,9 +56,9 @@ class _GeneralNewsState extends State<GeneralNews> {
         } else {
           if (bloc.loadingPage == false) {
             bloc.loadingPage = true;
-            bloc.pageNum[0] = bloc.pageNum[0] + 1;
-            context.read<NewsBloc>().add(GetGeneralNorwayNewsList(
-                '$url/page/${bloc.pageNum[0]}/', norways));
+            bloc.pageNum[5] = bloc.pageNum[5] + 1;
+            context.read<NewsBloc>().add(GetApplicationNewsList(
+                '$url/page/${bloc.pageNum[5]}/', norways));
           }
         }
       }
@@ -71,118 +70,108 @@ class _GeneralNewsState extends State<GeneralNews> {
         parent_controller.animateTo(120.0,
             duration: Duration(milliseconds: 200), curve: Curves.ease);
     });
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(LocaleKeys.general.tr()),
-        leading: GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_ios_new)),
-      ),
-      body: SingleChildScrollView(
-        controller: parent_controller,
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: connectivityController.isConnected,
-                  builder: (context, value, child) {
-                    if (value || isTV) {
-                      return Center();
-                    } else {
-                      return SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Container(
-                                color: Colors.grey.shade800,
-                                child: const Text(
-                                  'No Internet Connection',
-                                  textAlign: TextAlign.center,
-                                ),
+    return SingleChildScrollView(
+      controller: parent_controller,
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              ValueListenableBuilder(
+                valueListenable: connectivityController.isConnected,
+                builder: (context, value, child) {
+                  if (value || isTV) {
+                    return Center();
+                  } else {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Container(
+                              color: Colors.grey.shade800,
+                              child: const Text(
+                                'No Internet Connection',
+                                textAlign: TextAlign.center,
                               ),
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-                BlocConsumer<NewsBloc, NewsState>(
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    if (state is GeneralNewsLoading)
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: LinearProgressIndicator(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          minHeight: 8,
-                        ),
-                      );
-                    else
-                      return SizedBox.shrink();
-                  },
-                ),
-                // SwiperWid(),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                BlocConsumer<NewsBloc, NewsState>(listener: (context, state) {
-                  if (state is GeneralNewsSuccess) {
-                  } else if (state is GeneralNewsFailure) {
-                    var snack = SnackBar(
-                      content: const Text('would you like to retry'),
-                      duration: Duration(hours: 1),
-                      action: SnackBarAction(
-                        onPressed: () {
-                          context
-                              .read<NewsBloc>()
-                              .add(GetGeneralNorwayNewsList(url, norways));
-                        },
-                        label: "ok",
+                            ),
+                          )
+                        ],
                       ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snack);
+                  }
+                },
+              ),
+              BlocConsumer<NewsBloc, NewsState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is ApplicationNewsLoading || state is SwiperNewsLoading)
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: LinearProgressIndicator(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        minHeight: 8,
+                      ),
+                    );
+                  else
+                    return SizedBox.shrink();
+                },
+              ),
+              SwiperWid(),
+              SizedBox(
+                height: 10,
+              ),
+              BlocConsumer<NewsBloc, NewsState>(listener: (context, state) {
+                if (state is ApplicationNewListSuccess || state is ApplicationNewListFailure) {
+                  bloc.loadingPage = false;
+                }
+                if (state is ApplicationNewListSuccess) {} else if (state is ApplicationNewListFailure) {
+                  var snack = SnackBar(
+                    content: const Text('would you like to retry'),
+                    duration: Duration(hours: 1),
+                    action: SnackBarAction(
+                      onPressed: () {
+                        context
+                            .read<NewsBloc>()
+                            .add(GetApplicationNewsList(url, norways));
+                      },
+                      label: "ok",
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snack);
 
-                    Constants.makeToast('could not get list ${state.msg}');
-                  }
-                }, builder: (context, state) {
-                  if (state is GeneralNewsSuccess ||
-                      state is GeneralNewsFailure) {
-                      bloc.loadingPage = false;
-
-                  }
-                  if (state is GeneralNewsLoading &&
-                      bloc.general_norways.isEmpty) {
-                    return GeneralNewsLoading(
-                      isTV: isTV,
-                    );
-                  } else if (state is GeneralNewsSuccess ||
-                      (state is GeneralNewsLoading &&
-                          bloc.general_norways.isNotEmpty)) {
-                    return GeneralListSuccessView(
-                      n: bloc.general_norways.toList(),
-                      url: url,
-                      isTv: isTV,
-                      parentController: parent_controller,
-                    );
-                  } else if (bloc.general_norways.isNotEmpty) {
-                    return GeneralListSuccessView(
-                      n: bloc.general_norways.toList(),
-                      url: url,
-                      isTv: isTV,
-                      parentController: parent_controller,
-                    );
-                  } else {
-                    return GeneralNewsLoading(
-                      isTV: isTV,
-                    );
-                  }
-                })
-              ],
-            )),
-      ),
+                  Constants.makeToast('could not get list ${state.msg}');
+                }
+              }, builder: (context, state) {
+                if (state is ApplicationNewsLoading && bloc.application_news.isEmpty) {
+                  return ApplicationNewsLoadingScreen(
+                    isTV: isTV,
+                  );
+                } else if (state is ApplicationNewListSuccess ||
+                    (state is ApplicationNewsLoading &&
+                        bloc.application_news.isNotEmpty)) {
+                  return ApplicationNewsSuccessScreen(
+                    n: bloc.application_news.toList(),
+                    url: url,
+                    isTv: isTV,
+                    parentController: parent_controller,
+                  );
+                } else if (bloc.application_news.isNotEmpty) {
+                  return ApplicationNewsSuccessScreen(
+                    n: bloc.application_news.toList(),
+                    url: url,
+                    isTv: isTV,
+                    parentController: parent_controller,
+                  );
+                } else {
+                  return ApplicationNewsLoadingScreen(
+                    isTV: isTV,
+                  );
+                }
+              })
+            ],
+          )),
     );
   }
 
@@ -198,7 +187,7 @@ class _GeneralNewsState extends State<GeneralNews> {
   void initState() {
     super.initState();
     connectivityController.init();
-    context.read<NewsBloc>().add(GetGeneralNorwayNewsList(url, []));
+    context.read<NewsBloc>().add(GetApplicationNewsList(url, []));
     context.read<NewsBloc>().add(GetSwiperNorwayNewsList());
     isDeviceIsTv();
   }
@@ -210,17 +199,18 @@ class _GeneralNewsState extends State<GeneralNews> {
   }
 }
 
-class GeneralNewsLoading extends StatelessWidget {
+class ApplicationNewsLoadingScreen extends StatelessWidget {
   final bool isTV;
 
-  const GeneralNewsLoading({super.key, required this.isTV});
+  const ApplicationNewsLoadingScreen({super.key, required this.isTV});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height -
+            (MediaQuery.of(context).size.height * 0.2045),
         child: Column(children: [
           Expanded(
               child: GridView.count(
@@ -249,13 +239,13 @@ class GeneralNewsLoading extends StatelessWidget {
   }
 }
 
-class GeneralListSuccessView extends StatefulWidget {
+class ApplicationNewsSuccessScreen extends StatefulWidget {
   final List<NorwayNew> n;
   final ScrollController parentController;
   final String url;
   final bool isTv;
 
-  const GeneralListSuccessView(
+  const ApplicationNewsSuccessScreen(
       {super.key,
         required this.n,
         required this.url,
@@ -263,10 +253,10 @@ class GeneralListSuccessView extends StatefulWidget {
         required this.parentController});
 
   @override
-  State<GeneralListSuccessView> createState() => _GeneralListSuccessViewState();
+  State<ApplicationNewsSuccessScreen> createState() => _ApplicationNewsSuccessScreenState();
 }
 
-class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
+class _ApplicationNewsSuccessScreenState extends State<ApplicationNewsSuccessScreen> {
 
 
   @override
@@ -285,9 +275,9 @@ class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
             setState(() {
               bloc.loadingPage = true;
             });
-            bloc.pageNum[0] = bloc.pageNum[0] + 1;
+            bloc.pageNum[5] = bloc.pageNum[5] + 1;
             context.read<NewsBloc>().add(
-                GetGeneralNorwayNewsList('${widget.url}/page/${bloc.pageNum[0]}/', widget.n));
+                GetApplicationNewsList('${widget.url}/page/${bloc.pageNum[5]}/', widget.n));
           }
         }
       }
@@ -306,9 +296,11 @@ class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
           OrientationBuilder(builder: (context, orientation) {
             var width = MediaQuery.of(context).size.width;
             var height = MediaQuery.of(context).size.height;
+            print(orientation.toString() +
+                'width: ${MediaQuery.of(context).size.width},height: ${MediaQuery.of(context).size.height}');
             return Container(
               width: width,
-              height: height,
+              height: height - (height * (width > height ? 0.22 : 0.15)),
               child: GridView.count(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   crossAxisCount: widget.isTv || width > height ? 2 : MediaQuery.of(context).size.shortestSide < 600? 1 : 2,
@@ -316,7 +308,7 @@ class _GeneralListSuccessViewState extends State<GeneralListSuccessView> {
                   controller: controller,
                   childAspectRatio: widget.isTv ? 1.5 : 1.2,
                   physics: BouncingScrollPhysics(),
-                  children: bloc.general_norways.map((e) {
+                  children: bloc.application_news.map((e) {
                     return NewsCardRecycleItem(
                       norwayNew: e,
                       callback: () {
