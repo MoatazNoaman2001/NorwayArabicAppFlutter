@@ -39,6 +39,14 @@ class _ApplicationNewsState extends State<ApplicationNews> {
   List<NorwayNew> norways = [];
 
   @override
+  void initState() {
+    super.initState();
+    connectivityController.init();
+    context.read<NewsBloc>().add(GetApplicationNewsList(url, []));
+    context.read<NewsBloc>().add(GetSwiperNorwayNewsList());
+    isDeviceIsTv();
+  }
+  @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<NewsBloc>(context);
     var controller = ScrollController(
@@ -81,7 +89,7 @@ class _ApplicationNewsState extends State<ApplicationNews> {
                 builder: (context, value, child) {
                   if (value || isTV) {
                     return Center();
-                  } else {
+                  } else if (value){
                     return SizedBox(
                       width: double.infinity,
                       child: Column(
@@ -100,6 +108,8 @@ class _ApplicationNewsState extends State<ApplicationNews> {
                         ],
                       ),
                     );
+                  }else{
+                    return SizedBox.shrink();
                   }
                 },
               ),
@@ -183,14 +193,7 @@ class _ApplicationNewsState extends State<ApplicationNews> {
         timeInSecForIosWeb: 1);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    connectivityController.init();
-    context.read<NewsBloc>().add(GetApplicationNewsList(url, []));
-    context.read<NewsBloc>().add(GetSwiperNorwayNewsList());
-    isDeviceIsTv();
-  }
+
 
   void isDeviceIsTv() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

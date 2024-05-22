@@ -16,7 +16,7 @@ class CodegenLoader extends AssetLoader{
 
   static const Map<String,dynamic> ar = {
   "title": "مؤسسة صوت النرويج الاعلامية",
-  "general": "الاخبار",
+  "general": "منوعات",
   "onBoard": "تحقيقات",
   "NightMode": "وضع الليلي",
   "Play_In_Background": "تشغيل بالخلفية",

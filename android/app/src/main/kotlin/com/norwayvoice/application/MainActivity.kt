@@ -1,4 +1,4 @@
-package com.example.norway_flutter_app
+package com.norwayvoice.application
 
 import io.flutter.embedding.android.FlutterActivity
 

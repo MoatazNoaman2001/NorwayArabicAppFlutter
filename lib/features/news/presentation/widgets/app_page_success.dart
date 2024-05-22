@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,63 +15,88 @@ class AppPageSuccessScreen extends StatelessWidget {
   final List<WebPair> plts;
   bool isTv = false;
 
-  AppPageSuccessScreen(
-      {super.key, required this.plts});
+  AppPageSuccessScreen({super.key, required this.plts});
 
   @override
   Widget build(BuildContext context) {
     isDeviceIsTv();
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          OrientationBuilder(builder: (context, orientation) {
-            return Container(
-                width: Get.width,
-                height: Get.height - (Get.height * 0.32),
-                child: GridView.count(
-                  scrollDirection: Axis.vertical,
-              controller: ScrollController(),
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              crossAxisCount: isTv ? 4
-                  : orientation == Orientation.landscape ? 4 : 2,
-              children: plts.sublist(0, 6).map((e) => PltCard(e)).toList(),
-            ));
-          }),
-          SizedBox(height: 14,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            bannerImage((plts[9].left as List<String?>)[0]),
-            bannerImage((plts[9].left as List<String?>)[1]),
-            bannerImage((plts[9].left as List<String?>)[2]),
-            bannerImage((plts[9].left as List<String?>)[3]),
-          ],),
-          CachedNetworkImage(
-            imageUrl: plts[6].left,
-            imageBuilder: (context, imageProvider) {
-              return Container(
-                height: 130,
-                width: 200,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(image: imageProvider)),
-              );
-            },
-            progressIndicatorBuilder: (context, url, progress) => Center(
-              child: CircularProgressIndicator(),
+    return OrientationBuilder(
+      builder: (context, orientation) => SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: plts
+                  .sublist(
+                      0, isTv || orientation == Orientation.landscape ? 4 : 2)
+                  .map((e) => Row(children: [PltCard(e), SizedBox(width: 4,)],))
+                  .toList(),
+              mainAxisAlignment: MainAxisAlignment.center,
             ),
-            errorWidget: (context, url, error) => Center(
-              child: Text('error'),
+            Row(
+              children: plts
+                  .sublist(
+                  isTv || orientation == Orientation.landscape ? 4: 2, isTv || orientation == Orientation.landscape ? 6 : 4)
+                  .map((e) => Row(children: [PltCard(e), SizedBox(width: 4,)],))
+                  .toList(),
+              mainAxisAlignment: MainAxisAlignment.center,
             ),
-            fit: BoxFit.fill,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(plts[8].left, style: GoogleFonts.rubik()),
-          ),
-        ],
+            if(!isTv && orientation != Orientation.landscape)
+              Row(
+                children: plts
+                    .sublist(4, 6)
+                    .map((e) => Row(children: [PltCard(e), SizedBox(width: 4,)],))
+                    .toList(),
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            // Container(
+            //     width: Get.width,
+            //     height: Get.height - (Get.height * 0.32),
+            //     child: GridView.count(
+            //       scrollDirection: Axis.vertical,
+            //       controller: ScrollController(),
+            //       physics: BouncingScrollPhysics(),
+            //       padding: EdgeInsets.symmetric(horizontal: 8),
+            //       crossAxisCount: isTv ? 4 : orientation == Orientation.landscape ? 4 : 2,
+            //       children: plts.sublist(0, 6).map((e) => PltCard(e)).toList(),
+            //     )),
+            SizedBox(
+              height: 14,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                bannerImage((plts[9].left as List<String?>)[0]),
+                bannerImage((plts[9].left as List<String?>)[1]),
+                bannerImage((plts[9].left as List<String?>)[2]),
+                bannerImage((plts[9].left as List<String?>)[3]),
+              ],
+            ),
+            CachedNetworkImage(
+              imageUrl: plts[6].left,
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  height: 130,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(image: imageProvider)),
+                );
+              },
+              progressIndicatorBuilder: (context, url, progress) => Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => Center(
+                child: Text('error'),
+              ),
+              fit: BoxFit.fill,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(plts[8].left, style: GoogleFonts.rubik()),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -117,13 +143,17 @@ class AppPageSuccessScreen extends StatelessWidget {
             SizedBox(
               height: 8,
             ),
-            Text(
-              e.right,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.rubik().copyWith(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.blue.shade800),
+            Container(
+              width: 180,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: Text(
+                e.right,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.rubik().copyWith(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.blue.shade800),
+              ),
             )
           ],
         ),
@@ -132,19 +162,20 @@ class AppPageSuccessScreen extends StatelessWidget {
   }
 
   bannerImage(String? jsonDecode) {
-    return CachedNetworkImage(imageUrl: jsonDecode??"", imageBuilder: (context, imageProvider) {
-      return Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          image: DecorationImage(
-            image: imageProvider
-          )
-        ),
-      );
-    },
-    progressIndicatorBuilder: (context, url, progress) => Center(child: CircularProgressIndicator(),),
+    return CachedNetworkImage(
+      imageUrl: jsonDecode ?? "",
+      imageBuilder: (context, imageProvider) {
+        return Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              image: DecorationImage(image: imageProvider)),
+        );
+      },
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

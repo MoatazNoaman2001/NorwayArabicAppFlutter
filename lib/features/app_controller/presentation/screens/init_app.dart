@@ -27,7 +27,7 @@ class _InitiateAppState extends State<InitiateApp> {
     return Scaffold(
         body: Column(
       children: [
-        BlocConsumer<ControllerBloc, ControllerState>(
+          BlocConsumer<ControllerBloc, ControllerState>(
           listener: (context, state) {
             var bloc = BlocProvider.of<ControllerBloc>(context);
             if (state is ThemeGetSuccess) {
@@ -104,8 +104,8 @@ class _InitiateAppState extends State<InitiateApp> {
     super.initState();
     context.read<ControllerBloc>().add(ThemeGet());
     _controller = VideoPlayerController.asset('assets/videos/splash_video.mp4')..initialize().then((_) {
+      setState(() {});
     });
-
     _controller.play();
     _controller.addListener(() {
       inspectVideo();
