@@ -4,11 +4,11 @@ import 'package:norway_flutter_app/core/error/Failure.dart';
 
 import 'package:norway_flutter_app/features/news/data/models/norway_new.dart';
 import 'package:norway_flutter_app/features/news/data/models/web_pairs.dart';
-import 'package:norway_flutter_app/features/news/data/news_parser_impl.dart';
+import 'package:norway_flutter_app/features/news/data/news_parser/news_parser_impl.dart';
 
 import '../../domain/repo/news_repo.dart';
 import '../models/tiktok.dart';
-import '../news_parser.dart';
+import '../news_parser/news_parser.dart';
 
 class NewsRepositoryImpl implements NewsRepository{
   final NorwaySiteParser parser;

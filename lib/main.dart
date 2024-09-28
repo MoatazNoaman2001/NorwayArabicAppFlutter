@@ -35,7 +35,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/Get_lang_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/domain/change_lang_use_case.dart';
 import 'package:norway_flutter_app/features/app_controller/presentation/bloc/controller_bloc.dart';
-import 'package:norway_flutter_app/features/news/data/news_parser_impl.dart';
+import 'package:norway_flutter_app/features/news/data/news_parser/news_parser_impl.dart';
 import 'package:norway_flutter_app/features/news/data/repo/new_repository_impl.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_news_details.dart';
 import 'package:norway_flutter_app/features/news/domain/usecases/get_news_list.dart';

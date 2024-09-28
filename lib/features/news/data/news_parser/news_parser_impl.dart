@@ -9,7 +9,7 @@ import 'package:norway_flutter_app/features/news/data/models/tiktok.dart';
 import 'news_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
-import 'models/web_pairs.dart';
+import '../models/web_pairs.dart';
 
 class NewsParserImpl implements NorwaySiteParser {
   var dio = Dio();
